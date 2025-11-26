@@ -13,7 +13,7 @@
 
     <!-- Text colors -->
     <color name="text_primary">#C5C5C5</color>
-    <color name="text_secondary">#CACACA</color>
+    <color name="text_secondary">#848884	</color>
     <color name="text_hint">#76818E</color>
     <color name="text_on_accent">#FFFFFFFF</color>
 

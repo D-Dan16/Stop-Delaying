@@ -5,9 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_primary"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <LinearLayout style="@style/BgLinearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -17,9 +18,44 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            style="@style/HeaderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World!" />
+            android:text="Stop Delaying" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            style="@style/SubHeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Break your procrastination habits today!" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
+        <Button
+            android:id="@+id/bToSignIn"
+            style="@style/PrimaryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign in" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <TextView
+            android:id="@+id/tvToRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Register"
+            style="@style/SubHeaderText"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
