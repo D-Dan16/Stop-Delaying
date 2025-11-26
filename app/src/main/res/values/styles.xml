@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- HEADERS & TEXT                                 -->
+    <!-- ─────────────────────────────────────────────── -->
+
+    <!-- Big screen header: "Let's Get Started" -->
+    <style name="HeaderText">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:paddingTop">32dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <!-- Subtitle: "Create your account..." -->
+    <style name="SubHeaderText">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">24dp</item>
+    </style>
+
+    <!-- Section label: "Username", "Password" -->
+    <style name="LabelText">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <!-- Body / subtle text like "Must be at least 8 characters" -->
+    <style name="BodyHintText">
+        <item name="android:textColor">@color/text_hint</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+    <!-- Links: "Terms & Privacy Policy", "Log In" -->
+    <style name="LinkText">
+        <item name="android:textColor">@color/accent_orange</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- BUTTON STYLES                                   -->
+    <!-- ─────────────────────────────────────────────── -->
+
+    <!-- Big rounded orange CTA button -->
+    <style name="PrimaryButton">
+        <item name="android:background">@drawable/button_primary_bg</item>
+        <item name="android:textColor">@color/text_on_accent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Secondary button (dark background, border) -->
+    <style name="SecondaryButton">
+        <item name="android:background">@drawable/button_secondary_bg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:padding">14dp</item>
+    </style>
+
+    <!-- Text-only button (used for links) -->
+    <style name="FlatButton">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/accent_orange</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- TEXT FIELD / INPUT STYLES                      -->
+    <!-- ─────────────────────────────────────────────── -->
+
+    <style name="InputField">
+        <item name="android:background">@drawable/input_field_bg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:hint">@color/text_hint</item>
+    </style>
+
+    <style name="InputFieldPassword">
+        <item name="android:background">@drawable/input_field_bg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:inputType">textPassword</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- MENU ITEMS                                      -->
+    <!-- ─────────────────────────────────────────────── -->
+
+    <style name="MenuItem">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+    </style>
+
+    <style name="MenuSectionHeader">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
+
+
+</resources>
