@@ -21,7 +21,7 @@
             style="@style/HeaderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stop Delaying" />
+            android:text="Welcome back!" />
 
         <Space
             android:layout_width="match_parent"
@@ -32,11 +32,57 @@
             style="@style/SubHeaderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Break your procrastination habits today!" />
+            android:text="Login and break your habits" />
 
-        <Space
+        <LinearLayout
+            android:id="@+id/llInputField"
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:showIn="@layout/activity_login">
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username" />
+
+            <EditText
+                android:id="@+id/etUsernameLogin"
+                style="@style/InputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="input here"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llInputField2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:showIn="@layout/activity_login">
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Password" />
+
+            <EditText
+                android:id="@+id/etPasswordLogin"
+                style="@style/InputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="input here"
+                android:inputType="text" />
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bToSignIn"
