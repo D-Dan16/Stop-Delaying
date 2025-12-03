@@ -24,5 +24,6 @@
     <color name="highlight_brown">#462210</color>
 
     <color name="accent_orange">#FF7A24</color>
+    <color name="neon_orange">#FF5F1F</color>
 
 </resources>
