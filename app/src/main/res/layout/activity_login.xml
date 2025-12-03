@@ -35,15 +35,13 @@
             android:text="Login and break your habits" />
 
         <LinearLayout
-            android:id="@+id/llInputField"
+            android:id="@+id/llInputFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            tools:showIn="@layout/activity_login">
+            android:padding="20dp">
 
             <TextView
-                android:id="@+id/textView2"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,35 +51,34 @@
                 android:id="@+id/etUsernameLogin"
                 style="@style/InputField"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:ems="10"
                 android:hint="input here"
                 android:inputType="text" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llInputField2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            tools:showIn="@layout/activity_login">
 
             <TextView
-                android:id="@+id/textView3"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Password" />
 
-            <EditText
-                android:id="@+id/etPasswordLogin"
-                style="@style/InputField"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="input here"
-                android:inputType="text" />
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPasswordLogin"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="input here"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -97,10 +94,10 @@
 
         <TextView
             android:id="@+id/tvToRegister"
+            style="@style/SubHeaderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_prompt"
-            style="@style/SubHeaderText"/>
+            android:text="@string/register_prompt" />
 
     </LinearLayout>
 

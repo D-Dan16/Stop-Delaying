@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_primary"
-        tools:context=".MainActivity">
+        tools:context=".RegisterActivity">
 
     <LinearLayout style="@style/BgLinearLayout"
             android:layout_width="0dp"
@@ -27,38 +27,100 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-        <TextView
-                android:id="@+id/textView"
-                style="@style/SubHeaderText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create an account" />
 
         <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15sp">
+            android:id="@+id/llInputFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
-                    android:id="@+id/reusable_title"
-                    style="@style/LabelText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Default Title"
-                    android:layout_marginLeft="0dp" />
+                android:id="@+id/tvEmail"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email" />
 
             <EditText
-                    android:id="@+id/reusable_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter value..."
+                android:id="@+id/etEmailRegister"
+                style="@style/InputField"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:hint="input here"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/tvUsername"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Username" />
+
+            <EditText
+                android:id="@+id/etUsernameRegister"
+                style="@style/InputField"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:ems="10"
+                android:hint="input here"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/tvPassword"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Password" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPasswordRegister"
                     style="@style/InputField"
-                    android:textColor="@color/text_hint" />
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:ems="10"
+                    android:hint="input here"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/tvConfirmPassword"
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Confirm Password" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="none"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etConfirmPasswordRegister"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:ems="10"
+                    android:hint="input here"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/bRegisterSignUp"
                 style="@style/PrimaryButton"
                 android:layout_width="wrap_content"
@@ -71,10 +133,10 @@
                 android:layout_height="16dp" />
 
         <TextView
-                android:id="@+id/tvToRegister"
+                android:id="@+id/tvToLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? Log in"
+                android:text="@string/register_prompt"
                 style="@style/SubHeaderText" />
 
     </LinearLayout>
