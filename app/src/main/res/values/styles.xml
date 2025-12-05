@@ -138,4 +138,24 @@
         <item name="android:layout_marginBottom">16dp</item>
     </style>
 
+    <!-- ─────────────────────────────────────────────── -->
+    <!-- LEADERBOARD                                     -->
+    <!-- ─────────────────────────────────────────────── -->
+    <style name="LeaderboardText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
+    <style name="LeaderboardRankText" parent="LeaderboardText">
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="LeaderboardScoreText" parent="LeaderboardText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
 </resources>
