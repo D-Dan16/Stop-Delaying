@@ -81,7 +81,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bToSignIn"
             style="@style/PrimaryButton"
             android:layout_width="wrap_content"

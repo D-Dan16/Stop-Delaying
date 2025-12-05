@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/bToSignIn"
                 style="@style/PrimaryButton"
                 android:layout_width="wrap_content"

@@ -67,7 +67,7 @@
                     android:orientation="horizontal"
                     android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnWhatIsProcrastination"
                         style="@style/PrimaryButton"
                         android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                         android:layout_marginEnd="16dp"
                         android:text="What is\n Procrastination?" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLinksAndVideos"
                         style="@style/PrimaryButton"
                         android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                         android:text="Links and Videos"
                         android:layout_weight="1" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTipsAndTricks"
                         style="@style/PrimaryButton"
                         android:layout_width="wrap_content"

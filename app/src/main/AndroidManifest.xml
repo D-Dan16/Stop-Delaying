@@ -11,6 +11,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Procrastination">
         <activity
+                android:name=".activities.Settings"
+                android:exported="false" />
+        <activity
                 android:name=".activities.Leaderboard"
                 android:exported="false" />
         <activity

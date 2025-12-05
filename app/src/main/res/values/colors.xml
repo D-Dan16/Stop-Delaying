@@ -10,6 +10,7 @@
     <color name="accent_orange_dark">#4B1F1A</color>
     <color name="accent_orange_toggle">#FF7F3A</color>
     <color name="accent_red_logout">#E2403A</color>
+    <color name="dark_red">#8B0000</color>
 
     <!-- Text colors -->
     <color name="text_primary">#C5C5C5</color>

@@ -12,7 +12,6 @@
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:letterSpacing">0.02</item>
-        <item name="android:paddingTop">32dp</item>
         <item name="android:paddingBottom">12dp</item>
     </style>
 
@@ -55,30 +54,46 @@
     <!-- ─────────────────────────────────────────────── -->
 
     <!-- Big rounded orange CTA button -->
-    <style name="PrimaryButton">
-        <item name="android:background">@drawable/button_primary_bg</item>
-        <item name="android:colorBackground">@color/accent_orange</item>
+    <style name="PrimaryButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/accent_orange</item>
         <item name="android:textColor">@color/text_on_accent</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">14dp</item>
         <item name="android:gravity">center</item>
+        <item name="cornerRadius">12dp</item>
     </style>
 
     <!-- Secondary button (dark background, border) -->
-    <style name="SecondaryButton">
-        <item name="android:background">@drawable/button_secondary_bg</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:padding">14dp</item>
+    <style name="SecondaryButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@color/accent_orange</item>
+        <item name="android:textColor">@color/text_on_accent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="cornerRadius">12dp</item>
     </style>
 
     <!-- Text-only button (used for links) -->
-    <style name="FlatButton">
-        <item name="android:background">@android:color/transparent</item>
+    <style name="FlatButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/accent_orange</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.App.Button.OutlinedButton.Red" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/accent_red_logout</item>
+        <item name="strokeColor">@color/accent_red_logout</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="strokeWidth">3dp</item>
+    </style>
+
+    <style name="Widget.App.Button.OutlinedButton.DarkRed" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/dark_red</item>
+        <item name="strokeColor">@color/dark_red</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="strokeWidth">3dp</item>
     </style>
 
 
