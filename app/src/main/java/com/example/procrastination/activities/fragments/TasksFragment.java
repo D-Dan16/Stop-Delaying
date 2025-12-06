@@ -16,19 +16,19 @@ import com.example.procrastination.models.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListFragment extends Fragment {
+public class TasksFragment extends Fragment {
 
     private static final String ARG_TASK_STATUS = "task_status";
     private Task.TaskStatus taskStatus;
     private TaskListAdapter adapter;
     private List<Task> taskList;
 
-    public TaskListFragment() {
+    public TasksFragment() {
         // Required empty public constructor
     }
 
-    public static TaskListFragment newInstance(Task.TaskStatus status) {
-        TaskListFragment fragment = new TaskListFragment();
+    public static TasksFragment newInstance(Task.TaskStatus status) {
+        TasksFragment fragment = new TasksFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_TASK_STATUS, status);
         fragment.setArguments(args);

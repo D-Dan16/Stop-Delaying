@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.procrastination.activities.fragments.TaskListFragment;
+import com.example.procrastination.activities.fragments.TasksFragment;
 import com.example.procrastination.models.Task;
 
 public class TasksPagerAdapter extends FragmentStateAdapter {
@@ -21,13 +21,13 @@ public class TasksPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return TaskListFragment.newInstance(Task.TaskStatus.TODO);
+                return TasksFragment.newInstance(Task.TaskStatus.TODO);
             case 1:
-                return TaskListFragment.newInstance(Task.TaskStatus.COMPLETED);
+                return TasksFragment.newInstance(Task.TaskStatus.COMPLETED);
             case 2:
-                return TaskListFragment.newInstance(Task.TaskStatus.CANCELED);
+                return TasksFragment.newInstance(Task.TaskStatus.CANCELED);
             default:
-                return TaskListFragment.newInstance(Task.TaskStatus.TODO);
+                return TasksFragment.newInstance(Task.TaskStatus.TODO);
         }
     }
 
