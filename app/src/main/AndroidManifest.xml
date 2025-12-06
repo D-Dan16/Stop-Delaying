@@ -11,16 +11,16 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Procrastination">
         <activity
-                android:name=".activities.MainApp"
+                android:name=".ui.activities.MainApp"
                 android:exported="false" />
         <activity
-                android:name=".activities.Register"
+                android:name=".ui.activities.Register"
                 android:exported="false" />
         <activity
-                android:name=".activities.Login"
+                android:name=".ui.activities.Login"
                 android:exported="false" />
         <activity
-                android:name=".activities.OpeningScreen"
+                android:name=".ui.activities.OpeningScreen"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

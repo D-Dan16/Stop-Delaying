@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_primary"
-        tools:context=".activities.Register">
+        tools:context=".ui.activities.Register">
 
     <LinearLayout style="@style/BgLinearLayout"
             android:layout_width="0dp"
@@ -136,7 +136,7 @@
                 android:id="@+id/tvToLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/register_prompt"
+                android:text="@string/login_prompt"
                 style="@style/SubHeaderText" />
 
     </LinearLayout>

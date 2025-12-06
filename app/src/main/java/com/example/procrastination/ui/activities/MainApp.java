@@ -1,4 +1,4 @@
-package com.example.procrastination.activities;
+package com.example.procrastination.ui.activities;
 
 import android.os.Bundle;
 

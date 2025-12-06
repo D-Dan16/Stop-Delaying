@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.procrastination.activities.fragments.TasksFragment;
+import com.example.procrastination.ui.fragments.TasksFragment;
 import com.example.procrastination.models.Task;
 
 public class TasksPagerAdapter extends FragmentStateAdapter {

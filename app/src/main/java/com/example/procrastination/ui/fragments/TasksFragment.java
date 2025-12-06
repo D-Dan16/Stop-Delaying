@@ -1,4 +1,4 @@
-package com.example.procrastination.activities.fragments;
+package com.example.procrastination.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
