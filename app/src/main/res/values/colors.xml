@@ -3,7 +3,7 @@
     <!-- Background layers -->
     <color name="bg_primary">#1B110C</color>
     <color name="bg_secondary">#221610</color>
-    <color name="bg_card">#231A15</color>
+    <color name="bg_card">#483C32</color>
     <color name="bg_shadow">#1A100B</color>
 
     <!-- Accent colors -->
