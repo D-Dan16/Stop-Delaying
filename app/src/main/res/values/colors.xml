@@ -7,7 +7,7 @@
     <color name="bg_shadow">#1A100B</color>
 
     <!-- Accent colors -->
-    <color name="accent_orange_dark">#4B1F1A</color>
+    <color name="accent_orange_dark">#bf6900</color>
     <color name="accent_orange_toggle">#FF7F3A</color>
     <color name="accent_red_logout">#E2403A</color>
     <color name="dark_red">#8B0000</color>
