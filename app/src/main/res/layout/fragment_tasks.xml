@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tasks"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/tasks"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_primary">
@@ -20,17 +21,20 @@
         <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="To Do" />
+                android:text="To Do"
+                tools:ignore="HardcodedText" />
 
         <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Completed" />
+                android:text="Completed"
+                tools:ignore="HardcodedText" />
 
         <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Canceled" />
+                android:text="Canceled"
+                tools:ignore="HardcodedText" />
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -49,7 +53,6 @@
         app:backgroundTint="@color/neon_orange"
         app:tint="@android:color/white"
         android:contentDescription="Add new task"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.FloatingActionButton"
         app:fabCustomSize="70dp"
         app:maxImageSize="30dp" />
 

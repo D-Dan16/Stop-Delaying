@@ -9,9 +9,6 @@ import com.example.procrastination.ui.fragments.TasksFragment;
 import com.example.procrastination.models.Task;
 
 public class TasksPagerAdapter extends FragmentStateAdapter {
-
-    private static final int NUM_TABS = 3;
-
     public TasksPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -19,20 +16,11 @@ public class TasksPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0:
-                return TasksFragment.newInstance(Task.TaskStatus.TODO);
-            case 1:
-                return TasksFragment.newInstance(Task.TaskStatus.COMPLETED);
-            case 2:
-                return TasksFragment.newInstance(Task.TaskStatus.CANCELED);
-            default:
-                return TasksFragment.newInstance(Task.TaskStatus.TODO);
-        }
+        return null;
     }
 
     @Override
     public int getItemCount() {
-        return NUM_TABS;
+        return 0;
     }
 }

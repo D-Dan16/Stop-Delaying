@@ -102,8 +102,7 @@
                         android:id="@+id/switchAllowNotifications"
                         android:showText="false"
                         android:splitTrack="false"
-                        tools:checked="true"
-                        android:checked="false"
+                        android:checked="true"
                         android:shadowColor="@color/accent_orange" />
 
             </LinearLayout>
