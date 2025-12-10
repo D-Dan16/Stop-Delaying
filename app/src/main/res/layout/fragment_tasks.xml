@@ -44,16 +44,32 @@
             android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/neon_orange"
-        app:tint="@android:color/white"
-        android:contentDescription="Add new task"
-        app:fabCustomSize="70dp"
-        app:maxImageSize="30dp" />
+            android:id="@+id/fab_ai_analyze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="200dp"
+            android:contentDescription="Analyze tasks with AI"
+            android:src="@drawable/ic_ai"
+            app:backgroundTint="@color/neon_orange"
+            app:fabCustomSize="65dp"
+            app:layout_anchor="@id/fab_add_task"
+            app:layout_anchorGravity="top|center_horizontal"
+            app:maxImageSize="45dp"
+            app:tint="@android:color/white"
+            android:layout_marginEnd="20dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/neon_orange"
+            app:tint="@android:color/white"
+            android:contentDescription="Add new task"
+            app:fabCustomSize="65dp"
+            app:maxImageSize="45dp"
+            android:layout_marginBottom="110dp"
+            android:layout_marginEnd="20dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
