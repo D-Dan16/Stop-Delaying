@@ -41,34 +41,26 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main_app);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         replaceFragment(homeFragment);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_home) {
-                    replaceFragment(homeFragment);
-                    return true;
-                } else if (item.getItemId() == R.id.nav_tasks) {
-                    replaceFragment(tasksFragment);
-                    return true;
-                } else if (item.getItemId() == R.id.nav_leaderboard) {
-                    replaceFragment(leaderboardFragment);
-                    return true;
-                } else if (item.getItemId() == R.id.nav_settings) {
-                    replaceFragment(settingsFragment);
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_home) {
+                replaceFragment(homeFragment);
+                return true;
+            } else if (item.getItemId() == R.id.nav_tasks) {
+                replaceFragment(tasksFragment);
+                return true;
+            } else if (item.getItemId() == R.id.nav_leaderboard) {
+                replaceFragment(leaderboardFragment);
+                return true;
+            } else if (item.getItemId() == R.id.nav_settings) {
+                replaceFragment(settingsFragment);
+                return true;
             }
+            return false;
         });
     }
 

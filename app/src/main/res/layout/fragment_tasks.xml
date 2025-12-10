@@ -7,47 +7,56 @@
     android:layout_height="match_parent"
     android:background="@color/bg_primary">
 
-    <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="63dp"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            android:backgroundTint="@color/bg_secondary"
-            app:tabTextColor="@color/accent_orange_toggle"
-            app:tabSelectedTextColor="@color/neon_orange"
-            app:tabIndicatorColor="@color/neon_orange">
+            android:layout_height="wrap_content"
+            android:background="@color/bg_secondary"
+            android:paddingTop="16dp">
 
-        <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="To Do"
-                tools:ignore="HardcodedText" />
+        <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                android:background="@android:color/transparent"
+                app:tabTextColor="@color/accent_orange_toggle"
+                app:tabSelectedTextColor="@color/neon_orange"
+                app:tabIndicatorColor="@color/neon_orange">
 
-        <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Completed"
-                tools:ignore="HardcodedText" />
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="To Do"
+                    tools:ignore="HardcodedText" />
 
-        <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Canceled"
-                tools:ignore="HardcodedText" />
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Completed"
+                    tools:ignore="HardcodedText" />
 
-    </com.google.android.material.tabs.TabLayout>
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Canceled"
+                    tools:ignore="HardcodedText" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_ai_analyze"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="200dp"
+            android:layout_marginBottom="110dp"
             android:contentDescription="Analyze tasks with AI"
             android:src="@drawable/ic_ai"
             app:backgroundTint="@color/neon_orange"
@@ -69,7 +78,7 @@
             android:contentDescription="Add new task"
             app:fabCustomSize="65dp"
             app:maxImageSize="45dp"
-            android:layout_marginBottom="110dp"
+            android:layout_marginBottom="30dp"
             android:layout_marginEnd="20dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

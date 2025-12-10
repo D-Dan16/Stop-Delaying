@@ -1,6 +1,9 @@
 package com.example.procrastination.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.procrastination.R;
 
 public class OpeningScreen extends AppCompatActivity {
+    Button bToSignIn;
+    TextView tvToRegister;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +28,18 @@ public class OpeningScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        bToSignIn = findViewById(R.id.bToSignIn);
+        tvToRegister = findViewById(R.id.tvToRegister);
+
+        bToSignIn.setOnClickListener(v -> {
+            startActivity(new Intent(this, Login.class));
+        });
+
+        tvToRegister.setOnClickListener(v -> {
+            startActivity(new Intent(this, Register.class));
+        });
+
+
     }
 }

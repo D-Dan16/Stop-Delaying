@@ -9,8 +9,9 @@
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="71dp"
-            android:background="@android:color/transparent">
+            android:layout_height="wrap_content"
+            android:background="@color/bg_secondary"
+            android:paddingTop="16dp">
 
         <!-- Header section with navigation buttons and title -->
 
@@ -18,10 +19,10 @@
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="74dp"
                 app:tabMode="fixed"
                 app:tabGravity="fill"
-                android:backgroundTint="@color/bg_secondary"
+                android:background="@android:color/transparent"
                 app:tabTextColor="@color/accent_orange_toggle"
                 app:tabSelectedTextColor="@color/neon_orange"
                 app:tabIndicatorColor="@color/neon_orange">

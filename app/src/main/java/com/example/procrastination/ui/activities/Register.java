@@ -1,6 +1,9 @@
 package com.example.procrastination.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,9 @@ import com.example.procrastination.R;
 
 public class Register extends AppCompatActivity {
 
+    Button bRegisterSignUp;
+    TextView tvToLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +27,17 @@ public class Register extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        bRegisterSignUp = findViewById(R.id.bRegisterSignUp);
+        tvToLogin = findViewById(R.id.tvToLogin);
+
+        bRegisterSignUp.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainApp.class));
+        });
+
+        tvToLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, Login.class));
         });
     }
 }
