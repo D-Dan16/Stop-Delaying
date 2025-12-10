@@ -7,51 +7,52 @@
     app:cardBackgroundColor="@color/bg_card"
     app:cardCornerRadius="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="16dp">
 
-        <!-- Status Indicator (e.g., a colored circle or icon) -->
         <ImageView
             android:id="@+id/iv_task_status"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_tasks" /> <!-- Placeholder icon, replace with actual status indicator later -->
+            android:src="@drawable/ic_tasks" 
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/neon_orange" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_task_title"
+            style="@style/HeaderText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="16dp">
+            android:layout_marginStart="16dp"
+            android:text="Task Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_task_status"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_task_title"
-                style="@style/HeaderText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Task Title" />
+        <TextView
+            android:id="@+id/tv_task_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Task Description"
+            android:textColor="@color/text_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_task_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_task_title" />
 
-            <TextView
-                android:id="@+id/tv_task_description"
-                style="@style/SubHeaderText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Task Description goes here." />
+        <TextView
+            android:id="@+id/tv_task_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Due: yyyy-MM-dd"
+            android:textColor="@color/text_on_accent"
+            app:layout_constraintStart_toStartOf="@+id/tv_task_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_task_description" />
 
-            <TextView
-                android:id="@+id/tv_task_due_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Due: 2024-12-31" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
