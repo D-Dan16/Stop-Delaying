@@ -6,66 +6,65 @@
     android:background="@color/bg_primary">
 
     <LinearLayout
-        android:id="@+id/back_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/accent_orange_dark"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/back_button"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/accent_orange_dark"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingTop="50dp"
+            android:paddingStart="16dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_left" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_left" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Go Back"
-            android:textColor="@color/text_on_accent"
-            android:textSize="18sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Go Back"
+                android:textColor="@color/text_on_accent"
+                android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
-        style="@style/BgLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_button">
+            style="@style/BgLinearLayout"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_button">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="8dp">
+                android:layout_width="356dp"
+                android:layout_height="154dp"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="8dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                    android:layout_width="357dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                 <TextView
-                    style="@style/HeaderText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Links and Videos" />
+                        style="@style/HeaderText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Links and Videos" />
 
                 <TextView
-                    style="@style/SubHeaderText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Here are some useful links and videos to help you understand and overcome procrastination." />
+                        style="@style/SubHeaderText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Here are some useful links and videos to help you understand and overcome procrastination." />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -74,10 +73,15 @@
                 android:layout_height="30dp" />
 
         <HorizontalScrollView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scrollbarAlwaysDrawVerticalTrack="false"
-                android:scrollbarAlwaysDrawHorizontalTrack="false">
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbars="none"
+                android:fadeScrollbars="false"
+                android:isScrollContainer="false"
+                android:keepScreenOn="false"
+                android:nestedScrollingEnabled="false">
 
             <LinearLayout
                     android:layout_width="wrap_content"
@@ -88,7 +92,7 @@
 
                 <androidx.cardview.widget.CardView
                         android:id="@+id/link_card_1"
-                        android:layout_width="180dp"
+                        android:layout_width="238dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:cardBackgroundColor="@color/bg_card"
@@ -101,7 +105,7 @@
 
                         <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="243dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_1" />
 
@@ -117,7 +121,7 @@
 
                 <androidx.cardview.widget.CardView
                         android:id="@+id/link_card_2"
-                        android:layout_width="180dp"
+                        android:layout_width="238dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:cardBackgroundColor="@color/bg_card"
@@ -130,7 +134,7 @@
 
                         <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="243dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_2" />
 
@@ -146,7 +150,7 @@
 
                 <androidx.cardview.widget.CardView
                         android:id="@+id/link_card_3"
-                        android:layout_width="180dp"
+                        android:layout_width="238dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:cardBackgroundColor="@color/bg_card"
@@ -159,7 +163,7 @@
 
                         <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="243dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_3" />
 
@@ -175,7 +179,7 @@
 
                 <androidx.cardview.widget.CardView
                         android:id="@+id/link_card_4"
-                        android:layout_width="180dp"
+                        android:layout_width="238dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         app:cardBackgroundColor="@color/bg_card"
@@ -188,7 +192,7 @@
 
                         <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="243dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_4" />
 
@@ -204,7 +208,7 @@
 
                 <androidx.cardview.widget.CardView
                         android:id="@+id/link_card_5"
-                        android:layout_width="180dp"
+                        android:layout_width="238dp"
                         android:layout_height="wrap_content"
                         app:cardBackgroundColor="@color/bg_card"
                         app:cardCornerRadius="8dp">
@@ -216,7 +220,7 @@
 
                         <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="120dp"
+                                android:layout_height="243dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_5" />
 
