@@ -19,7 +19,7 @@ import java.util.Locale;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
 
     private List<Task> taskList;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
 
     public TaskListAdapter(List<Task> taskList) {
         this.taskList = taskList;
@@ -37,7 +37,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         Task task = taskList.get(position);
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
-        holder.tvTaskDueDate.setText(String.format("Due: %s", dateFormat.format(task.getDueDate())));
+        holder.tvTaskDueDate.setText(dateFormat.format(task.getDueDate()));
 
         // Set status indicator based on task status
         // This is a placeholder, you'll need to define actual drawable resources for each status

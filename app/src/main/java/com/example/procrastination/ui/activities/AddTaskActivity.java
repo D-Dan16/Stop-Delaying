@@ -27,7 +27,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private Button btnSaveTask;
 
     private Date dueDate;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 (view, year1, monthOfYear, dayOfMonth) -> {
                     calendar.set(year1, monthOfYear, dayOfMonth);
                     dueDate = calendar.getTime();
-                    tvSelectedDueDate.setText(String.format("Due: %s", dateFormat.format(dueDate)));
+                    tvSelectedDueDate.setText(dateFormat.format(dueDate));
                 }, year, month, day);
         datePickerDialog.show();
     }

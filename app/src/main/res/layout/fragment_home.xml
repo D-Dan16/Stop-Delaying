@@ -103,7 +103,7 @@
                             android:layout_marginStart="6dp"
                             android:layout_marginEnd="6dp"
                             android:text="What is procrastination?"
-                            android:textSize="24sp" />
+                            android:textSize="23sp" />
 
                     <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnLinksAndVideos"

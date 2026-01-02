@@ -84,7 +84,7 @@
                 <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_notification" />
+                        android:src="@drawable/ic_notifications" />
 
                 <TextView
                         android:layout_width="0dp"
@@ -129,7 +129,7 @@
                 <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/baseline_person_24" />
+                        android:src="@drawable/ic_user" />
 
                 <TextView
                         android:layout_width="0dp"

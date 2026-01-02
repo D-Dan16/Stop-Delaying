@@ -37,6 +37,7 @@ public class TasksFragment extends Fragment {
         FloatingActionButton fabAddTask = view.findViewById(R.id.fab_add_task);
         FloatingActionButton fabSearchTask = view.findViewById(R.id.fab_search_task);
         FloatingActionButton fabAiAnalyze = view.findViewById(R.id.fab_ai_anaylze);
+        FloatingActionButton fabOrderBy = view.findViewById(R.id.fab_order_by);
 
         TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
@@ -54,10 +55,12 @@ public class TasksFragment extends Fragment {
                 fabAddTask.show();
                 fabSearchTask.show();
                 fabAiAnalyze.show();
+                fabOrderBy.show();
             } else {
                 fabAddTask.hide();
                 fabSearchTask.hide();
                 fabAiAnalyze.hide();
+                fabOrderBy.hide();
             }
 
             areFABsShown = !areFABsShown;
