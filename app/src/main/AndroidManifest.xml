@@ -12,16 +12,16 @@
             android:layoutDirection="ltr"
             android:theme="@style/Theme.Procrastination">
         <activity
-                android:name=".ui.activities.MainApp"
+                android:name="procrastination.ui.activities.MainApp"
                 android:exported="false" />
         <activity
-                android:name=".ui.activities.Register"
+                android:name="procrastination.ui.activities.Register"
                 android:exported="false" />
         <activity
-                android:name=".ui.activities.Login"
+                android:name="procrastination.ui.activities.Login"
                 android:exported="false" />
         <activity
-                android:name=".ui.activities.OpeningScreen"
+                android:name="procrastination.ui.activities.OpeningScreen"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ui.activities.AddTaskActivity"
+                android:name="procrastination.ui.activities.AddTaskActivity"
                 android:exported="false" />
     </application>
 
