@@ -9,6 +9,7 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
+            android:layoutDirection="ltr"
             android:theme="@style/Theme.Procrastination">
         <activity
                 android:name=".ui.activities.MainApp"

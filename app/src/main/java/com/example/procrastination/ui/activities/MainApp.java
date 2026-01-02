@@ -1,14 +1,9 @@
 package com.example.procrastination.ui.activities;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,10 +17,8 @@ import com.example.procrastination.ui.fragments.SettingsFragment;
 import com.example.procrastination.ui.fragments.TasksFragment;
 import com.example.procrastination.ui.fragments.TipsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {
-
     BottomNavigationView bottomNavigationView;
 
     HomeFragment homeFragment = new HomeFragment();
@@ -65,8 +58,7 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

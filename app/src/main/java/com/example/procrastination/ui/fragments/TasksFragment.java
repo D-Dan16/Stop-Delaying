@@ -19,6 +19,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class TasksFragment extends Fragment {
+    boolean areFABsShown = false;
 
     @Nullable
     @Override
@@ -32,28 +33,35 @@ public class TasksFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         ViewPager2 viewPager = view.findViewById(R.id.view_pager);
+        FloatingActionButton fabMainToggle = view.findViewById(R.id.fab_main_toggle);
         FloatingActionButton fabAddTask = view.findViewById(R.id.fab_add_task);
+        FloatingActionButton fabSearchTask = view.findViewById(R.id.fab_search_task);
+        FloatingActionButton fabAiAnalyze = view.findViewById(R.id.fab_ai_anaylze);
 
         TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
-                case 0:
-                    tab.setText("To Do");
-                    break;
-                case 1:
-                    tab.setText("Completed");
-                    break;
-                case 2:
-                    tab.setText("Canceled");
-                    break;
+                case 0 -> tab.setText("To Do");
+                case 1 -> tab.setText("Completed");
+                case 2 -> tab.setText("Canceled");
             }
         }).attach();
 
-        fabAddTask.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AddTaskActivity.class);
-            startActivity(intent);
+        fabMainToggle.setOnClickListener((view1) -> {
+            if (!areFABsShown) {
+                fabAddTask.show();
+                fabSearchTask.show();
+                fabAiAnalyze.show();
+            } else {
+                fabAddTask.hide();
+                fabSearchTask.hide();
+                fabAiAnalyze.hide();
+            }
+
+            areFABsShown = !areFABsShown;
         });
+
     }
 }

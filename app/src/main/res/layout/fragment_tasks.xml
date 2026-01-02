@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/tasks"
+        android:layoutDirection="rtl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_primary">
@@ -52,33 +53,91 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_ai_analyze"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fab_menu_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="110dp"
-            android:contentDescription="Analyze tasks with AI"
-            android:src="@drawable/ic_ai"
-            app:backgroundTint="@color/neon_orange"
-            app:fabCustomSize="65dp"
-            app:layout_anchor="@id/fab_add_task"
-            app:layout_anchorGravity="top|center_horizontal"
-            app:maxImageSize="45dp"
-            app:tint="@android:color/white"
-            android:layout_marginEnd="20dp" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/neon_orange"
-            app:tint="@android:color/white"
-            android:contentDescription="Add new task"
-            app:fabCustomSize="65dp"
-            app:maxImageSize="45dp"
+            android:layout_gravity="bottom|right"
             android:layout_marginBottom="30dp"
-            android:layout_marginEnd="20dp" />
+            android:layout_marginStart="20dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_order_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Order tasks"
+                android:src="@drawable/order_by"
+                app:backgroundTint="@color/neon_orange"
+                app:fabCustomSize="65dp"
+                app:maxImageSize="45dp"
+                app:tint="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@+id/fab_ai_anaylze"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_ai_anaylze"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="AI actions"
+                android:src="@drawable/ic_ai"
+                app:backgroundTint="@color/neon_orange"
+                app:fabCustomSize="65dp"
+                app:maxImageSize="45dp"
+                app:tint="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@+id/fab_search_task"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_search_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Search by name"
+                android:src="@drawable/ic_search_task"
+                app:backgroundTint="@color/neon_orange"
+                app:fabCustomSize="65dp"
+                app:maxImageSize="45dp"
+                app:tint="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@+id/fab_add_task"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_add_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_input_add"
+                app:backgroundTint="@color/neon_orange"
+                app:tint="@android:color/white"
+                android:contentDescription="Add new task"
+                app:fabCustomSize="65dp"
+                app:maxImageSize="45dp"
+                app:layout_constraintBottom_toTopOf="@+id/fab_main_toggle"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_main_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/show_options"
+                app:backgroundTint="@color/dark_red"
+                app:tint="@android:color/white"
+                android:contentDescription="Toggle menu"
+                app:fabCustomSize="65dp"
+                app:maxImageSize="45dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
