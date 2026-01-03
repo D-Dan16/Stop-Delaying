@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ToDoFragment extends Fragment {
+public class TasksCompletedFragment extends Fragment {
 
     private TaskListAdapter adapter;
     private List<Task> taskList = new ArrayList<>();
@@ -31,14 +31,14 @@ public class ToDoFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_to_do, container, false);
+        return inflater.inflate(R.layout.fragment_tasks_completed, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv_to_do);
+        RecyclerView recyclerView = view.findViewById(R.id.rv_completed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new TaskListAdapter(taskList);
@@ -49,9 +49,8 @@ public class ToDoFragment extends Fragment {
 
     private void loadTasks() {
         // Create some dummy data
-        taskList.add(new Task("Complete project report", "Finish the final report for the Q2 project.", new Date(), Task.TaskStatus.TODO));
-        taskList.add(new Task("Schedule team meeting", "Organize a meeting to discuss the new project timeline.", new Date(), Task.TaskStatus.TODO));
-        taskList.add(new Task("Buy groceries", "Milk, bread, eggs, and cheese.", new Date(), Task.TaskStatus.TODO));
+        taskList.add(new Task("Review presentation slides", "Go over the slides for the marketing presentation.", new Date(), Task.TaskStatus.COMPLETED));
+        taskList.add(new Task("Email John about the new design", "Send the latest mockups and ask for feedback.", new Date(), Task.TaskStatus.COMPLETED));
 
         adapter.setTasks(taskList);
     }

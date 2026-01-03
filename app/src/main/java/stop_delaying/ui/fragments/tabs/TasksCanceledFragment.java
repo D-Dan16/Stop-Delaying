@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CanceledFragment extends Fragment {
+public class TasksCanceledFragment extends Fragment {
 
     private TaskListAdapter adapter;
     private List<Task> taskList = new ArrayList<>();
@@ -31,7 +31,7 @@ public class CanceledFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_canceled, container, false);
+        return inflater.inflate(R.layout.fragment_tasks_canceled, container, false);
     }
 
     @Override

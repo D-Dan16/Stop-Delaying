@@ -39,19 +39,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         holder.tvTaskDescription.setText(task.getDescription());
         holder.tvTaskDueDate.setText(dateFormat.format(task.getDueDate()));
 
-        // Set status indicator based on task status
-        // This is a placeholder, you'll need to define actual drawable resources for each status
-        switch (task.getStatus()) {
-            case TODO:
-                holder.ivTaskStatus.setImageResource(R.drawable.ic_tasks); // Example: a generic task icon
-                break;
-            case COMPLETED:
-                holder.ivTaskStatus.setImageResource(R.drawable.ic_home); // Example: a checkmark icon
-                break;
-            case CANCELED:
-                holder.ivTaskStatus.setImageResource(R.drawable.ic_leaderboard); // Example: a cross icon
-                break;
-        }
+        holder.ivTaskStatus.setImageResource( switch (task.getStatus()) {
+            case TODO -> R.drawable.ic_tasks;
+            case COMPLETED -> R.drawable.ic_home;
+            case CANCELED -> R.drawable.ic_leaderboard;
+        });
     }
 
     @Override

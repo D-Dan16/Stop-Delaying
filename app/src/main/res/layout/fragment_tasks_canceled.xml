@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="stop_delaying.ui.fragments.tabs.ToDoFragment">
+    tools:context="stop_delaying.ui.fragments.tabs.TasksCanceledFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_to_do"
+        android:id="@+id/rv_canceled"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

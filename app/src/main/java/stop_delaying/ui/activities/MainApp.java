@@ -20,13 +20,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {
     BottomNavigationView bottomNavigationView;
 
-    HomeFragment homeFragment = new HomeFragment();
-    TasksFragment tasksFragment = new TasksFragment();
-    LeaderboardFragment leaderboardFragment = new LeaderboardFragment();
-    SettingsFragment settingsFragment = new SettingsFragment();
-    ProcrastinationFragment procrastinationFragment = new ProcrastinationFragment();
-    LinksFragment linksFragment = new LinksFragment();
-    TipsFragment tipsFragment = new TipsFragment();
+    HomeFragment homeFragment;
+    TasksFragment tasksFragment;
+    LeaderboardFragment leaderboardFragment;
+    SettingsFragment settingsFragment;
+    ProcrastinationFragment procrastinationFragment;
+    LinksFragment linksFragment;
+    TipsFragment tipsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,13 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         setContentView(R.layout.activity_main_app);
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+        homeFragment = new HomeFragment();
+        tasksFragment = new TasksFragment();
+        leaderboardFragment = new LeaderboardFragment();
+        settingsFragment = new SettingsFragment();
+        procrastinationFragment = new ProcrastinationFragment();
+        linksFragment = new LinksFragment();
+        tipsFragment = new TipsFragment();
 
         replaceFragment(homeFragment);
 

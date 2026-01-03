@@ -8,10 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.procrastination.R;
-import stop_delaying.adapters.TasksViewPagerAdapter;
+
+import stop_delaying.ui.fragments.tabs.TasksCanceledFragment;
+import stop_delaying.ui.fragments.tabs.TasksCompletedFragment;
+import stop_delaying.ui.fragments.tabs.TasksToDoFragment;
 import stop_delaying.utils.Utils;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,16 +41,31 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tabLayout = view.findViewById(R.id.tab_layout);
-        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tasks_tab_layout);
+        viewPager = view.findViewById(R.id.tasks_view_pager);
         fabMainToggle = view.findViewById(R.id.fab_main_toggle);
         fabAddTask = view.findViewById(R.id.fab_add_task);
         fabSearchTask = view.findViewById(R.id.fab_search_task);
         fabAiAnalyze = view.findViewById(R.id.fab_ai_analyze);
         fabOrderBy = view.findViewById(R.id.fab_order_by);
 
-        TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(this);
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @Override
+            public int getItemCount() {
+                return 3;
+            }
+
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                return switch (position) {
+                    case 0 -> new TasksToDoFragment();
+                    case 1 -> new TasksCompletedFragment();
+                    case 2 -> new TasksCanceledFragment();
+                    default -> throw new IllegalStateException("Unexpected value: " + position);
+                };
+            }
+        });
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {

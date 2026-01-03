@@ -40,7 +40,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/back_button">
+            app:layout_constraintTop_toBottomOf="@id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp">
 
         <androidx.cardview.widget.CardView
                 android:layout_width="356dp"
@@ -66,8 +68,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Here are some useful links and videos to help you understand and overcome procrastination."
-                         />
+                        android:text="Here are some useful links and videos to help you understand and overcome procrastination." />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
