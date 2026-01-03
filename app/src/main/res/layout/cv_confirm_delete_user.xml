@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cv_search_ai_analyze"
-        style="@style/Widget.App.PopupCardView"
-        android:visibility="visible">
+        android:id="@+id/cv_confirm_delete_user_popup"
+        style="@style/Widget.App.PopupCardView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,23 +21,36 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                    android:text="AI's Suggestions"
+                    android:text="Confirm Deletion"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tv_popup_title_ai"
-                    style="@style/HeaderText"
-                     />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_confirm_delete_title"
+                    style="@style/HeaderText" />
 
             <Space
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
 
             <TextView
-                    android:text="Do The Following:"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView4"
-                    android:textColor="@color/text_primary" />
+                    android:text="Are you sure you want to delete your account? This action cannot be undone."
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:gravity="center_horizontal"
+                    android:padding="8dp" />
+
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+            <Button
+                    android:text="Delete Account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bDeleteAccount"
+                    style="@style/PrimaryButton"
+                    android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

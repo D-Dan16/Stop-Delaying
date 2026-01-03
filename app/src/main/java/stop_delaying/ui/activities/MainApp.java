@@ -39,16 +39,17 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         replaceFragment(homeFragment);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_home) {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
                 replaceFragment(homeFragment);
                 return true;
-            } else if (item.getItemId() == R.id.nav_tasks) {
+            } else if (id == R.id.nav_tasks) {
                 replaceFragment(tasksFragment);
                 return true;
-            } else if (item.getItemId() == R.id.nav_leaderboard) {
+            } else if (id == R.id.nav_leaderboard) {
                 replaceFragment(leaderboardFragment);
                 return true;
-            } else if (item.getItemId() == R.id.nav_settings) {
+            } else if (id == R.id.nav_settings) {
                 replaceFragment(settingsFragment);
                 return true;
             }

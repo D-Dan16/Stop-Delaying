@@ -19,27 +19,22 @@ public final class Utils {
     }
 
     private static void addPopup(View view, Context context, int layoutResId) {
-        // Get the root view of the fragment
-        ViewGroup rootView = (ViewGroup) view;
-        if (rootView == null) return;
+        // Get the top-level root view of the entire window, which is a FrameLayout
+        ViewGroup windowRootView = (ViewGroup) ((android.app.Activity) context).getWindow().getDecorView().getRootView();
+        if (windowRootView == null) return;
 
-        // Inflate the popup layout using LayoutInflater
-        View popupView = LayoutInflater.from(context).inflate(layoutResId, rootView, false);
+        // Inflate the popup layout. The parent is the window's root, but we don't attach yet
+        View popupView = LayoutInflater.from(context).inflate(layoutResId, windowRootView, false);
 
-        // Find the close button within the newly inflated view
         ImageView closeButton = popupView.findViewById(R.id.iv_exit_popup);
 
-        try {
-            closeButton.setOnClickListener(v -> {
-                rootView.removeView(popupView);
-                setFragmentInteractable(view, true);
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        closeButton.setOnClickListener(v -> {
+            windowRootView.removeView(popupView);
+            setFragmentInteractable(view, true);
+        });
 
-        // Add the inflated view to the root layout
-        rootView.addView(popupView);
+        // Add the popup view to the window's root layout
+        windowRootView.addView(popupView);
     }
 
     private static void setFragmentInteractable(View view, boolean interactable) {
@@ -58,7 +53,6 @@ public final class Utils {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             View child = viewGroup.getChildAt(i);
 
-            child.setClickable(interactable);
             child.setFocusable(interactable);
             child.setEnabled(interactable);
 

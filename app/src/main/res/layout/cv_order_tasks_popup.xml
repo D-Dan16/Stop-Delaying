@@ -4,15 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/cv_order_tasks_popup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:visibility="visible"
-        app:cardBackgroundColor="@color/bg_secondary"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="12dp"
-        tools:showIn="@layout/fragment_tasks">
+        style="@style/Widget.App.PopupCardView"
+        android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -36,7 +29,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/tvPopupTitle2"
                     style="@style/HeaderText"
-                    tools:showIn="@layout/fragment_tasks" />
+                     />
 
             <Space
                     android:layout_width="match_parent"

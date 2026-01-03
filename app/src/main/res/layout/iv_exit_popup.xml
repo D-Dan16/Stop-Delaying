@@ -10,4 +10,4 @@
         android:src="@drawable/ic_red_x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:showIn="@layout/fragment_tasks" />
+         />

@@ -27,7 +27,7 @@
                 android:src="@drawable/ic_profile"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FF000000"
-                android:layout_marginLeft="40dp" />
+                android:layout_marginStart="40dp" />
 
         <LinearLayout
             android:layout_width="0dp"
