@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="HardcodedText,RtlHardcoded"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/tasks"
         android:layoutDirection="rtl"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_primary">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_primary">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -59,7 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="30dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="20dp"
+            tools:ignore="RtlHardcoded">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_order_by"
@@ -71,14 +73,14 @@
                 app:fabCustomSize="65dp"
                 app:maxImageSize="45dp"
                 app:tint="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/fab_ai_anaylze"
+                app:layout_constraintBottom_toTopOf="@+id/fab_ai_analyze"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="16dp"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_ai_anaylze"
+                android:id="@+id/fab_ai_analyze"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="AI actions"

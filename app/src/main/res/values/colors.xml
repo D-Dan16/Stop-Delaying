@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Background layers -->
     <color name="bg_primary">#1B110C</color>
     <color name="bg_secondary">#221610</color>
     <color name="bg_card">#483C32</color>
     <color name="bg_shadow">#1A100B</color>
+    <color name="bg_element_in_card">#332118</color>
 
-    <!-- Accent colors -->
-    <color name="accent_orange_dark">#bf6900</color>
-    <color name="accent_orange_toggle">#FF7F3A</color>
-    <color name="accent_red_logout">#E2403A</color>
-    <color name="dark_red">#8B0000</color>
-
-    <!-- Text colors -->
     <color name="text_primary">#C5C5C5</color>
     <color name="text_secondary">#848884	</color>
     <color name="text_hint">#8E8F92</color>
     <color name="text_on_accent">#FFFFFFFF</color>
 
-    <!-- Dividers -->
-    <color name="divider">#21150F</color>
-
-    <!-- Extra small highlight -->
-    <color name="highlight_brown">#462210</color>
-
+    <color name="accent_orange_dark">#bf6900</color>
     <color name="accent_orange">#FF7A24</color>
     <color name="neon_orange">#FF5F1F</color>
+    <color name="accent_orange_toggle">#FF7F3A</color>
+    <color name="accent_red_logout">#E2403A</color>
+    <color name="dark_red">#8B0000</color>
 
+    <color name="divider">#21150F</color>
+
+    <color name="highlight_brown">#462210</color>
 </resources>

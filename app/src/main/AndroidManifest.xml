@@ -12,16 +12,16 @@
             android:layoutDirection="ltr"
             android:theme="@style/Theme.Procrastination">
         <activity
-                android:name="procrastination.ui.activities.MainApp"
+                android:name="stop_delaying.ui.activities.MainApp"
                 android:exported="false" />
         <activity
-                android:name="procrastination.ui.activities.Register"
+                android:name="stop_delaying.ui.activities.Register"
                 android:exported="false" />
         <activity
-                android:name="procrastination.ui.activities.Login"
+                android:name="stop_delaying.ui.activities.Login"
                 android:exported="false" />
         <activity
-                android:name="procrastination.ui.activities.OpeningScreen"
+                android:name="stop_delaying.ui.activities.OpeningScreen"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,9 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-                android:name="procrastination.ui.activities.AddTaskActivity"
-                android:exported="false" />
     </application>
 
 </manifest>

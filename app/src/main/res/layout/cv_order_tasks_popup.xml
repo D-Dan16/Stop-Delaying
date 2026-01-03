@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        tools:ignore="HardcodedText"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/cv_order_tasks_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/bg_secondary"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="12dp"
+        tools:showIn="@layout/fragment_tasks">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <include layout="@layout/iv_exit_popup" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                    android:text="Order Tasks By"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tvPopupTitle2"
+                    style="@style/HeaderText"
+                    tools:showIn="@layout/fragment_tasks" />
+
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+            <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/rg_order_tasks_by"
+                    android:checkedButton="@id/rb_order_by_date_created">
+
+                <RadioButton
+                        android:text="By Date Created"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rb_order_by_date_created"
+                        app:useMaterialThemeColors="true"
+                        android:textColor="@color/accent_orange"
+                        style="@style/RadioButton" />
+
+                <RadioButton
+                        android:text="By Due Date (Ascending)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rb_order_by_due_date_ascending"
+                        app:useMaterialThemeColors="true"
+                        android:textColor="@color/accent_orange"
+                        style="@style/RadioButton" />
+
+                <RadioButton
+                        android:text="By Due Date (Descending)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rb_order_by_due_date_descending"
+                        app:useMaterialThemeColors="true"
+                        android:textColor="@color/accent_orange"
+                        style="@style/RadioButton" />
+
+                <RadioButton
+                        android:text="By Description Length"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rb_order_by_task_description_length"
+                        app:useMaterialThemeColors="true"
+                        android:textColor="@color/accent_orange"
+                        style="@style/RadioButton" />
+            </RadioGroup>
+
+            <Button
+                    android:text="Order tasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/b_confirm_order_tasks"
+                    style="@style/PrimaryButton" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
