@@ -46,13 +46,13 @@
             android:padding="20dp">
 
             <TextView
-                style="@style/LabelText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Username" />
+                    style="@style/LabelText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email" />
 
             <EditText
-                android:id="@+id/etUsernameLogin"
+                android:id="@+id/etEmailLogin"
                 style="@style/InputField"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"

@@ -2,21 +2,45 @@ package stop_delaying.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.procrastination.R;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
+
+import stop_delaying.models.User;
 
 public class Login extends AppCompatActivity {
+    private FirebaseAuth mAuth;
+    private DatabaseReference usersDBRef;
 
-    Button bToSignIn;
-    TextView tvToRegister;
+    private EditText etEmailLogin;
+    private TextInputEditText etPasswordLogin;
+    private Button bToSignIn;
+    private TextView tvToRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +53,82 @@ public class Login extends AppCompatActivity {
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
+        usersDBRef = FirebaseDatabase.getInstance().getReference("Users");
+
+        etEmailLogin = findViewById(R.id.etEmailLogin);
+        etPasswordLogin = findViewById(R.id.etPasswordLogin);
         bToSignIn = findViewById(R.id.bToSignIn);
         tvToRegister = findViewById(R.id.tvToRegister);
 
-        bToSignIn.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainApp.class));
-        });
+        signInButtonLogic();
 
-        tvToRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, Register.class));
+        tvToRegister.setOnClickListener(v -> startActivity(new Intent(this, Register.class)));
+    }
+
+    private void signInButtonLogic() {
+        bToSignIn.setOnClickListener(v -> {
+            String email = etEmailLogin.getText().toString().trim();
+            String password = Objects.requireNonNull(etPasswordLogin.getText()).toString();
+
+            if (email.isEmpty()) {
+                etEmailLogin.setError("Email is required.");
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmailLogin.setError("Invalid email format.");
+                return;
+            }
+            if (password.isEmpty()) {
+                etPasswordLogin.setError("Password is required.");
+                return;
+            }
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            executeSignIn();
+                        } else {
+                            logReasonForUnsuccessfulSignIn(task);
+                        }
+                    });
         });
+    }
+
+    private void executeSignIn() {
+        FirebaseUser fbUser = mAuth.getCurrentUser();
+        if (fbUser != null) {
+            String uid = fbUser.getUid();
+            usersDBRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User currentUser = dataSnapshot.getValue(User.class);
+                    if (currentUser != null) {
+                        // You can add a singleton or another way to manage the user session here
+                        Toast.makeText(Login.this, "Sign in successful.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(Login.this, MainApp.class));
+                        finish();
+                    } else {
+                        Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {
+        Exception exception = task.getException();
+        if (exception instanceof FirebaseAuthInvalidUserException) {
+            etEmailLogin.setError("No account found with this email address.");
+        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            etPasswordLogin.setError("Incorrect password. Please try again.");
+        } else {
+            Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_LONG).show();
+        }
     }
 }

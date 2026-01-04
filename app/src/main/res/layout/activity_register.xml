@@ -43,13 +43,12 @@
                 android:text="Email" />
 
             <EditText
-                android:id="@+id/etEmailRegister"
-                style="@style/InputField"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:hint="input here"
-                android:inputType="textEmailAddress" />
+                    android:id="@+id/etEmailRegister"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:ems="10"
+                    android:inputType="textEmailAddress" />
 
             <TextView
                 android:id="@+id/tvUsername"
@@ -60,13 +59,12 @@
                 android:text="Username" />
 
             <EditText
-                android:id="@+id/etUsernameRegister"
-                style="@style/InputField"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:hint="input here"
-                android:inputType="text" />
+                    android:id="@+id/etUsernameRegister"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:ems="10"
+                    android:inputType="text" />
 
             <TextView
                 android:id="@+id/tvPassword"
@@ -84,13 +82,12 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPasswordRegister"
-                    style="@style/InputField"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:ems="10"
-                    android:hint="input here"
-                    android:inputType="textPassword" />
+                        android:id="@+id/etPasswordRegister"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -110,13 +107,12 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etConfirmPasswordRegister"
-                    style="@style/InputField"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:ems="10"
-                    android:hint="input here"
-                    android:inputType="textPassword" />
+                        android:id="@+id/etConfirmPasswordRegister"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

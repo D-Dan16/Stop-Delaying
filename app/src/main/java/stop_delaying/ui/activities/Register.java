@@ -2,8 +2,11 @@ package stop_delaying.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +15,30 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.procrastination.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
+
+import stop_delaying.models.User;
 
 public class Register extends AppCompatActivity {
 
+    private static final String TAG = "RegisterActivity";
+
+    private FirebaseAuth mAuth;
+
     Button bRegisterSignUp;
     TextView tvToLogin;
+    EditText etEmailRegister;
+    EditText etUsernameRegister;
+    TextInputEditText etPasswordRegister;
+    TextInputEditText etConfirmPasswordRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +51,104 @@ public class Register extends AppCompatActivity {
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
+
         bRegisterSignUp = findViewById(R.id.bRegisterSignUp);
         tvToLogin = findViewById(R.id.tvToLogin);
+        etEmailRegister = findViewById(R.id.etEmailRegister);
+        etUsernameRegister = findViewById(R.id.etUsernameRegister);
+        etPasswordRegister = findViewById(R.id.etPasswordRegister);
+        etConfirmPasswordRegister = findViewById(R.id.etConfirmPasswordRegister);
 
-        bRegisterSignUp.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainApp.class));
-        });
+        SignupButtonLogic();
 
         tvToLogin.setOnClickListener(v -> {
             startActivity(new Intent(this, Login.class));
         });
+    }
+
+    private void SignupButtonLogic() {
+        bRegisterSignUp.setOnClickListener(view -> {
+            String email = Objects.requireNonNull(etEmailRegister.getText()).toString().trim();
+            String password = Objects.requireNonNull(etPasswordRegister.getText()).toString();
+            String confirmPassword = Objects.requireNonNull(etConfirmPasswordRegister.getText()).toString();
+            String userName = Objects.requireNonNull(etUsernameRegister.getText()).toString().trim();
+
+            if (!validateInput(email, password, confirmPassword, userName)) {
+                return;
+            }
+
+            Toast.makeText(Register.this, "Signing Up", Toast.LENGTH_SHORT).show();
+
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser fbUser = mAuth.getCurrentUser();
+                            createUserAndNextActivity(Objects.requireNonNull(fbUser).getUid(), userName);
+                        } else {
+                            Exception e = task.getException();
+                            if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                                etEmailRegister.setError("Invalid email format.");
+                            } else if (e instanceof FirebaseAuthUserCollisionException) {
+                                etEmailRegister.setError("This email is already in use.");
+                            } else {
+                                Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        });
+    }
+
+    private boolean validateInput(String email, String password, String confirmPassword, String userName) {
+        boolean isValid = true;
+
+        etEmailRegister.setError(null);
+        etPasswordRegister.setError(null);
+        etConfirmPasswordRegister.setError(null);
+        etUsernameRegister.setError(null);
+
+        if (email.isEmpty()) {
+            etEmailRegister.setError("Email is required.");
+            isValid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmailRegister.setError("Invalid email format.");
+            isValid = false;
+        }
+
+        if (password.isEmpty()) {
+            etPasswordRegister.setError("Password is required.");
+            isValid = false;
+        } else if (!isValidPassword(password)) {
+            etPasswordRegister.setError("Password must be at least 8 characters long and include a letter and a number.");
+            isValid = false;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            etConfirmPasswordRegister.setError("Passwords do not match.");
+            isValid = false;
+        }
+
+        if (userName.isEmpty()) {
+            etUsernameRegister.setError("Username is required.");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private void createUserAndNextActivity(String uid, String userName) {
+        User currentUser = new User(uid, userName);
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        userNode.setValue(currentUser).addOnCompleteListener(aVoid -> {
+            Toast.makeText(Register.this, "User created successfully.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(Register.this, MainApp.class));
+            finish();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.matches(".*[A-Za-z].*") && password.matches(".*\\d.*") && password.length() >= 8;
     }
 }
