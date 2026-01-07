@@ -11,17 +11,17 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.procrastination.R;
 
 public final class Utils {
-    public static void showPopup(View view, Context context, int layoutResId) {
+    public static View showPopup(View rootView, Context context, int layoutResId) {
         // make the rest of the fragment blurred out, and non-interactable
-        setFragmentInteractable(view, false);
+        setFragmentInteractable(rootView, false);
 
-        addPopup(view, context, layoutResId);
+        return addPopup(rootView, context, layoutResId);
     }
 
-    private static void addPopup(View view, Context context, int layoutResId) {
+    private static View addPopup(View rootView, Context context, int layoutResId) {
         // Get the top-level root view of the entire window, which is a FrameLayout
         ViewGroup windowRootView = (ViewGroup) ((android.app.Activity) context).getWindow().getDecorView().getRootView();
-        if (windowRootView == null) return;
+        if (windowRootView == null) return rootView;
 
         // Inflate the popup layout. The parent is the window's root, but we don't attach yet
         View popupView = LayoutInflater.from(context).inflate(layoutResId, windowRootView, false);
@@ -30,11 +30,13 @@ public final class Utils {
 
         closeButton.setOnClickListener(v -> {
             windowRootView.removeView(popupView);
-            setFragmentInteractable(view, true);
+            setFragmentInteractable(rootView, true);
         });
 
         // Add the popup view to the window's root layout
         windowRootView.addView(popupView);
+
+        return popupView;
     }
 
     private static void setFragmentInteractable(View view, boolean interactable) {

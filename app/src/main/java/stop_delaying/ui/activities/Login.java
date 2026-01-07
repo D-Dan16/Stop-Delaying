@@ -131,10 +131,9 @@ public class Login extends AppCompatActivity {
 
     private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {
         Exception exception = task.getException();
-        if (exception instanceof FirebaseAuthInvalidUserException) {
-            tilEmailLogin.setError("No account found with this email address.");
-        } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-            tilPasswordLogin.setError("Incorrect password. Please try again.");
+        if (exception instanceof FirebaseAuthInvalidUserException || exception instanceof FirebaseAuthInvalidCredentialsException) {
+            tilEmailLogin.setError("Invalid email or password");
+            tilPasswordLogin.setError("Invalid email or password");
         } else {
             Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_LONG).show();
         }
