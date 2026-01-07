@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:layoutDirection="ltr"
+        android:textDirection="ltr"
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,13 +44,22 @@
                 android:layout_height="wrap_content"
                 android:text="Email" />
 
-            <EditText
-                    android:id="@+id/etEmailRegister"
-                    style="@style/InputField"
+            <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:ems="10"
-                    android:inputType="textEmailAddress" />
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    style="@style/TextInputLayout.ErrorDimGray"
+                    android:id="@+id/tilEmailRegister">
+
+                <EditText
+                        android:id="@+id/etEmailRegister"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tvUsername"
@@ -58,13 +69,22 @@
                 android:layout_marginTop="16dp"
                 android:text="Username" />
 
-            <EditText
-                    android:id="@+id/etUsernameRegister"
-                    style="@style/InputField"
+            <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:ems="10"
-                    android:inputType="text" />
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    style="@style/TextInputLayout.ErrorDimGray"
+                    android:id="@+id/tilUsernameRegister">
+
+                <EditText
+                        android:id="@+id/etUsernameRegister"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tvPassword"
@@ -75,11 +95,14 @@
                 android:text="Password" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxBackgroundMode="none"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="true"
+                    android:id="@+id/tilPasswordRegister"
+                    app:errorEnabled="true"
+                    style="@style/TextInputLayout.ErrorDimGray">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPasswordRegister"
@@ -100,11 +123,14 @@
                 android:text="Confirm Password" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxBackgroundMode="none"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="true"
+                    app:errorEnabled="true"
+                    android:id="@+id/tilConfirmPasswordRegister"
+                    style="@style/TextInputLayout.ErrorDimGray">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etConfirmPasswordRegister"

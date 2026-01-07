@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.procrastination.R;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -39,6 +40,8 @@ public class Login extends AppCompatActivity {
 
     private EditText etEmailLogin;
     private TextInputEditText etPasswordLogin;
+    private TextInputLayout tilPasswordLogin;
+    private TextInputLayout tilEmailLogin;
     private Button bToSignIn;
     private TextView tvToRegister;
 
@@ -58,6 +61,8 @@ public class Login extends AppCompatActivity {
 
         etEmailLogin = findViewById(R.id.etEmailLogin);
         etPasswordLogin = findViewById(R.id.etPasswordLogin);
+        tilPasswordLogin = findViewById(R.id.tilPasswordLogin);
+        tilEmailLogin = findViewById(R.id.tilEmailLogin);
         bToSignIn = findViewById(R.id.bToSignIn);
         tvToRegister = findViewById(R.id.tvToRegister);
 
@@ -71,16 +76,19 @@ public class Login extends AppCompatActivity {
             String email = etEmailLogin.getText().toString().trim();
             String password = Objects.requireNonNull(etPasswordLogin.getText()).toString();
 
+            tilEmailLogin.setError(null);
+            tilPasswordLogin.setError(null);
+
             if (email.isEmpty()) {
-                etEmailLogin.setError("Email is required.");
+                tilEmailLogin.setError("Email is required.");
                 return;
             }
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etEmailLogin.setError("Invalid email format.");
+                tilEmailLogin.setError("Invalid email format.");
                 return;
             }
             if (password.isEmpty()) {
-                etPasswordLogin.setError("Password is required.");
+                tilPasswordLogin.setError("Password is required.");
                 return;
             }
 
@@ -124,9 +132,9 @@ public class Login extends AppCompatActivity {
     private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {
         Exception exception = task.getException();
         if (exception instanceof FirebaseAuthInvalidUserException) {
-            etEmailLogin.setError("No account found with this email address.");
+            tilEmailLogin.setError("No account found with this email address.");
         } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-            etPasswordLogin.setError("Incorrect password. Please try again.");
+            tilPasswordLogin.setError("Incorrect password. Please try again.");
         } else {
             Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_LONG).show();
         }

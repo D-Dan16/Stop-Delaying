@@ -21,4 +21,6 @@
     <color name="divider">#21150F</color>
 
     <color name="highlight_brown">#462210</color>
+    <color name="input_field">#3A3431</color>
+    <color name="error_dim_gray">#696969</color>
 </resources>
