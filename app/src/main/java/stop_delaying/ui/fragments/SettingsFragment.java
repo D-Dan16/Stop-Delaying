@@ -87,11 +87,31 @@ public class SettingsFragment extends Fragment {
         btnLogout = view.findViewById(R.id.btnLogout);
         btnDeleteUserPopup = view.findViewById(R.id.btnDeleteUserPopup);
 
+        // Update the UI with user information
+        updateUserInfoAtTop();
+
         // Set up listeners for various actions
         setupEditProfileListener();
         setupChangePasswordListener();
         setupDeleteUserListener();
         loggingOutListener();
+    }
+
+    private void updateUserInfoAtTop() {
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (fbUser != null) {
+            FirebaseDatabase.getInstance()
+                .getReference(FBBranches.USERS)
+                .child(fbUser.getUid())
+                .child(FBBranches.USER_NAME)
+                .get().addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists() && snapshot.getValue() != null) {
+                        username.setText(snapshot.getValue().toString());
+                    }
+                });
+
+            email.setText(fbUser.getEmail());
+        }
     }
 
     /**
