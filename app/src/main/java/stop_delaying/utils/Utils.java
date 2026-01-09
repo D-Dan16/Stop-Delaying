@@ -1,71 +1,40 @@
 package stop_delaying.utils;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.fragment.app.FragmentManager;
 
-import com.example.procrastination.R;
+import java.util.function.Consumer;
 
 public final class Utils {
-    public static View showPopup(View rootView, Context context, int layoutResId) {
-        // make the rest of the fragment blurred out, and non-interactable
-        setFragmentInteractable(rootView, false);
+    public static void showPopup(View rootView, FragmentManager fragmentManager, int layoutResId) {
+        applyDimmingEffect(rootView, true);
 
-        return addPopup(rootView, context, layoutResId);
+        CustomDialogFragment dialog = new CustomDialogFragment(
+                layoutResId,
+                () -> applyDimmingEffect(rootView, false)
+        );
+
+        dialog.show(fragmentManager, "custom_popup");
     }
 
-    private static View addPopup(View rootView, Context context, int layoutResId) {
-        // Get the top-level root view of the entire window, which is a FrameLayout
-        ViewGroup windowRootView = (ViewGroup) ((android.app.Activity) context).getWindow().getDecorView().getRootView();
-        if (windowRootView == null) return rootView;
+    public static void showPopup(View rootView, FragmentManager fragmentManager, int layoutResId, Consumer<View> logicInit) {
+        applyDimmingEffect(rootView, true);
 
-        // Inflate the popup layout. The parent is the window's root, but we don't attach yet
-        View popupView = LayoutInflater.from(context).inflate(layoutResId, windowRootView, false);
+        CustomDialogFragment dialog = new CustomDialogFragment(
+                layoutResId,
+                logicInit,
+                () -> applyDimmingEffect(rootView, false)
+        );
 
-        ImageView closeButton = popupView.findViewById(R.id.iv_exit_popup);
-
-        closeButton.setOnClickListener(v -> {
-            windowRootView.removeView(popupView);
-            setFragmentInteractable(rootView, true);
-        });
-
-        // Add the popup view to the window's root layout
-        windowRootView.addView(popupView);
-
-        return popupView;
+        dialog.show(fragmentManager, "custom_popup");
     }
 
-    private static void setFragmentInteractable(View view, boolean interactable) {
-        if (view instanceof ViewGroup viewGroup) {
-            // Apply a dimming effect to the entire fragment background.
+    private static void applyDimmingEffect(View rootViewToDimFrom, boolean shouldBeDimmed) {
+        if (rootViewToDimFrom instanceof ViewGroup viewGroup) {
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                viewGroup.getChildAt(i).setAlpha(interactable ? 1.0f : 0.3f);
-            }
-
-            // Recursively enable or disable all views within the ViewGroup
-            setChildrenInteractable(viewGroup, interactable);
-        }
-    }
-
-    private static void setChildrenInteractable(ViewGroup viewGroup, boolean interactable) {
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-
-            child.setFocusable(interactable);
-            child.setEnabled(interactable);
-
-            // Special handling for ViewPager2 to disable swipes
-            if (child instanceof ViewPager2 viewPager2) {
-                viewPager2.setUserInputEnabled(interactable);
-            }
-
-            // If the child is also a ViewGroup, recurse into it
-            if (child instanceof ViewGroup viewGroupChild) {
-                setChildrenInteractable(viewGroupChild, interactable);
+                viewGroup.getChildAt(i).setAlpha(shouldBeDimmed ? 0.3f : 1.0f);
             }
         }
     }

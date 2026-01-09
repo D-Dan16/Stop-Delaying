@@ -6,10 +6,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.example.procrastination.R;
 
 import stop_delaying.ui.activities.MainApp;
 import stop_delaying.ui.activities.OpeningScreen;
+import stop_delaying.utils.CustomDialogFragment;
 import stop_delaying.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.button.MaterialButton;
@@ -69,18 +72,16 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setListeners() {
-        cardEditProfilePopup.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_edit_profile));
+        cardEditProfilePopup.setOnClickListener(v -> Utils.showPopup(requireView(), getParentFragmentManager(), R.layout.cv_edit_profile));
 
-        cardChangePasswordPopup.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_update_user_password));
+        cardChangePasswordPopup.setOnClickListener(v -> Utils.showPopup(requireView(), getParentFragmentManager(), R.layout.cv_update_user_password));
 
-        btnDeleteUserPopup.setOnClickListener(v -> {
-            View popupView = Utils.showPopup(requireView(), requireContext(), R.layout.cv_confirm_delete_user);
-            View btnDeleteAccount = popupView.findViewById(R.id.bDeleteAccount);
+        btnDeleteUserPopup.setOnClickListener(v -> Utils.showPopup(requireView(), getParentFragmentManager(), R.layout.cv_confirm_delete_user, dialogFragment -> {
+            View btnDeleteAccount = dialogFragment.findViewById(R.id.bDeleteAccount);
             btnDeleteAccount.setOnClickListener(v1 -> {
                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (fbUser == null) {
+                if (fbUser == null)
                     return;
-                }
 
                 fbUser.delete().addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
@@ -96,7 +97,7 @@ public class SettingsFragment extends Fragment {
                 });
 
             });
-        });
+        }));
 
 
 

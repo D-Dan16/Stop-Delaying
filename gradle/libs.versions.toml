@@ -12,6 +12,7 @@ cardview = "1.0.0"
 googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
 firebaseAuth = "24.0.1"
+pdfInk = "1.0.0-alpha12"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,6 +26,7 @@ gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref =
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+pdf-ink = { group = "androidx.pdf", name = "pdf-ink", version.ref = "pdfInk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
