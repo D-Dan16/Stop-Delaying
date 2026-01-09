@@ -33,10 +33,11 @@
                     android:hint="Username"
                     android:textColorHint="@color/accent_orange_toggle"
                     app:boxStrokeColor="@color/neon_orange"
-                    app:hintTextColor="@color/neon_orange">
+                    app:hintTextColor="@color/neon_orange"
+                    android:id="@+id/tilEditUsername">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_edit_user_email"
+                        android:id="@+id/et_edit_user_username"
                         android:layout_height="match_parent"
                         android:background="@color/bg_element_in_card"
                         android:layout_width="match_parent" />
@@ -53,10 +54,11 @@
                     android:hint="Email"
                     android:textColorHint="@color/accent_orange_toggle"
                     app:boxStrokeColor="@color/neon_orange"
-                    app:hintTextColor="@color/neon_orange">
+                    app:hintTextColor="@color/neon_orange"
+                    android:id="@+id/tilEditEmail">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_task_description"
+                        android:id="@+id/et_edit_user_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"

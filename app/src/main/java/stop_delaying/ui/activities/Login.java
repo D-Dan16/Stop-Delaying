@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
+import stop_delaying.FBBranches;
 import stop_delaying.models.User;
 
 public class Login extends AppCompatActivity {
@@ -57,7 +58,7 @@ public class Login extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
-        usersDBRef = FirebaseDatabase.getInstance().getReference("Users");
+        usersDBRef = FirebaseDatabase.getInstance().getReference(FBBranches.USERS);
 
         etEmailLogin = findViewById(R.id.etEmailLogin);
         etPasswordLogin = findViewById(R.id.etPasswordLogin);

@@ -26,7 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
+import stop_delaying.FBBranches;
 import stop_delaying.models.User;
+import stop_delaying.utils.Utils;
 
 public class Register extends AppCompatActivity {
 
@@ -125,7 +127,7 @@ public class Register extends AppCompatActivity {
         if (password.isEmpty()) {
             tilPasswordRegister.setError("Password is required.");
             isValid = false;
-        } else if (!isValidPassword(password)) {
+        } else if (Utils.isPasswordNotValid(password)) {
             tilPasswordRegister.setError("Password must be at least 8 characters long and include a letter and a number.");
             isValid = false;
         }
@@ -145,7 +147,7 @@ public class Register extends AppCompatActivity {
 
     private void createUserAndNextActivity(String uid, String userName) {
         User currentUser = new User(userName,0,0);
-        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);
         userNode.setValue(currentUser)
         .addOnCompleteListener(aVoid -> {
             Toast.makeText(Register.this, "User created successfully.", Toast.LENGTH_SHORT).show();
@@ -153,9 +155,5 @@ public class Register extends AppCompatActivity {
             finish();
         })
         .addOnFailureListener(e -> Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show());
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.matches(".*[A-Za-z].*") && password.matches(".*\\d.*") && password.length() >= 8;
     }
 }

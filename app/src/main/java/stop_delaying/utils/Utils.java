@@ -8,27 +8,20 @@ import androidx.fragment.app.FragmentManager;
 import java.util.function.Consumer;
 
 public final class Utils {
-    public static void showPopup(View rootView, FragmentManager fragmentManager, int layoutResId) {
-        applyDimmingEffect(rootView, true);
+    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer) {
+        applyDimmingEffect(containerView, true);
 
         CustomDialogFragment dialog = new CustomDialogFragment(
-                layoutResId,
-                () -> applyDimmingEffect(rootView, false)
+                popupLayout,
+                viewInitializer,
+                () -> applyDimmingEffect(containerView, false)
         );
 
         dialog.show(fragmentManager, "custom_popup");
     }
 
-    public static void showPopup(View rootView, FragmentManager fragmentManager, int layoutResId, Consumer<View> logicInit) {
-        applyDimmingEffect(rootView, true);
-
-        CustomDialogFragment dialog = new CustomDialogFragment(
-                layoutResId,
-                logicInit,
-                () -> applyDimmingEffect(rootView, false)
-        );
-
-        dialog.show(fragmentManager, "custom_popup");
+    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout) {
+        showDialog(containerView, fragmentManager, popupLayout, v -> {});
     }
 
     private static void applyDimmingEffect(View rootViewToDimFrom, boolean shouldBeDimmed) {
@@ -37,5 +30,9 @@ public final class Utils {
                 viewGroup.getChildAt(i).setAlpha(shouldBeDimmed ? 0.3f : 1.0f);
             }
         }
+    }
+
+    public static boolean isPasswordNotValid(String password) {
+        return !password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*") || password.length() < 8;
     }
 }
