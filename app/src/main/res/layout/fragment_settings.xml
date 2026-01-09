@@ -110,7 +110,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardEditProfile"
+                android:id="@+id/cardEditProfilePopup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -153,7 +153,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardChangePassword"
+                android:id="@+id/cardChangePasswordPopup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -172,6 +172,7 @@
                 <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        app:tint="@android:color/white"
                         android:src="@drawable/ic_password" />
 
                 <TextView
@@ -212,7 +213,7 @@
             android:layout_marginEnd="8dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDeleteUser"
+            android:id="@+id/btnDeleteUserPopup"
             style="@style/Widget.App.Button.OutlinedButton.DarkRed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

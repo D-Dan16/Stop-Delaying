@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.procrastination" />
+                  <option name="mobileSdkAppId" value="1:293343384224:android:610489a901a5db7fffefc5" />
+                  <option name="projectId" value="stopdelaying-d80bd" />
+                  <option name="projectNumber" value="293343384224" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

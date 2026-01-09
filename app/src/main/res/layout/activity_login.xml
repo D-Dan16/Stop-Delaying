@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:layoutDirection="ltr"
+    android:textDirection="ltr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_primary"
@@ -51,14 +53,23 @@
                     android:layout_height="wrap_content"
                     android:text="Email" />
 
-            <EditText
-                android:id="@+id/etEmailLogin"
-                style="@style/InputField"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:ems="10"
-                android:hint="input here"
-                android:inputType="text" />
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    style="@style/TextInputLayout.ErrorDimGray"
+                    android:id="@+id/tilEmailLogin">
+
+                <EditText
+                        android:id="@+id/etEmailLogin"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:ems="10"
+                        android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 style="@style/LabelText"
@@ -68,20 +79,22 @@
                 android:text="Password" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxBackgroundMode="none"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPasswordLogin"
-                    style="@style/InputField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="input here"
-                    android:inputType="textPassword" />
+                    app:boxBackgroundMode="none"
+                    app:hintEnabled="false"
+                    app:passwordToggleEnabled="true"
+                    app:errorEnabled="true"
+                    style="@style/TextInputLayout.ErrorDimGray"
+                    android:id="@+id/tilPasswordLogin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPasswordLogin"
+                        style="@style/InputField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

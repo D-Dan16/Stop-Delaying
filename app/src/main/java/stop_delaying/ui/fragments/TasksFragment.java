@@ -93,14 +93,13 @@ public class TasksFragment extends Fragment {
             }
         });
 
+        fabAddTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup));
 
-        fabAddTask.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_add_task_popup));
+        fabSearchTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup));
 
-        fabSearchTask.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_search_task_popup));
+        fabAiAnalyze.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze));
 
-        fabAiAnalyze.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_search_ai_analyze));
-
-        fabOrderBy.setOnClickListener(v -> Utils.showPopup(requireView(), requireContext(), R.layout.cv_order_tasks_popup));
+        fabOrderBy.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
     }
 
 }

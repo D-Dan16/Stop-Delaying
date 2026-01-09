@@ -100,7 +100,7 @@
 
     <!-- ─────────────────────────────────────────────── -->
     <!-- TEXT FIELD / INPUT STYLES                      -->
-    <!-- ─────────────────────────────────────────────── -->
+    <!-- ────────────────────────────────────────────────── -->
 
     <style name="InputText">
         <item name="android:textColor">@color/text_primary</item>
@@ -115,6 +115,15 @@
 
     <style name="InputFieldPassword" parent="InputField">
         <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="TextInputLayout.ErrorDimGray" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxStrokeErrorColor">@android:color/transparent</item>
+        <item name="errorTextColor">@color/error_dim_gray</item>
+        <item name="errorIconTint">@color/error_dim_gray</item>
+        <item name="errorEnabled">true</item>
+        <item name="errorIconDrawable">@null</item>
+        <item name="errorIconTintMode">src_in</item>
     </style>
 
 

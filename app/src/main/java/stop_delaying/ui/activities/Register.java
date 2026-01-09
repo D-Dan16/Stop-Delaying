@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.procrastination.R;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -25,11 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
+import stop_delaying.FBBranches;
 import stop_delaying.models.User;
+import stop_delaying.utils.Utils;
 
 public class Register extends AppCompatActivity {
-
-    private static final String TAG = "RegisterActivity";
 
     private FirebaseAuth mAuth;
 
@@ -39,6 +40,11 @@ public class Register extends AppCompatActivity {
     EditText etUsernameRegister;
     TextInputEditText etPasswordRegister;
     TextInputEditText etConfirmPasswordRegister;
+    TextInputLayout tilPasswordRegister;
+    TextInputLayout tilConfirmPasswordRegister;
+    TextInputLayout tilEmailRegister;
+    TextInputLayout tilUsernameRegister;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +65,15 @@ public class Register extends AppCompatActivity {
         etUsernameRegister = findViewById(R.id.etUsernameRegister);
         etPasswordRegister = findViewById(R.id.etPasswordRegister);
         etConfirmPasswordRegister = findViewById(R.id.etConfirmPasswordRegister);
+        tilPasswordRegister = findViewById(R.id.tilPasswordRegister);
+        tilEmailRegister = findViewById(R.id.tilEmailRegister);
+        tilUsernameRegister = findViewById(R.id.tilUsernameRegister);
+        tilConfirmPasswordRegister = findViewById(R.id.tilConfirmPasswordRegister);
+
 
         SignupButtonLogic();
 
-        tvToLogin.setOnClickListener(v -> {
-            startActivity(new Intent(this, Login.class));
-        });
+        tvToLogin.setOnClickListener(v -> startActivity(new Intent(this, Login.class)));
     }
 
     private void SignupButtonLogic() {
@@ -88,9 +97,9 @@ public class Register extends AppCompatActivity {
                         } else {
                             Exception e = task.getException();
                             if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                etEmailRegister.setError("Invalid email format.");
+                                tilEmailRegister.setError("Invalid email format.");
                             } else if (e instanceof FirebaseAuthUserCollisionException) {
-                                etEmailRegister.setError("This email is already in use.");
+                                tilEmailRegister.setError("This email is already in use.");
                             } else {
                                 Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
@@ -102,34 +111,34 @@ public class Register extends AppCompatActivity {
     private boolean validateInput(String email, String password, String confirmPassword, String userName) {
         boolean isValid = true;
 
-        etEmailRegister.setError(null);
-        etPasswordRegister.setError(null);
-        etConfirmPasswordRegister.setError(null);
-        etUsernameRegister.setError(null);
+        tilPasswordRegister.setError(null);
+        tilConfirmPasswordRegister.setError(null);
+        tilEmailRegister.setError(null);
+        tilUsernameRegister.setError(null);
 
         if (email.isEmpty()) {
-            etEmailRegister.setError("Email is required.");
+            tilEmailRegister.setError("Email is required.");
             isValid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmailRegister.setError("Invalid email format.");
+            tilEmailRegister.setError("Invalid email format.");
             isValid = false;
         }
 
         if (password.isEmpty()) {
-            etPasswordRegister.setError("Password is required.");
+            tilPasswordRegister.setError("Password is required.");
             isValid = false;
-        } else if (!isValidPassword(password)) {
-            etPasswordRegister.setError("Password must be at least 8 characters long and include a letter and a number.");
+        } else if (Utils.isPasswordNotValid(password)) {
+            tilPasswordRegister.setError("Password must be at least 8 characters long and include a letter and a number.");
             isValid = false;
         }
 
         if (!password.equals(confirmPassword)) {
-            etConfirmPasswordRegister.setError("Passwords do not match.");
+            tilConfirmPasswordRegister.setError("Passwords do not match.");
             isValid = false;
         }
 
         if (userName.isEmpty()) {
-            etUsernameRegister.setError("Username is required.");
+            tilUsernameRegister.setError("Username is required.");
             isValid = false;
         }
 
@@ -137,18 +146,14 @@ public class Register extends AppCompatActivity {
     }
 
     private void createUserAndNextActivity(String uid, String userName) {
-        User currentUser = new User(uid, userName);
-        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference("Users").child(uid);
-        userNode.setValue(currentUser).addOnCompleteListener(aVoid -> {
+        User currentUser = new User(userName,0,0);
+        DatabaseReference userNode = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);
+        userNode.setValue(currentUser)
+        .addOnCompleteListener(aVoid -> {
             Toast.makeText(Register.this, "User created successfully.", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Register.this, MainApp.class));
             finish();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.matches(".*[A-Za-z].*") && password.matches(".*\\d.*") && password.length() >= 8;
+        })
+        .addOnFailureListener(e -> Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show());
     }
 }
