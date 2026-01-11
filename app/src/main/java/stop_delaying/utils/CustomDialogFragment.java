@@ -16,12 +16,7 @@ import java.util.function.Consumer;
 public class CustomDialogFragment extends DialogFragment {
     private final int layoutResId;
     private final Runnable onDismissCallback;
-    private Consumer<View> onViewCreatedListener;
-
-    public CustomDialogFragment(int layoutResId, Runnable onDismissCallback) {
-        this.layoutResId = layoutResId;
-        this.onDismissCallback = onDismissCallback;
-    }
+    private final Consumer<View> onViewCreatedListener;
 
     public CustomDialogFragment(int layoutResId, Consumer<View> onViewCreatedListener, Runnable onDismissCallback) {
         this.layoutResId = layoutResId;
@@ -65,4 +60,5 @@ public class CustomDialogFragment extends DialogFragment {
         super.onDestroyView();
         if (onDismissCallback != null) onDismissCallback.run();
     }
+
 }

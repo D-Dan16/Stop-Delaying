@@ -5,6 +5,8 @@
     <color name="bg_card">#483C32</color>
     <color name="bg_shadow">#1A100B</color>
     <color name="bg_element_in_card">#332118</color>
+    <color name="bg_orange_dialog">#CC8B14</color>
+
 
     <color name="text_primary">#C5C5C5</color>
     <color name="text_secondary">#848884	</color>

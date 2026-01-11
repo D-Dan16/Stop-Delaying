@@ -100,31 +100,65 @@
 
             <Space
                     android:layout_width="match_parent"
-                    android:layout_height="10dp" />
+                    android:layout_height="15dp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_task_due_date"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColorHint="@color/accent_orange_toggle"
-                    app:boxStrokeColor="@color/neon_orange"
-                    app:hintTextColor="@color/neon_orange">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+                    android:baselineAligned="false">
 
-                <EditText
-                        android:autofillHints=""
-                        android:textDirection="ltr"
-                        android:background="@color/bg_element_in_card"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:inputType="date"
-                        android:id="@+id/editTextDate"
-                        android:hint="Due date"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="15dp"
-                        tools:ignore="RtlSymmetry" />
-            </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp">
+
+                    <Button
+                            android:id="@+id/bSetDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Set Date"
+                            style="@style/PrimaryButton" />
+
+                    <TextView
+                            android:id="@+id/tvSelectedDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No Date Set"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/neon_orange" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp">
+
+                    <Button
+                            android:id="@+id/bSetTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Set Time"
+                            style="@style/PrimaryButton" />
+
+                    <TextView
+                            android:id="@+id/tvSelectedTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No Time Set"
+                            android:layout_marginTop="4dp"
+                            android:textColor="@color/neon_orange" />
+                </LinearLayout>
+            </LinearLayout>
 
             <Space
                     android:layout_width="match_parent"
