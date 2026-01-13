@@ -20,6 +20,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     private List<Task> taskList;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh-mm", Locale.getDefault());
 
     public TaskListAdapter(List<Task> taskList) {
         this.taskList = taskList;
@@ -38,6 +39,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
         holder.tvTaskDueDate.setText(dateFormat.format(task.getDueDate()));
+        holder.tvTaskDueTime.setText(timeFormat.format(task.getDueTimeOfDay()));
 
         holder.ivTaskStatus.setImageResource( switch (task.getStatus()) {
             case TODO -> R.drawable.ic_tasks;
@@ -55,6 +57,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         TextView tvTaskTitle;
         TextView tvTaskDescription;
         TextView tvTaskDueDate;
+        TextView tvTaskDueTime;
         ImageView ivTaskStatus;
 
         public TaskViewHolder(@NonNull View itemView) {
@@ -62,6 +65,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             tvTaskTitle = itemView.findViewById(R.id.tv_task_title);
             tvTaskDescription = itemView.findViewById(R.id.tv_task_description);
             tvTaskDueDate = itemView.findViewById(R.id.tv_task_due_date);
+            tvTaskDueTime = itemView.findViewById(R.id.tv_task_due_time);
             ivTaskStatus = itemView.findViewById(R.id.iv_task_status);
         }
     }

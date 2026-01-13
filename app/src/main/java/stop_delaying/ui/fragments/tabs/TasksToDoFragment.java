@@ -21,8 +21,8 @@ import java.util.List;
 
 public class TasksToDoFragment extends Fragment {
 
-    private TaskListAdapter adapter;
-    private List<Task> taskList = new ArrayList<>();
+    private static TaskListAdapter adapter;
+    private static List<Task> taskList = new ArrayList<>();
 
     @Override
     public View onCreateView(
@@ -44,15 +44,19 @@ public class TasksToDoFragment extends Fragment {
         adapter = new TaskListAdapter(taskList);
         recyclerView.setAdapter(adapter);
 
-        loadTasks();
     }
 
-    private void loadTasks() {
-        // Create some dummy data
-        taskList.add(new Task("Complete project report", "Finish the final report for the Q2 project.", new Date(), Task.TaskStatus.TODO));
-        taskList.add(new Task("Schedule team meeting", "Organize a meeting to discuss the new project timeline.", new Date(), Task.TaskStatus.TODO));
-        taskList.add(new Task("Buy groceries", "Milk, bread, eggs, and cheese.", new Date(), Task.TaskStatus.TODO));
-
-        adapter.setTasks(taskList);
+    public static List<Task> getTaskList() {
+        return taskList;
     }
+
+    public static void setTaskList(List<Task> taskList) {
+        TasksToDoFragment.taskList = taskList;
+    }
+
+    public static void addTask(Task task) {
+        taskList.add(task);
+        adapter.notifyDataSetChanged();
+    }
+
 }

@@ -1,11 +1,10 @@
 package stop_delaying.models;
 
-import java.util.Date;
-
 public class Task {
     private String title;
     private String description;
     private Date dueDate;
+    private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
 
     public enum TaskStatus {
@@ -14,10 +13,11 @@ public class Task {
         CANCELED
     }
 
-    public Task(String title, String description, Date dueDate, TaskStatus status) {
+    public Task(String title, String description, Date dueDate, TimeOfDay dueTimeOfDay, TaskStatus status) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
     }
 
@@ -43,6 +43,14 @@ public class Task {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public TimeOfDay getDueTimeOfDay() {
+        return dueTimeOfDay;
+    }
+
+    public void setDueTimeOfDay(TimeOfDay dueTimeOfDay) {
+        this.dueTimeOfDay = dueTimeOfDay;
     }
 
     public TaskStatus getStatus() {

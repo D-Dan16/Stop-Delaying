@@ -20,6 +20,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.procrastination.R;
 
+import stop_delaying.models.Date;
+import stop_delaying.models.Task;
+import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tabs.TasksToDoFragment;
@@ -133,9 +136,6 @@ public class TasksFragment extends Fragment {
     }
 
     private void addNewTask() {
-        record Date(int day, int month, int year) {}
-        record Time(int hour, int minute) {}
-
         fabAddTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">
             EditText etTitle = dialog.findViewById(R.id.et_new_task_title);
@@ -182,12 +182,13 @@ public class TasksFragment extends Fragment {
                 String title = etTitle.getText().toString();
                 String description = etDescription.getText().toString();
                 Date dueDate = new Date(datePickerFragment.getDayChosen(), datePickerFragment.getMonthChosen(), datePickerFragment.getYearChosen());
-                Time dueTime = new Time(timePickerFragment.getHourChosen(), timePickerFragment.getMinuteChosen());
-
+                TimeOfDay dueTime = new TimeOfDay(timePickerFragment.getHourChosen(), timePickerFragment.getMinuteChosen());
 
                 //<editor-fold desc="Handle the task creation logic here">
                 Toast.makeText(requireContext(), "Task added: " + title, Toast.LENGTH_LONG).show();
-                
+
+                TasksToDoFragment.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
+
                 // Dismiss the dialog
                 DialogFragment addTaskDialog = (DialogFragment) getParentFragmentManager().findFragmentByTag("custom_popup");
                 if (addTaskDialog != null)

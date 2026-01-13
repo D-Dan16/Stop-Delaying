@@ -44,13 +44,5 @@ public class TasksCanceledFragment extends Fragment {
         adapter = new TaskListAdapter(taskList);
         recyclerView.setAdapter(adapter);
 
-        loadTasks();
-    }
-
-    private void loadTasks() {
-        // Create some dummy data
-        taskList.add(new Task("Update portfolio website", "Add new projects and update contact information.", new Date(), Task.TaskStatus.CANCELED));
-
-        adapter.setTasks(taskList);
     }
 }

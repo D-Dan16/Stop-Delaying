@@ -44,14 +44,6 @@ public class TasksCompletedFragment extends Fragment {
         adapter = new TaskListAdapter(taskList);
         recyclerView.setAdapter(adapter);
 
-        loadTasks();
     }
 
-    private void loadTasks() {
-        // Create some dummy data
-        taskList.add(new Task("Review presentation slides", "Go over the slides for the marketing presentation.", new Date(), Task.TaskStatus.COMPLETED));
-        taskList.add(new Task("Email John about the new design", "Send the latest mockups and ask for feedback.", new Date(), Task.TaskStatus.COMPLETED));
-
-        adapter.setTasks(taskList);
-    }
 }
