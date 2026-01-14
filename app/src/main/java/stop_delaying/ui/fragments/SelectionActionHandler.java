@@ -1,0 +1,84 @@
+package stop_delaying.ui.fragments;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import stop_delaying.adapters.TaskListAdapter;
+import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.tabs.TasksCanceledFragment;
+import stop_delaying.ui.fragments.tabs.TasksCompletedFragment;
+import stop_delaying.ui.fragments.tabs.TasksToDoFragment;
+
+/**
+ * Callback interface used by child task list fragments to delegate selection actions
+ * (move/delete) to the parent `TasksFragment` selection toolbar (inline CAB).
+ * <p>
+ * To eliminate duplicate implementations across tabs, this interface provides default
+ * implementations for the common actions. Implementors only need to supply references
+ * to their adapter and parent fragment via {@link #adapter()} and {@link #parent()}.
+ */
+public interface SelectionActionHandler {
+    /**
+     * USED FOR INNER IMPLEMENTATION
+     * @return the RecyclerView adapter of the current tab.
+     */
+    TaskListAdapter adapter();
+
+    /**
+     * USED FOR INNER IMPLEMENTATION
+     * @return the parent TasksFragment controlling the inline selection toolbar.
+     */
+    TasksFragment parent();
+
+    /**
+     * Default move implementation: removes currently selected from the local list,
+     * updates their status, appends them to the target tab list, clears selection,
+     * and hides the selection bar.
+     */
+    default void onMoveTo(Task.TaskStatus status) {
+        TaskListAdapter adapter = adapter();
+        TasksFragment parent = parent();
+        if (adapter == null || parent == null) return;
+
+        List<Task> selected = new ArrayList<>(adapter.getSelectedTasks());
+        if (selected.isEmpty()) {
+            parent.hideSelectionBar();
+            return;
+        }
+
+        adapter.removeSelectedTasks();
+        for (Task t : selected) {
+            t.setTaskSelected(false);
+            t.setStatus(status);
+        }
+        switch (status) {
+            case TODO -> TasksToDoFragment.addTasks(selected);
+            case COMPLETED -> TasksCompletedFragment.addTasks(selected);
+            case CANCELED -> TasksCanceledFragment.addTasks(selected);
+        }
+
+        adapter.clearSelection();
+        parent.hideSelectionBar();
+    }
+
+    /**
+     * Default delete implementation: removes selected from local list, clears selection,
+     * and hides the selection bar.
+     */
+    default void onDelete() {
+        TaskListAdapter adapter = adapter();
+        TasksFragment parent = parent();
+        if (adapter == null || parent == null) return;
+        adapter.removeSelectedTasks();
+        adapter.clearSelection();
+        parent.hideSelectionBar();
+    }
+
+    /**
+     * Default escape/cancel implementation: clear all selections in the current list.
+     */
+    default void onEscape() {
+        TaskListAdapter adapter = adapter();
+        if (adapter != null) adapter.clearSelection();
+    }
+}

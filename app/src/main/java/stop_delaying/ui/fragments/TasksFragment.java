@@ -33,14 +33,26 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
 
+/**
+ * Parent controller fragment for the Tasks screen.
+ * <p>
+ * Responsibilities:
+ * - Hosts the tabs (To Do / Completed / Canceled)
+ * - Exposes an inline selection toolbar (inline CAB) shown under the tabs when tasks are selected
+ * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
+ */
 public class TasksFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager;
+    com.google.android.material.appbar.MaterialToolbar selectionToolbar;
     FloatingActionButton fabMainToggle;
     FloatingActionButton fabAddTask;
     FloatingActionButton fabSearchTask;
     FloatingActionButton fabAiAnalyze;
+
     FloatingActionButton fabOrderBy;
+
+    private SelectionActionHandler currentHandler;
 
     @Nullable
     @Override
@@ -54,15 +66,60 @@ public class TasksFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tasks_tab_layout);
         viewPager = view.findViewById(R.id.tasks_view_pager);
+        selectionToolbar = view.findViewById(R.id.selection_toolbar);
         fabMainToggle = view.findViewById(R.id.fab_main_toggle);
         fabAddTask = view.findViewById(R.id.fab_add_task);
         fabSearchTask = view.findViewById(R.id.fab_search_task);
         fabAiAnalyze = view.findViewById(R.id.fab_ai_analyze);
         fabOrderBy = view.findViewById(R.id.fab_order_by);
 
+        selectionToolBarLogic();
+
         createTabLayoutLogic();
 
         registerActionButtons();
+    }
+
+    /**
+     * Wires the inline selection toolbar (inline CAB) that appears under the tabs when the user
+     * long-presses a task card. The toolbar shows icon-only actions and an X navigation icon to
+     * cancel selection.
+     */
+    private void selectionToolBarLogic() {
+        if (selectionToolbar != null) {
+            // Inflate icon-only menu for move/delete actions
+            selectionToolbar.inflateMenu(R.menu.menu_tasks_selection_bar);
+
+            // Left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
+            // and then hide the selection bar.
+            selectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
+            selectionToolbar.setNavigationOnClickListener(v -> {
+                if (currentHandler != null) {
+                    currentHandler.onEscape();
+                }
+                hideSelectionBar();
+            });
+
+            // Route action clicks to the child fragment-provided handler.
+            selectionToolbar.setOnMenuItemClickListener(item -> {
+                if (currentHandler == null) return false;
+                int id = item.getItemId();
+                if (id == R.id.action_move_todo) {
+                    currentHandler.onMoveTo(Task.TaskStatus.TODO);
+                    return true;
+                } else if (id == R.id.action_move_completed) {
+                    currentHandler.onMoveTo(Task.TaskStatus.COMPLETED);
+                    return true;
+                } else if (id == R.id.action_move_canceled) {
+                    currentHandler.onMoveTo(Task.TaskStatus.CANCELED);
+                    return true;
+                } else if (id == R.id.action_delete) {
+                    currentHandler.onDelete();
+                    return true;
+                }
+                return false;
+            });
+        }
     }
 
     private void createTabLayoutLogic() {
@@ -91,6 +148,19 @@ public class TasksFragment extends Fragment {
                 case 2 -> tab.setText("Canceled");
             }
         }).attach();
+
+        // Clear any active selections when switching tabs (both via swipe and tab tap)
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                // Ask the active tab to clear its selection, then hide the inline selection bar
+                if (currentHandler != null) {
+                    currentHandler.onEscape();
+                }
+                hideSelectionBar();
+            }
+        });
     }
 
     private void registerActionButtons() {
@@ -103,6 +173,48 @@ public class TasksFragment extends Fragment {
         searchForTask();
 
         addNewTask();
+    }
+
+    // Selection toolbar controls for child tabs
+    /**
+     * Shows the inline selection toolbar (inline CAB) and sets its title/subtitle.
+     * Called by child fragments when the first item gets selected.
+     *
+     * @param selectedCount current number of selected tasks
+     * @param handler action handler provided by the active tab to execute move/delete
+     */
+    public void showSelectionBar(int selectedCount, SelectionActionHandler handler) {
+        this.currentHandler = handler;
+        if (selectionToolbar != null) {
+            selectionToolbar.setVisibility(View.VISIBLE);
+            selectionToolbar.setTitle("Select tasks");
+            selectionToolbar.setSubtitle(selectedCount + " selected");
+        }
+    }
+
+    /**
+     * Updates the toolbar subtitle with the current selected count.
+     * Auto-hides the selection bar when the count reaches zero.
+     */
+    public void updateSelectionCount(int selectedCount) {
+        if (selectionToolbar != null && selectionToolbar.getVisibility() == View.VISIBLE) {
+            if (selectedCount <= 0) {
+                hideSelectionBar();
+            } else {
+                selectionToolbar.setSubtitle(selectedCount + " selected");
+            }
+        }
+    }
+
+    /**
+     * Hides the inline selection toolbar and clears the current handler reference.
+     * Child fragments are responsible for clearing their adapter selection state.
+     */
+    public void hideSelectionBar() {
+        if (selectionToolbar != null) {
+            selectionToolbar.setVisibility(View.GONE);
+        }
+        currentHandler = null;
     }
 
     private void toggleActionButtonsVisibility() {
@@ -185,7 +297,7 @@ public class TasksFragment extends Fragment {
                 //<editor-fold desc="Handle the task creation logic here">
                 Toast.makeText(requireContext(), "Task added: " + title, Toast.LENGTH_LONG).show();
 
-                TasksToDoFragment.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
+                TasksToDoFragment.addTaskFromUser(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
 
                 // Dismiss the dialog
                 DialogFragment addTaskDialog = (DialogFragment) getParentFragmentManager().findFragmentByTag("custom_popup");

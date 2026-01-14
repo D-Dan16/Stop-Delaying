@@ -46,6 +46,18 @@
 
         </com.google.android.material.tabs.TabLayout>
 
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/selection_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@color/accent_orange"
+                app:titleTextColor="@color/text_on_accent"
+                app:subtitleTextColor="@color/text_on_accent"
+                app:navigationIconTint="@color/text_on_accent"
+                app:layout_scrollFlags="snap|enterAlways"
+                app:theme="@style/ThemeOverlay.Material3.Dark.ActionBar" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2

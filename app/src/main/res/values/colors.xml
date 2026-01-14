@@ -2,10 +2,14 @@
 <resources>
     <color name="bg_primary">#1B110C</color>
     <color name="bg_secondary">#221610</color>
-    <color name="bg_card">#483C32</color>
     <color name="bg_shadow">#1A100B</color>
     <color name="bg_element_in_card">#332118</color>
     <color name="bg_orange_dialog">#CC8B14</color>
+    <color name="bg_card">#483C32</color>
+
+    <color name="bg_task_card">#5E4F42</color>
+    <color name="bg_task_card_selected">#7B3F00</color>
+    <color name="bg_task_card_near_deadline">#60100B</color>
 
 
     <color name="text_primary">#C5C5C5</color>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icon-only actions for the inline selection toolbar (inline CAB) under the tabs.
+     Titles are provided for accessibility; only icons are shown in the toolbar. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Move selected tasks to To Do -->
+    <item
+            android:id="@+id/action_move_todo"
+            android:title="To Do"
+            android:icon="@drawable/ic_assignment"
+            app:showAsAction="always" />
+
+    <!-- Move selected tasks to Completed -->
+    <item
+            android:id="@+id/action_move_completed"
+            android:title="Completed"
+            android:icon="@drawable/ic_done"
+            app:showAsAction="always" />
+
+    <!-- Move selected tasks to Canceled (wrapped with inset to visually reduce size) -->
+    <item
+            android:id="@+id/action_move_canceled"
+            android:title="Canceled"
+            android:icon="@drawable/ic_canceled_task_inset"
+            app:showAsAction="always" />
+
+    <!-- Delete selected tasks from the current list -->
+    <item
+            android:id="@+id/action_delete"
+            android:title="Delete"
+            android:icon="@drawable/ic_delete"
+            app:showAsAction="always" />
+</menu>

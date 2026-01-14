@@ -6,6 +6,7 @@ public class Task {
     private Date dueDate;
     private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
+    private boolean isTaskSelected;
 
     public enum TaskStatus {
         TODO,
@@ -19,6 +20,7 @@ public class Task {
         this.dueDate = dueDate;
         this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
+        this.isTaskSelected = false;
     }
 
     public String getTitle() {
@@ -59,5 +61,13 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public boolean isTaskSelected() {
+        return isTaskSelected;
+    }
+
+    public void setTaskSelected(boolean taskSelected) {
+        isTaskSelected = taskSelected;
     }
 }
