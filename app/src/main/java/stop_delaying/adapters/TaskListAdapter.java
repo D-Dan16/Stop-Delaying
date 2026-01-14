@@ -1,5 +1,6 @@
 package stop_delaying.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
-
     private List<Task> taskList;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
-    private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh-mm", Locale.getDefault());
-
     public TaskListAdapter(List<Task> taskList) {
         this.taskList = taskList;
     }
@@ -33,13 +30,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         return new TaskViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
-        holder.tvTaskDueDate.setText(dateFormat.format(task.getDueDate()));
-        holder.tvTaskDueTime.setText(timeFormat.format(task.getDueTimeOfDay()));
+
+        var date = task.getDueDate();
+        var timeOfDay = task.getDueTimeOfDay();
+
+        holder.tvTaskDueDate.setText(date.day()+"/"+date.month()+"/"+date.year());
+        holder.tvTaskDueTime.setText(timeOfDay.hour()+":"+timeOfDay.minute());
 
         holder.ivTaskStatus.setImageResource( switch (task.getStatus()) {
             case TODO -> R.drawable.ic_tasks;

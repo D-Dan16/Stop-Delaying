@@ -1,7 +1,5 @@
 package stop_delaying.ui.fragments;
 
-import static com.google.android.gms.common.api.internal.LifecycleCallback.getFragment;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
