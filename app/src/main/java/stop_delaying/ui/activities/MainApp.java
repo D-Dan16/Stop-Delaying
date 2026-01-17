@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.procrastination.R;
-import stop_delaying.ui.fragments.HomeFragment;
-import stop_delaying.ui.fragments.LeaderboardFragment;
-import stop_delaying.ui.fragments.LinksFragment;
-import stop_delaying.ui.fragments.ProcrastinationFragment;
-import stop_delaying.ui.fragments.SettingsFragment;
-import stop_delaying.ui.fragments.TasksFragment;
-import stop_delaying.ui.fragments.TipsFragment;
+import stop_delaying.ui.fragments.home.HomeFragment;
+import stop_delaying.ui.fragments.leaderboard.LeaderboardFragment;
+import stop_delaying.ui.fragments.home.LinksFragment;
+import stop_delaying.ui.fragments.home.ProcrastinationFragment;
+import stop_delaying.ui.fragments.settings.SettingsFragment;
+import stop_delaying.ui.fragments.tasks.TasksFragment;
+import stop_delaying.ui.fragments.home.TipsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {

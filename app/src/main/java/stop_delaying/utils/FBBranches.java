@@ -1,4 +1,4 @@
-package stop_delaying;
+package stop_delaying.utils;
 
 public final class FBBranches {
     public static final String USERS = "Users";

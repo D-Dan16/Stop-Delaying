@@ -3,7 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="stop_delaying.ui.fragments.tabs.LeaderboardTaskStreakFragment">
+        tools:context="stop_delaying.ui.fragments.leaderboard.LeaderboardTaskStreakFragment">
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_task_streak"

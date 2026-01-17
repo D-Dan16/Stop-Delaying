@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.tabs;
+package stop_delaying.ui.fragments.leaderboard;
 
 import android.os.Bundle;
 
@@ -14,24 +14,22 @@ import android.view.ViewGroup;
 
 import com.example.procrastination.R;
 
-
-public class LeaderboardDayStreakFragment extends Fragment {
+public class LeaderboardTaskStreakFragment extends Fragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState
     ) {
-        return inflater.inflate(R.layout.fragment_leaderboard_day_streak, container, false);
+        return inflater.inflate(R.layout.fragment_leaderboard_task_streak, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv_day_streak);
+        RecyclerView recyclerView = view.findViewById(R.id.rv_task_streak);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
     }
 
 }

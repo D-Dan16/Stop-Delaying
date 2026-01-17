@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="stop_delaying.ui.fragments.tabs.TasksCanceledFragment">
+    tools:context="stop_delaying.ui.fragments.tasks.TasksCanceledFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_canceled"

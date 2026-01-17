@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments;
+package stop_delaying.ui.fragments.settings;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.example.procrastination.R;
 
-import stop_delaying.FBBranches;
+import stop_delaying.utils.FBBranches;
 import stop_delaying.ui.activities.OpeningScreen;
 import stop_delaying.utils.Utils;
 import com.google.android.material.card.MaterialCardView;
@@ -29,8 +29,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

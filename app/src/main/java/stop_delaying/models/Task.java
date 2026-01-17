@@ -1,12 +1,14 @@
 package stop_delaying.models;
 
-import java.util.Date;
+import androidx.cardview.widget.CardView;
 
 public class Task {
     private String title;
     private String description;
     private Date dueDate;
+    private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
+    private boolean isTaskSelected;
 
     public enum TaskStatus {
         TODO,
@@ -14,11 +16,13 @@ public class Task {
         CANCELED
     }
 
-    public Task(String title, String description, Date dueDate, TaskStatus status) {
+    public Task(String title, String description, Date dueDate, TimeOfDay dueTimeOfDay, TaskStatus status) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
+        this.isTaskSelected = false;
     }
 
     public String getTitle() {
@@ -45,11 +49,27 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    public TimeOfDay getDueTimeOfDay() {
+        return dueTimeOfDay;
+    }
+
+    public void setDueTimeOfDay(TimeOfDay dueTimeOfDay) {
+        this.dueTimeOfDay = dueTimeOfDay;
+    }
+
     public TaskStatus getStatus() {
         return status;
     }
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public boolean isTaskSelected() {
+        return isTaskSelected;
+    }
+
+    public void setTaskSelected(boolean taskSelected) {
+        isTaskSelected = taskSelected;
     }
 }
