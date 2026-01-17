@@ -24,10 +24,6 @@ import java.util.List;
  * Selection UX:
  * - Long-press a card to enter selection mode and select it.
  * - While any item is selected, tapping a card toggles its selection state.
- * <p>
- * Communication:
- * - Notifies the parent via `OnStartSelectionListener` when selection begins (first long press)
- * - Notifies changes in selection count via `OnSelectionChangeListener` so the parent can update the inline CAB
  */
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
@@ -39,6 +35,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         this.taskList = taskList;
     }
 
+    //<editor-fold desc="Internal Interfaces">
     /**
      * Notifies listeners whenever the number of selected items changes.
      */
@@ -60,6 +57,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     public void setOnStartSelectionListener(OnStartSelectionListener listener) {
         this.startSelectionListener = listener;
     }
+    //</editor-fold>
 
     @NonNull
     @Override
@@ -70,6 +68,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         //Add listeners for the card upon creation
         addCardListeners(view, holder);
+
+        Task task = taskList.get(holder.getAdapterPosition());
+        task.setRefToView((CardView) view);
 
         return holder;
     }
@@ -133,9 +134,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         holder.tvTaskDueTime.setText(timeOfDay.hour() + ":" + timeOfDay.minute());
 
         holder.ivTaskStatus.setImageResource(switch (task.getStatus()) {
-            case TODO -> R.drawable.ic_tasks;
-            case COMPLETED -> R.drawable.ic_home;
-            case CANCELED -> R.drawable.ic_leaderboard;
+            case TODO -> R.drawable.ic_assignment;
+            case COMPLETED -> R.drawable.ic_done;
+            case CANCELED -> R.drawable.ic_canceled_task;
         });
 
         // Set background based on task's selected state
@@ -161,6 +162,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             tvTaskDueTime = itemView.findViewById(R.id.tv_task_due_time);
             ivTaskStatus = itemView.findViewById(R.id.iv_task_status);
         }
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
     }
 
     public void setTasks(List<Task> newTasks) {
@@ -202,7 +207,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      * Removes all currently selected tasks from the adapter data and refreshes the list UI.
      */
     public void removeSelectedTasks() {
+        List<Integer> selected = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            if (taskList.get(i).isTaskSelected()) {
+                selected.add(i);
+            }
+        }
+
+        for (int selectedTask : selected) {
+            notifyItemRemoved(selectedTask);
+        }
+
         taskList.removeIf(Task::isTaskSelected);
-        notifyDataSetChanged();
     }
 }

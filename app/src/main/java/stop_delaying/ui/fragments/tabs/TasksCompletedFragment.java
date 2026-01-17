@@ -30,9 +30,10 @@ import java.util.List;
  * - Executes move/delete, then clears selection and hides the bar
  */
 public class TasksCompletedFragment extends Fragment {
-
     private static TaskListAdapter adapter;
-    private static final List<Task> taskList = new ArrayList<>();
+    public static List<Task> getTaskList() {
+        return adapter.getTaskList();
+    }
 
     @Override
     public View onCreateView(
@@ -50,13 +51,12 @@ public class TasksCompletedFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_completed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new TaskListAdapter(taskList);
+        adapter = new TaskListAdapter(new ArrayList<>());
 
         adapter.setOnStartSelectionListener(() -> {
             TasksFragment parent = (TasksFragment) getParentFragment();
-            if (parent == null) {
-                return;
-            }
+            if (parent == null) return;
+
             parent.showSelectionBar(adapter.getSelectedCount(), new SelectionActionHandler() {
                 @Override
                 public stop_delaying.adapters.TaskListAdapter adapter() { return adapter; }
@@ -79,10 +79,9 @@ public class TasksCompletedFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-
     public static void addTasks(List<Task> tasks) {
-        taskList.addAll(tasks);
-        if (adapter != null) adapter.notifyDataSetChanged();
+        adapter.getTaskList().addAll(tasks);
+        adapter.notifyDataSetChanged();
     }
 
 }

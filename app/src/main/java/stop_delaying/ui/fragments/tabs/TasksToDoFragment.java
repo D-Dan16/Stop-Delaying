@@ -32,9 +32,10 @@ import java.util.List;
  * - On action (move/delete), updates local list and delegates cross-tab moves, then clears selection and hides the bar.
  */
 public class TasksToDoFragment extends Fragment {
-
     private static TaskListAdapter adapter;
-    private static final List<Task> taskList = new ArrayList<>();
+    public static List<Task> getTaskList() {
+        return adapter.getTaskList();
+    }
 
     @Override
     public View onCreateView(
@@ -52,7 +53,7 @@ public class TasksToDoFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_to_do);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new TaskListAdapter(taskList);
+        adapter = new TaskListAdapter(new ArrayList<>());
 
         adapter.setOnStartSelectionListener(() -> {
             TasksFragment parent = (TasksFragment) getParentFragment();
@@ -83,18 +84,18 @@ public class TasksToDoFragment extends Fragment {
     }
 
     public static void addTaskFromUser(Task task) {
-        taskList.add(task);
-        if (adapter != null) adapter.notifyDataSetChanged();
+        adapter.getTaskList().add(task);
+        adapter.notifyDataSetChanged();
     }
 
     public static void addTasks(List<Task> tasks) {
-        taskList.addAll(tasks);
-        if (adapter != null) adapter.notifyDataSetChanged();
+        adapter.getTaskList().addAll(tasks);
+        adapter.notifyDataSetChanged();
     }
 
-    private void loadDummyTasks() {
+    private static void loadDummyTasks() {
+        List<Task> taskList = adapter.getTaskList();
         if (!taskList.isEmpty()) {
-            adapter.setTasks(taskList);
             return;
         }
         // Create some dummy data
@@ -107,5 +108,4 @@ public class TasksToDoFragment extends Fragment {
 
         adapter.setTasks(taskList);
     }
-
 }

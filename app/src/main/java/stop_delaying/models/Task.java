@@ -1,5 +1,7 @@
 package stop_delaying.models;
 
+import androidx.cardview.widget.CardView;
+
 public class Task {
     private String title;
     private String description;
@@ -7,6 +9,8 @@ public class Task {
     private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
     private boolean isTaskSelected;
+
+    private CardView refToView;
 
     public enum TaskStatus {
         TODO,
@@ -21,6 +25,15 @@ public class Task {
         this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
         this.isTaskSelected = false;
+        this.refToView = null;
+    }
+
+    public CardView getRefToView() {
+        return refToView;
+    }
+
+    public void setRefToView(CardView refToView) {
+        this.refToView = refToView;
     }
 
     public String getTitle() {
