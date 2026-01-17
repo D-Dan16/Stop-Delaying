@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.tabs;
+package stop_delaying.ui.fragments.tasks;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import stop_delaying.ui.fragments.SelectionActionHandler;
-import stop_delaying.ui.fragments.TasksFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,17 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tab fragment that shows tasks with status `Canceled`.
+ * Tab fragment that shows tasks with status `Completed`.
  * <p>
  * Works with the parent `TasksFragment` inline selection toolbar:
  * - Starts selection on long-press via adapter callback
  * - Updates selection count in the toolbar while selecting
  * - Executes move/delete, then clears selection and hides the bar
  */
-public class TasksCanceledFragment extends Fragment {
-    private static TaskListAdapter adapter;
+public class TasksCompletedFragment extends Fragment {
+    private static final TaskListAdapter adapter = new TaskListAdapter(new ArrayList<>());
     public static List<Task> getTaskList() {
-        return adapter.getTaskList();
+        return adapter.getVisibleTasks();
+    }
+    public static TaskListAdapter getAdapter() {
+        return adapter;
     }
 
     @Override
@@ -41,17 +41,16 @@ public class TasksCanceledFragment extends Fragment {
             ViewGroup container,
             Bundle savedInstanceState
     ) {
-        return inflater.inflate(R.layout.fragment_tasks_canceled, container, false);
+        return inflater.inflate(R.layout.fragment_tasks_completed, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv_canceled);
+        RecyclerView recyclerView = view.findViewById(R.id.rv_completed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new TaskListAdapter(new ArrayList<>());
 
         adapter.setOnStartSelectionListener(() -> {
             TasksFragment parent = (TasksFragment) getParentFragment();
@@ -80,7 +79,7 @@ public class TasksCanceledFragment extends Fragment {
     }
 
     public static void addTasks(List<Task> tasks) {
-        adapter.getTaskList().addAll(tasks);
+        getTaskList().addAll(tasks);
         adapter.notifyDataSetChanged();
     }
 

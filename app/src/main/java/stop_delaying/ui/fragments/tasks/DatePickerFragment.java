@@ -1,4 +1,4 @@
-package stop_delaying.utils;
+package stop_delaying.ui.fragments.tasks;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-
-import com.example.procrastination.R;
 
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {

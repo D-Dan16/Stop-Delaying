@@ -10,8 +10,6 @@ public class Task {
     private TaskStatus status;
     private boolean isTaskSelected;
 
-    private CardView refToView;
-
     public enum TaskStatus {
         TODO,
         COMPLETED,
@@ -25,15 +23,6 @@ public class Task {
         this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
         this.isTaskSelected = false;
-        this.refToView = null;
-    }
-
-    public CardView getRefToView() {
-        return refToView;
-    }
-
-    public void setRefToView(CardView refToView) {
-        this.refToView = refToView;
     }
 
     public String getTitle() {

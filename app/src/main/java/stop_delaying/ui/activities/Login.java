@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
-import stop_delaying.FBBranches;
+import stop_delaying.utils.FBBranches;
 import stop_delaying.models.User;
 
 public class Login extends AppCompatActivity {

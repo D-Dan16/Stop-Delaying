@@ -13,12 +13,12 @@ import com.example.procrastination.R;
 
 import java.util.function.Consumer;
 
-public class CustomDialogFragment extends DialogFragment {
+public class ConfigurableDialogFragment extends DialogFragment {
     private final int layoutResId;
     private final Runnable onDismissCallback;
     private final Consumer<View> onViewCreatedListener;
 
-    public CustomDialogFragment(int layoutResId, Consumer<View> onViewCreatedListener, Runnable onDismissCallback) {
+    public ConfigurableDialogFragment(int layoutResId, Consumer<View> onViewCreatedListener, Runnable onDismissCallback) {
         this.layoutResId = layoutResId;
         this.onDismissCallback = onDismissCallback;
         this.onViewCreatedListener = onViewCreatedListener;

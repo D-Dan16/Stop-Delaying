@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments;
+package stop_delaying.ui.fragments.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,12 +12,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.procrastination.R;
 
-public class ProcrastinationFragment extends Fragment {
+public class TipsFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_procrastination, container, false);
+        return inflater.inflate(R.layout.fragment_tips, container, false);
     }
 
     @Override

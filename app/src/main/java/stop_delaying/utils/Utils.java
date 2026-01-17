@@ -11,7 +11,7 @@ public final class Utils {
     public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer) {
         applyDimmingEffect(containerView, true);
 
-        CustomDialogFragment dialog = new CustomDialogFragment(
+        ConfigurableDialogFragment dialog = new ConfigurableDialogFragment(
                 popupLayout,
                 viewInitializer,
                 () -> applyDimmingEffect(containerView, false)
@@ -24,7 +24,7 @@ public final class Utils {
         showDialog(containerView, fragmentManager, popupLayout, v -> {});
     }
 
-    private static void applyDimmingEffect(View rootViewToDimFrom, boolean shouldBeDimmed) {
+    public static void applyDimmingEffect(View rootViewToDimFrom, boolean shouldBeDimmed) {
         if (rootViewToDimFrom instanceof ViewGroup viewGroup) {
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
                 viewGroup.getChildAt(i).setAlpha(shouldBeDimmed ? 0.3f : 1.0f);

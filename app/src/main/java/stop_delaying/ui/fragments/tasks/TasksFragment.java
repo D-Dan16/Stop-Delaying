@@ -1,5 +1,8 @@
-package stop_delaying.ui.fragments;
+package stop_delaying.ui.fragments.tasks;
 
+import static stop_delaying.utils.Utils.applyDimmingEffect;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +24,7 @@ import com.example.procrastination.R;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
-import stop_delaying.ui.fragments.tabs.TasksCanceledFragment;
-import stop_delaying.ui.fragments.tabs.TasksCompletedFragment;
-import stop_delaying.ui.fragments.tabs.TasksToDoFragment;
-import stop_delaying.utils.DatePickerFragment;
-import stop_delaying.utils.TimePickerFragment;
+import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.Utils;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +43,7 @@ import com.google.android.material.textfield.TextInputLayout;
 public class TasksFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    com.google.android.material.appbar.MaterialToolbar selectionToolbar;
+    com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
     FloatingActionButton fabMainToggle;
     FloatingActionButton fabAddTask;
     FloatingActionButton fabSearchTask;
@@ -52,7 +51,7 @@ public class TasksFragment extends Fragment {
 
     FloatingActionButton fabOrderBy;
 
-    private SelectionActionHandler currentHandler;
+    private SelectionActionHandler curCardSelectionHandler;
 
     @Nullable
     @Override
@@ -66,7 +65,7 @@ public class TasksFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tasks_tab_layout);
         viewPager = view.findViewById(R.id.tasks_view_pager);
-        selectionToolbar = view.findViewById(R.id.selection_toolbar);
+        cardSelectionToolbar = view.findViewById(R.id.selection_toolbar);
         fabMainToggle = view.findViewById(R.id.fab_main_toggle);
         fabAddTask = view.findViewById(R.id.fab_add_task);
         fabSearchTask = view.findViewById(R.id.fab_search_task);
@@ -86,35 +85,35 @@ public class TasksFragment extends Fragment {
      * cancel selection.
      */
     private void selectionToolBarLogic() {
-        if (selectionToolbar != null) {
+        if (cardSelectionToolbar != null) {
             // Inflate icon-only menu for move/delete actions
-            selectionToolbar.inflateMenu(R.menu.menu_tasks_selection_bar);
+            cardSelectionToolbar.inflateMenu(R.menu.menu_tasks_selection_bar);
 
             // Left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
             // and then hide the selection bar.
-            selectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
-            selectionToolbar.setNavigationOnClickListener(v -> {
-                if (currentHandler != null) {
-                    currentHandler.onEscape();
+            cardSelectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
+            cardSelectionToolbar.setNavigationOnClickListener(v -> {
+                if (curCardSelectionHandler != null) {
+                    curCardSelectionHandler.onEscape();
                 }
                 hideSelectionBar();
             });
 
             // Route action clicks to the child fragment-provided handler.
-            selectionToolbar.setOnMenuItemClickListener(item -> {
-                if (currentHandler == null) return false;
+            cardSelectionToolbar.setOnMenuItemClickListener(item -> {
+                if (curCardSelectionHandler == null) return false;
                 int id = item.getItemId();
                 if (id == R.id.action_move_todo) {
-                    currentHandler.onMoveTo(Task.TaskStatus.TODO);
+                    curCardSelectionHandler.onMoveTo(Task.TaskStatus.TODO);
                     return true;
                 } else if (id == R.id.action_move_completed) {
-                    currentHandler.onMoveTo(Task.TaskStatus.COMPLETED);
+                    curCardSelectionHandler.onMoveTo(Task.TaskStatus.COMPLETED);
                     return true;
                 } else if (id == R.id.action_move_canceled) {
-                    currentHandler.onMoveTo(Task.TaskStatus.CANCELED);
+                    curCardSelectionHandler.onMoveTo(Task.TaskStatus.CANCELED);
                     return true;
                 } else if (id == R.id.action_delete) {
-                    currentHandler.onDelete();
+                    curCardSelectionHandler.onDelete();
                     return true;
                 }
                 return false;
@@ -133,9 +132,9 @@ public class TasksFragment extends Fragment {
             @Override
             public Fragment createFragment(int position) {
                 return switch (position) {
-                    case 0 -> new TasksToDoFragment();
-                    case 1 -> new TasksCompletedFragment();
-                    case 2 -> new TasksCanceledFragment();
+                    case TaskTabIndices.TO_DO -> new TasksToDoFragment();
+                    case TaskTabIndices.COMPLETED -> new TasksCompletedFragment();
+                    case TaskTabIndices.CANCELED -> new TasksCanceledFragment();
                     default -> throw new IllegalStateException("Unexpected value: " + position);
                 };
             }
@@ -143,9 +142,9 @@ public class TasksFragment extends Fragment {
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
-                case 0 -> tab.setText("To Do");
-                case 1 -> tab.setText("Completed");
-                case 2 -> tab.setText("Canceled");
+                case TaskTabIndices.TO_DO -> tab.setText("To Do");
+                case TaskTabIndices.COMPLETED -> tab.setText("Completed");
+                case TaskTabIndices.CANCELED -> tab.setText("Canceled");
             }
         }).attach();
 
@@ -155,8 +154,8 @@ public class TasksFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 // Ask the active tab to clear its selection, then hide the inline selection bar
-                if (currentHandler != null) {
-                    currentHandler.onEscape();
+                if (curCardSelectionHandler != null) {
+                    curCardSelectionHandler.onEscape();
                 }
                 hideSelectionBar();
             }
@@ -184,11 +183,11 @@ public class TasksFragment extends Fragment {
      * @param handler action handler provided by the active tab to execute move/delete
      */
     public void showSelectionBar(int selectedCount, SelectionActionHandler handler) {
-        this.currentHandler = handler;
-        if (selectionToolbar != null) {
-            selectionToolbar.setVisibility(View.VISIBLE);
-            selectionToolbar.setTitle("Select tasks");
-            selectionToolbar.setSubtitle(selectedCount + " selected");
+        this.curCardSelectionHandler = handler;
+        if (cardSelectionToolbar != null) {
+            cardSelectionToolbar.setVisibility(View.VISIBLE);
+            cardSelectionToolbar.setTitle("Select tasks");
+            cardSelectionToolbar.setSubtitle(selectedCount + " selected");
         }
     }
 
@@ -197,11 +196,11 @@ public class TasksFragment extends Fragment {
      * Auto-hides the selection bar when the count reaches zero.
      */
     public void updateSelectionCount(int selectedCount) {
-        if (selectionToolbar != null && selectionToolbar.getVisibility() == View.VISIBLE) {
+        if (cardSelectionToolbar != null && cardSelectionToolbar.getVisibility() == View.VISIBLE) {
             if (selectedCount <= 0) {
                 hideSelectionBar();
             } else {
-                selectionToolbar.setSubtitle(selectedCount + " selected");
+                cardSelectionToolbar.setSubtitle(selectedCount + " selected");
             }
         }
     }
@@ -211,10 +210,10 @@ public class TasksFragment extends Fragment {
      * Child fragments are responsible for clearing their adapter selection state.
      */
     public void hideSelectionBar() {
-        if (selectionToolbar != null) {
-            selectionToolbar.setVisibility(View.GONE);
+        if (cardSelectionToolbar != null) {
+            cardSelectionToolbar.setVisibility(View.GONE);
         }
-        currentHandler = null;
+        curCardSelectionHandler = null;
     }
 
     private void toggleActionButtonsVisibility() {
@@ -242,9 +241,65 @@ public class TasksFragment extends Fragment {
     }
 
     private void searchForTask() {
-        fabSearchTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup));
-    }
+        fabSearchTask.setOnClickListener(v -> {
+            @SuppressLint("NotifyDataSetChanged") ConfigurableDialogFragment dialog = new ConfigurableDialogFragment(
+                    R.layout.cv_search_task_popup,
+                    (dialogView) -> {
+                        applyDimmingEffect(requireView(), true);
 
+                        // If there are selected tasks, unselect them so there won't be menu over-dumping and to keep logic simpler, without wierd edge-cases.
+                        switch (viewPager.getCurrentItem()) {
+                            case TaskTabIndices.TO_DO -> TasksToDoFragment.getAdapter().clearSelection();
+                            case TaskTabIndices.COMPLETED -> TasksCompletedFragment.getAdapter().clearSelection();
+                            case TaskTabIndices.CANCELED -> TasksCanceledFragment.getAdapter().clearSelection();
+                            default -> throw new IllegalStateException("Unexpected value: " + viewPager.getCurrentItem());
+                        }
+
+
+                        EditText etSearch = dialogView.findViewById(R.id.et_search_task_by_name_search);
+                        TextInputLayout tilSearch = dialogView.findViewById(R.id.til_task_search_name_search);
+                        Button bSearch = dialogView.findViewById(R.id.b_confirm_search_task);
+
+                        bSearch.setOnClickListener(v1 -> {
+                            // reset prev search of this dialog if there was a previous search
+                            TasksToDoFragment.getAdapter().unfilterTasks();
+                            TasksCompletedFragment.getAdapter().unfilterTasks();
+                            TasksCanceledFragment.getAdapter().unfilterTasks();
+                            //----------------------------------------------------------------
+
+                            tilSearch.setError(null);
+
+                            String taskName = etSearch.getText().toString();
+
+                            if (taskName.isEmpty()) {
+                                tilSearch.setError("Task name is required.");
+                                return;
+                            }
+
+                            // Obtain all task lists and filter based on search query
+                            TasksToDoFragment.getAdapter().filterTasks(taskName);
+                            TasksCompletedFragment.getAdapter().filterTasks(taskName);
+                            TasksCanceledFragment.getAdapter().filterTasks(taskName);
+                        });
+                    },
+                    () -> {
+                        applyDimmingEffect(requireView(), false);
+                        // Upon dismissal, show all tasks again
+                        View mcvFilterClearBar = requireView().findViewById(R.id.mcv_filter_clear_bar);
+                        mcvFilterClearBar.setVisibility(View.VISIBLE);
+                        mcvFilterClearBar.setOnClickListener(v1 -> {
+                            TasksToDoFragment.getAdapter().unfilterTasks();
+                            TasksCompletedFragment.getAdapter().unfilterTasks();
+                            TasksCanceledFragment.getAdapter().unfilterTasks();
+
+                            mcvFilterClearBar.setVisibility(View.GONE);
+                        });
+                    }
+            );
+
+            dialog.show(getParentFragmentManager(), "search_for_task_popup");
+        });
+    }
     private void addNewTask() {
         fabAddTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">

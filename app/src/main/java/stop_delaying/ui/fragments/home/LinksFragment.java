@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments;
+package stop_delaying.ui.fragments.home;
 
 import android.content.Intent;
 import android.net.Uri;

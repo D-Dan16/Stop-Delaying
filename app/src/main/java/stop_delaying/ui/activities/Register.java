@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
-import stop_delaying.FBBranches;
+import stop_delaying.utils.FBBranches;
 import stop_delaying.models.User;
 import stop_delaying.utils.Utils;
 

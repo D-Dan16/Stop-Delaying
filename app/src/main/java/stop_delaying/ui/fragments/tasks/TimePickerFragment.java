@@ -1,4 +1,4 @@
-package stop_delaying.utils;
+package stop_delaying.ui.fragments.tasks;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -10,8 +10,6 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-
-import com.example.procrastination.R;
 
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
