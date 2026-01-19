@@ -1,10 +1,11 @@
-package stop_delaying.ui.fragments.tasks;
+package stop_delaying.ui.fragments.tasks.tabs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import stop_delaying.adapters.TaskListAdapter;
 import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.tasks.TasksFragment;
 
 /**
  * Callback interface used by child task list fragments to delegate selection actions

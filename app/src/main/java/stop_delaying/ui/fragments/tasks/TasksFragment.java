@@ -1,7 +1,5 @@
 package stop_delaying.ui.fragments.tasks;
 
-import static stop_delaying.utils.Utils.applyDimmingEffect;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +21,11 @@ import com.example.procrastination.R;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
+import stop_delaying.ui.fragments.tasks.tabs.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.utils.ConfigurableDialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -173,12 +176,13 @@ public class TasksFragment extends Fragment {
     }
 
     // Selection toolbar controls for child tabs
+
     /**
      * Shows the inline selection toolbar (inline CAB) and sets its title/subtitle.
      * Called by child fragments when the first item gets selected.
      *
      * @param selectedCount current number of selected tasks
-     * @param handler action handler provided by the active tab to execute move/delete
+     * @param handler       action handler provided by the active tab to execute move/delete
      */
     public void showSelectionBar(int selectedCount, SelectionActionHandler handler) {
         this.curCardSelectionHandler = handler;
@@ -296,6 +300,7 @@ public class TasksFragment extends Fragment {
                 }
         ));
     }
+
     private void addNewTask() {
         fabAddTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">
@@ -333,9 +338,14 @@ public class TasksFragment extends Fragment {
                     tilTaskDescription.setError("Description is required.");
                     return;
                 }
-                if (dialog.<TextView>findViewById(R.id.tvSelectedDate).getText().equals("No Date Set")
-                        || dialog.<TextView>findViewById(R.id.tvSelectedTime).getText().equals("No Time Set")) {
-                    Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT).show();
+                if (dialog.<TextView>findViewById(R.id.tvSelectedDate)
+                        .getText()
+                        .equals("No Date Set")
+                        || dialog.<TextView>findViewById(R.id.tvSelectedTime)
+                        .getText()
+                        .equals("No Time Set")) {
+                    Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT)
+                            .show();
                     return;
                 }
                 //</editor-fold>

@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.tasks;
+package stop_delaying.ui.fragments.tasks.tabs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import stop_delaying.adapters.TaskListAdapter;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
+import stop_delaying.ui.fragments.tasks.TasksFragment;
 
 import java.util.ArrayList;
 import java.util.List;

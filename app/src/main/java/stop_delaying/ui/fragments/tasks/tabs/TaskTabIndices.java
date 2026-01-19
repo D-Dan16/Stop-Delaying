@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.tasks;
+package stop_delaying.ui.fragments.tasks.tabs;
 
 public class TaskTabIndices {
     public static final int TO_DO = 0;
