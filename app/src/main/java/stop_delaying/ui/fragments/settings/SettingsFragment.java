@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.procrastination.R;
 
+import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.FBBranches;
 import stop_delaying.ui.activities.OpeningScreen;
 import stop_delaying.utils.Utils;
@@ -117,7 +118,7 @@ public class SettingsFragment extends Fragment {
      * for updating the user's email and username in Firebase.
      */
     private void setupEditProfileListener() {
-        cardEditProfilePopup.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_edit_profile, dialogFragment -> {
+        cardEditProfilePopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_edit_profile, dialogFragment -> {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fbUser == null)
                 return;
@@ -188,7 +189,7 @@ public class SettingsFragment extends Fragment {
      * for updating the user's password in Firebase.
      */
     private void setupChangePasswordListener() {
-        cardChangePasswordPopup.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_update_user_password, dialogFragment -> {
+        cardChangePasswordPopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_update_user_password, dialogFragment -> {
             @SuppressLint("CutPasteId") View btnUpdatePassword = dialogFragment.findViewById(R.id.bUpdateUserProperties);
 
             btnUpdatePassword.setOnClickListener(v1 -> {
@@ -238,7 +239,7 @@ public class SettingsFragment extends Fragment {
      * and, upon confirmation, deletes the user's account and associated data from Firebase.
      */
     private void setupDeleteUserListener() {
-        btnDeleteUserPopup.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_confirm_delete_user, dialogFragment -> {
+        btnDeleteUserPopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_confirm_delete_user, dialogFragment -> {
             View btnDeleteAccount = dialogFragment.findViewById(R.id.bDeleteAccount);
             btnDeleteAccount.setOnClickListener(v1 -> {
                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();

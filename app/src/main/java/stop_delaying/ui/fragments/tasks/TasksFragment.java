@@ -2,7 +2,6 @@ package stop_delaying.ui.fragments.tasks;
 
 import static stop_delaying.utils.Utils.applyDimmingEffect;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.utils.ConfigurableDialogFragment;
-import stop_delaying.utils.Utils;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -233,75 +231,73 @@ public class TasksFragment extends Fragment {
     }
 
     private void orderTasks() {
-        fabOrderBy.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
+        fabOrderBy.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
     }
 
     private void aiAnalyzeTasks() {
-        fabAiAnalyze.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze));
+        fabAiAnalyze.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze));
     }
 
     private void searchForTask() {
-        fabSearchTask.setOnClickListener(v -> {
-            @SuppressLint("NotifyDataSetChanged") ConfigurableDialogFragment dialog = new ConfigurableDialogFragment(
-                    R.layout.cv_search_task_popup,
-                    (dialogView) -> {
-                        applyDimmingEffect(requireView(), true);
+        fabSearchTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup,
+                (dialogView) -> {
+                    // If there are selected tasks, unselect them so there won't be menu over-dumping and to keep logic simpler, without wierd edge-cases.
+                    switch (viewPager.getCurrentItem()) {
+                        case TaskTabIndices.TO_DO ->
+                                TasksToDoFragment.getAdapter().clearSelection();
+                        case TaskTabIndices.COMPLETED ->
+                                TasksCompletedFragment.getAdapter().clearSelection();
+                        case TaskTabIndices.CANCELED ->
+                                TasksCanceledFragment.getAdapter().clearSelection();
+                        default ->
+                                throw new IllegalStateException("Unexpected value: " + viewPager.getCurrentItem());
+                    }
 
-                        // If there are selected tasks, unselect them so there won't be menu over-dumping and to keep logic simpler, without wierd edge-cases.
-                        switch (viewPager.getCurrentItem()) {
-                            case TaskTabIndices.TO_DO -> TasksToDoFragment.getAdapter().clearSelection();
-                            case TaskTabIndices.COMPLETED -> TasksCompletedFragment.getAdapter().clearSelection();
-                            case TaskTabIndices.CANCELED -> TasksCanceledFragment.getAdapter().clearSelection();
-                            default -> throw new IllegalStateException("Unexpected value: " + viewPager.getCurrentItem());
+
+                    EditText etSearch = dialogView.findViewById(R.id.et_search_task_by_name_search);
+                    TextInputLayout tilSearch = dialogView.findViewById(R.id.til_task_search_name_search);
+                    Button bSearch = dialogView.findViewById(R.id.b_confirm_search_task);
+
+                    //<editor-fold desc="On Filter Tasks logic ">
+                    bSearch.setOnClickListener(v1 -> {
+                        // reset prev search of this dialog if there was a previous search
+                        TasksToDoFragment.getAdapter().unfilterTasks();
+                        TasksCompletedFragment.getAdapter().unfilterTasks();
+                        TasksCanceledFragment.getAdapter().unfilterTasks();
+                        //----------------------------------------------------------------
+
+                        tilSearch.setError(null);
+
+                        String taskName = etSearch.getText().toString();
+
+                        if (taskName.isEmpty()) {
+                            tilSearch.setError("Task name is required.");
+                            return;
                         }
 
+                        // Obtain all task lists and filter based on search query
+                        TasksToDoFragment.getAdapter().filterTasks(taskName);
+                        TasksCompletedFragment.getAdapter().filterTasks(taskName);
+                        TasksCanceledFragment.getAdapter().filterTasks(taskName);
 
-                        EditText etSearch = dialogView.findViewById(R.id.et_search_task_by_name_search);
-                        TextInputLayout tilSearch = dialogView.findViewById(R.id.til_task_search_name_search);
-                        Button bSearch = dialogView.findViewById(R.id.b_confirm_search_task);
-
-                        bSearch.setOnClickListener(v1 -> {
-                            // reset prev search of this dialog if there was a previous search
-                            TasksToDoFragment.getAdapter().unfilterTasks();
-                            TasksCompletedFragment.getAdapter().unfilterTasks();
-                            TasksCanceledFragment.getAdapter().unfilterTasks();
-                            //----------------------------------------------------------------
-
-                            tilSearch.setError(null);
-
-                            String taskName = etSearch.getText().toString();
-
-                            if (taskName.isEmpty()) {
-                                tilSearch.setError("Task name is required.");
-                                return;
-                            }
-
-                            // Obtain all task lists and filter based on search query
-                            TasksToDoFragment.getAdapter().filterTasks(taskName);
-                            TasksCompletedFragment.getAdapter().filterTasks(taskName);
-                            TasksCanceledFragment.getAdapter().filterTasks(taskName);
-                        });
-                    },
-                    () -> {
-                        applyDimmingEffect(requireView(), false);
-                        // Upon dismissal, show all tasks again
+                        //<editor-fold desc="Unfilter button logic">
                         View mcvFilterClearBar = requireView().findViewById(R.id.mcv_filter_clear_bar);
                         mcvFilterClearBar.setVisibility(View.VISIBLE);
-                        mcvFilterClearBar.setOnClickListener(v1 -> {
+                        mcvFilterClearBar.setOnClickListener(v2 -> {
                             TasksToDoFragment.getAdapter().unfilterTasks();
                             TasksCompletedFragment.getAdapter().unfilterTasks();
                             TasksCanceledFragment.getAdapter().unfilterTasks();
 
                             mcvFilterClearBar.setVisibility(View.GONE);
                         });
-                    }
-            );
-
-            dialog.show(getParentFragmentManager(), "search_for_task_popup");
-        });
+                        //</editor-fold>
+                    });
+                    //</editor-fold>
+                }
+        ));
     }
     private void addNewTask() {
-        fabAddTask.setOnClickListener(v -> Utils.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
+        fabAddTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">
             EditText etTitle = dialog.findViewById(R.id.et_new_task_title);
             EditText etDescription = dialog.findViewById(R.id.et_edit_user_email);

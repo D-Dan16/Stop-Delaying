@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.procrastination.R;
 
@@ -22,6 +23,30 @@ public class ConfigurableDialogFragment extends DialogFragment {
         this.layoutResId = layoutResId;
         this.onDismissCallback = onDismissCallback;
         this.onViewCreatedListener = onViewCreatedListener;
+    }
+
+    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer, Runnable onDismiss) {
+        ConfigurableDialogFragment dialog = new ConfigurableDialogFragment(
+                popupLayout,
+                (v) -> {
+                    Utils.applyDimmingEffect(containerView, true);
+                    viewInitializer.accept(v);
+                },
+                () -> {
+                    Utils.applyDimmingEffect(containerView, false);
+                    onDismiss.run();
+                }
+        );
+
+        dialog.show(fragmentManager, "custom_popup");
+    }
+
+    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer) {
+        showDialog(containerView, fragmentManager, popupLayout, viewInitializer, () -> {});
+    }
+
+    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout) {
+        showDialog(containerView, fragmentManager, popupLayout, v -> {}, () -> {});
     }
 
     @Override
