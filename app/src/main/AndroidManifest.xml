@@ -14,6 +14,13 @@
             android:layoutDirection="ltr"
             android:theme="@style/Theme.Procrastination"
             tools:ignore="LockedOrientationActivity">
+        <receiver
+                android:name="stop_delaying.utils.NotificationTrigger"
+                android:enabled="true"
+                android:exported="false"
+                tools:ignore="Instantiatable">
+        </receiver>
+
         <activity
                 android:name="stop_delaying.ui.activities.MainApp"
                 android:screenOrientation="portrait"

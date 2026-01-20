@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -27,6 +28,7 @@ import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -42,6 +44,9 @@ import com.google.android.material.textfield.TextInputLayout;
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
 public class TasksFragment extends Fragment {
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
     TabLayout tabLayout;
     ViewPager2 viewPager;
     com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
@@ -78,6 +83,14 @@ public class TasksFragment extends Fragment {
         createTabLayoutLogic();
 
         registerActionButtons();
+
+        NotificationCreator.createNotificationChannel(
+                requireContext(),
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME,
+                NotificationManagerCompat.IMPORTANCE_DEFAULT,
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION
+        );
     }
 
     /**

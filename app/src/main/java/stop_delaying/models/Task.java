@@ -1,7 +1,5 @@
 package stop_delaying.models;
 
-import androidx.cardview.widget.CardView;
-
 public class Task {
     private String title;
     private String description;
@@ -9,6 +7,7 @@ public class Task {
     private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
     private boolean isTaskSelected;
+    private boolean isTaskNotifying;
 
     public enum TaskStatus {
         TODO,
@@ -23,6 +22,7 @@ public class Task {
         this.dueTimeOfDay = dueTimeOfDay;
         this.status = status;
         this.isTaskSelected = false;
+        this.isTaskNotifying = false;
     }
 
     public String getTitle() {
@@ -71,5 +71,12 @@ public class Task {
 
     public void setTaskSelected(boolean taskSelected) {
         isTaskSelected = taskSelected;
+    }
+
+    public boolean isTaskNotifying() {
+        return isTaskNotifying;
+    }
+    public void setTaskNotifying(boolean taskNotifying) {
+        isTaskNotifying = taskNotifying;
     }
 }

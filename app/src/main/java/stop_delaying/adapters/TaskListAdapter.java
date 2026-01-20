@@ -2,19 +2,31 @@ package stop_delaying.adapters;
 
 import static java.text.MessageFormat.format;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
 import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.tasks.TasksFragment;
+import stop_delaying.utils.AlarmScheduler;
+import stop_delaying.utils.NotificationCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,60 +87,142 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         return holder;
     }
 
-
-
     /**
-     * Attaches click and long-click listeners to a card view for selection behavior.
-     * - Long-click: starts selection mode and selects the item
-     * - Click (while any selection exists): toggles selection state
+     * Adds all of the listeners for the card.
+     * This includes:
+     * - Long-press to select and start CAB
+     * - Tap to toggle selection off (or on if selection is active)
+     * - Click on the notification button to toggle if the task should notify you or not.
      */
     private void addCardListeners(View view, TaskViewHolder holder) {
-        // Long press to select and start CAB
+        holdCardForStartSelectionProcess(view, holder);
+
+        toggleCardSelection(view, holder);
+
+        toggleNotificationOfTask(view, holder);
+    }
+
+
+    ///Long press to select and start CAB
+    private void holdCardForStartSelectionProcess(View view, TaskViewHolder holder) {
         view.setOnLongClickListener(v -> {
             int position = holder.getBindingAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                Task task = visibleTasks.get(position);
-                if (!task.isTaskSelected()) {
-                    ((CardView) v).setCardBackgroundColor(v.getResources().getColor(R.color.bg_task_card_selected, null));
-                    task.setTaskSelected(true);
+            if (position == RecyclerView.NO_POSITION)
+                return false;
 
-                    if (startSelectionListener != null)
-                        startSelectionListener.onStartSelection();
-                    if (selectionChangeListener != null)
-                        selectionChangeListener.onSelectionChanged(getSelectedCount());
+            Task task = visibleTasks.get(position);
+            if (task.isTaskSelected())
+                return false;
 
-                    return true;
-                }
-            }
-            return false;
-        });
+            ((CardView) v).setCardBackgroundColor(v.getResources().getColor(R.color.bg_task_card_selected, null));
+            task.setTaskSelected(true);
 
-        // Tap to toggle selection off (or on if selection is active)
-        view.setOnClickListener(v -> {
-            int position = holder.getBindingAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                Task task = visibleTasks.get(position);
-                int currentSelected = getSelectedCount();
-                if (currentSelected > 0) {
-                    // Toggle selection state
-                    boolean nowSelected = !task.isTaskSelected();
-                    task.setTaskSelected(nowSelected);
-                    ((CardView) v).setCardBackgroundColor(v.getResources().getColor(nowSelected ? R.color.bg_task_card_selected : R.color.bg_task_card, null));
+            if (startSelectionListener != null)
+                startSelectionListener.onStartSelection();
+            if (selectionChangeListener != null)
+                selectionChangeListener.onSelectionChanged(getSelectedCount());
 
-                    if (selectionChangeListener != null)
-                        selectionChangeListener.onSelectionChanged(getSelectedCount());
-                }
-            }
+            return true;
         });
     }
 
-    @SuppressLint("SetTextI18n")
+    /// Tap to toggle selection off (or on if selection is active)
+    private void toggleCardSelection(View view, TaskViewHolder holder) {
+        view.setOnClickListener(v -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position == RecyclerView.NO_POSITION)
+                return;
+
+            Task task = visibleTasks.get(position);
+            int currentSelected = getSelectedCount();
+            if (currentSelected <= 0)
+                return;
+
+            // Toggle selection state
+            boolean nowSelected = !task.isTaskSelected();
+            task.setTaskSelected(nowSelected);
+            ((CardView) v).setCardBackgroundColor(v.getResources().getColor(nowSelected ? R.color.bg_task_card_selected : R.color.bg_task_card, null));
+
+            if (selectionChangeListener != null)
+                selectionChangeListener.onSelectionChanged(getSelectedCount());
+        });
+    }
+
+    /// Make the notification button toggle if the task should notify you or not.
+    private void toggleNotificationOfTask(View view, TaskViewHolder holder) {
+        view.findViewById(R.id.iv_task_notification).setOnClickListener(bellNotifButton -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position == RecyclerView.NO_POSITION)
+                return;
+
+            Task task = visibleTasks.get(position);
+
+            // If there isn't permission to use the notification manager, ask for it, then return.
+            if (ActivityCompat.checkSelfPermission(bellNotifButton.getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                if (bellNotifButton.getContext() instanceof android.app.Activity) {
+                    NotificationCreator.requestNotificationPermission((android.app.Activity) bellNotifButton.getContext());
+                } else {
+                    // Fallback if the context isn't an activity for some reason
+                    Toast.makeText(bellNotifButton.getContext(), "Please enable notifications in settings", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // If there isn't permission to use the alarm manager, ask for it, then return.
+            if (!AlarmScheduler.canSchedule(bellNotifButton.getContext())) {
+                Toast.makeText(bellNotifButton.getContext(), "Alarm manager not available", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //<editor-fold desc="Notifcation creation logic">
+            if (!task.isTaskNotifying()) {
+                AlarmManager alarmMgr = (AlarmManager) bellNotifButton.getContext().getSystemService(Context.ALARM_SERVICE);
+                if (alarmMgr == null) {
+                    Log.e("TaskListAdapter", "AlarmManager is null");
+                    return;
+                }
+
+                var hasSucceededScheduling = AlarmScheduler.scheduleNotificationAlarm(
+                        bellNotifButton.getContext(),
+                        CalculateTimeUntilThereIs1DayLeft(),
+                        task.hashCode(),
+                        TasksFragment.NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID,
+                        TasksFragment.NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME,
+                        TasksFragment.NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION,
+                        task.getTitle(),
+                        task.getDescription(),
+                        R.drawable.ic_assignment,
+                        NotificationManager.IMPORTANCE_DEFAULT,
+                        new Intent(bellNotifButton.getContext(), TasksFragment.class)
+                );
+
+                if (!hasSucceededScheduling) {
+                    Toast.makeText(bellNotifButton.getContext(), "Failed to schedule notification alarm", Toast.LENGTH_SHORT).show();
+                } else {
+                    task.setTaskNotifying(true);
+                    Toast.makeText(bellNotifButton.getContext(), "Notification alarm scheduled", Toast.LENGTH_SHORT).show();
+                    ((ImageView) bellNotifButton).setImageResource(R.drawable.ic_turn_notifs_on);
+                }
+            } else {
+                AlarmScheduler.cancelNotificationAlarm(bellNotifButton.getContext(), task.hashCode());
+                task.setTaskNotifying(false);
+                ((ImageView) bellNotifButton).setImageResource(R.drawable.ic_turn_notifs_off);
+
+                Toast.makeText(bellNotifButton.getContext(), "Notification alarm cancelled", Toast.LENGTH_SHORT).show();
+            }
+            //</editor-fold>
+        });
+    }
+
+    //TODO: Implement the CalculateTimeUntilThereIs1DayLeft method
+    private Long CalculateTimeUntilThereIs1DayLeft() {
+        return System.currentTimeMillis() + 2000L;
+    }
+
     @Override
     /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = visibleTasks.get(position);
-
-        // holder.itemView.setVisibility(task.isVisible() ? View.VISIBLE : View.GONE);
 
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
@@ -260,4 +354,3 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         notifyDataSetChanged();
     }
 }
-
