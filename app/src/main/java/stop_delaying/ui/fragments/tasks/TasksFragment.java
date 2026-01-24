@@ -22,13 +22,13 @@ import com.example.procrastination.R;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
-import stop_delaying.ui.fragments.tasks.tabs.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.utils.ConfigurableDialogFragment;
-import stop_delaying.utils.NotificationCreator;
+import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;

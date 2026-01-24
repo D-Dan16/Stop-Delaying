@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
-import stop_delaying.adapters.TaskListAdapter;
-import stop_delaying.models.Date;
+
+import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
@@ -100,7 +101,7 @@ public class TasksToDoFragment extends Fragment {
             return;
         }
         // Create some dummy data
-        taskList.add(new Task("Complete 1", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
+        taskList.add(new Task("Code. Forever. :)", "No resting for dear Stav mwahahahaahhahaha", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
 //        taskList.add(new Task("Complete 2", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
 //        taskList.add(new Task("Complete 3", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
 //        taskList.add(new Task("Complete 4", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));

@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
-import stop_delaying.adapters.TaskListAdapter;
+
+import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 
@@ -59,7 +61,7 @@ public class TasksCompletedFragment extends Fragment {
 
             parent.showSelectionBar(adapter.getSelectedCount(), new SelectionActionHandler() {
                 @Override
-                public stop_delaying.adapters.TaskListAdapter adapter() { return adapter; }
+                public TaskListAdapter adapter() { return adapter; }
                 @Override
                 public TasksFragment parent() { return parent; }
             });

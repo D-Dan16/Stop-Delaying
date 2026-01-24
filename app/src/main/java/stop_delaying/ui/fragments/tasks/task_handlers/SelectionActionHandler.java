@@ -1,9 +1,11 @@
-package stop_delaying.ui.fragments.tasks.tabs;
+package stop_delaying.ui.fragments.tasks.task_handlers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import stop_delaying.adapters.TaskListAdapter;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 
@@ -78,5 +80,19 @@ public interface SelectionActionHandler {
     default void onEscape() {
         TaskListAdapter adapter = adapter();
         if (adapter != null) adapter.clearSelection();
+    }
+
+    /**
+     * Fired on the very first long-press that begins selection mode.
+     */
+    interface OnStartSelectionListener {
+        void onStartSelection();
+    }
+
+    /**
+     * Notifies listeners whenever the number of selected items changes.
+     */
+    interface OnSelectionChangeListener {
+        void onSelectionChanged(int selectedCount);
     }
 }
