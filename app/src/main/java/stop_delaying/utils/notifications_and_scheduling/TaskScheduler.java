@@ -3,7 +3,6 @@ package stop_delaying.utils.notifications_and_scheduling;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -15,12 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class TaskScheduler {
     private static final String TAG = TaskScheduler.class.getName();
 
-    private static boolean cannotSchedule(Context context, long delay) {
-        if (delay < 0) {
-            Toast.makeText(context, "Cannot set reminder for a time in the past.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return false;
+    private static boolean cannotSchedule(long delay) {
+        return delay < 0;
     }
 
     public static boolean schedule(
@@ -29,7 +24,7 @@ public class TaskScheduler {
             long scheduleDelay,
             int requestCode
     ) {
-        if (cannotSchedule(context, scheduleDelay)) return false;
+        if (cannotSchedule(scheduleDelay)) return false;
 
         Data inputData = new Data.Builder()
                 .putString(GenericActionWorker.EXTRA_SCHEDULED_INTENT_URI, intent.toUri(0))
@@ -59,11 +54,6 @@ public class TaskScheduler {
             int notificationPriority,
             String channelId
     ) {
-        if (scheduleDelays.stream().anyMatch(time -> time < 0)) {
-            Toast.makeText(context, "Cannot set reminder for a time in the past.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         if (scheduleDelays.size() != listOfNotificationTitles.size()) {
             Log.e(TAG, "Number of trigger times and notification titles do not match.");
             return false;
@@ -99,16 +89,16 @@ public class TaskScheduler {
             int notificationPriority,
             String channelId
     ) {
-        if (cannotSchedule(context, scheduleDelay)) return false;
+        if (cannotSchedule(scheduleDelay)) return false;
 
         Data inputData = new Data.Builder()
-                .putString(NotifBroadcastNames.EXTRA_INTENT, tapActionIntent.toUri(0))
-                .putInt(NotifBroadcastNames.EXTRA_NOTIFICATION_ID, requestCode)
-                .putString(NotifBroadcastNames.EXTRA_CHANNEL_ID, channelId)
-                .putString(NotifBroadcastNames.EXTRA_NOTIFICATION_TITLE, notificationTitle)
-                .putString(NotifBroadcastNames.EXTRA_NOTIFICATION_DESCRIPTION, notificationDescription)
-                .putInt(NotifBroadcastNames.EXTRA_SMALL_ICON, smallIconResource)
-                .putInt(NotifBroadcastNames.EXTRA_NOTIFICATION_PRIORITY, notificationPriority)
+                .putString(NotifExtraIntentNames.EXTRA_INTENT, tapActionIntent.toUri(0))
+                .putInt(NotifExtraIntentNames.EXTRA_NOTIFICATION_ID, requestCode)
+                .putString(NotifExtraIntentNames.EXTRA_CHANNEL_ID, channelId)
+                .putString(NotifExtraIntentNames.EXTRA_NOTIFICATION_TITLE, notificationTitle)
+                .putString(NotifExtraIntentNames.EXTRA_NOTIFICATION_DESCRIPTION, notificationDescription)
+                .putInt(NotifExtraIntentNames.EXTRA_SMALL_ICON, smallIconResource)
+                .putInt(NotifExtraIntentNames.EXTRA_NOTIFICATION_PRIORITY, notificationPriority)
                 .build();
 
         OneTimeWorkRequest notificationWorkRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)

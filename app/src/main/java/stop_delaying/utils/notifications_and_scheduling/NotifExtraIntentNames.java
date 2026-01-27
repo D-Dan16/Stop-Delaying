@@ -1,6 +1,6 @@
 package stop_delaying.utils.notifications_and_scheduling;
 
-public class NotifBroadcastNames {
+public class NotifExtraIntentNames {
     // --- Intent Extra Keys (Constants for Generic Alarms) ---
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
     public static final String EXTRA_CHANNEL_ID = "channel_id";

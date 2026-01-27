@@ -7,15 +7,17 @@ public record TimeOfDay(int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
         return new TimeOfDay(
                 calendar.get(Calendar.MINUTE),
-                calendar.get(Calendar.HOUR)
+                calendar.get(Calendar.HOUR_OF_DAY)
         );
     }
 
     public long calcTimeUntil() {
-        long totalTimeRemaining = 0L;
-        totalTimeRemaining += (hour - getCurrentTime().hour) * 3600 * 1000L;
-        totalTimeRemaining += (minute - getCurrentTime().minute) * 60 * 1000L;
+        Calendar now = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
 
-        return totalTimeRemaining;
+        target.set(Calendar.HOUR_OF_DAY, hour);
+        target.set(Calendar.MINUTE, minute);
+
+        return (target.getTimeInMillis() - now.getTimeInMillis()) / 1000; // convert to seconds
     }
 }

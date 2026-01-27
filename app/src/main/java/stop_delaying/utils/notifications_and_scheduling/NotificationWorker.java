@@ -23,7 +23,7 @@ public class NotificationWorker extends Worker {
     public Result doWork() {
         Context context = getApplicationContext();
         // The intent is passed as a URI string and needs to be parsed back to an Intent
-        String intentUriString = getInputData().getString(NotifBroadcastNames.EXTRA_INTENT);
+        String intentUriString = getInputData().getString(NotifExtraIntentNames.EXTRA_INTENT);
         Intent intent = null;
 
         if (intentUriString != null) try {
@@ -39,12 +39,12 @@ public class NotificationWorker extends Worker {
         NotificationCreator.createNotification(
                 intent,
                 context,
-                getInputData().getInt(NotifBroadcastNames.EXTRA_NOTIFICATION_ID, 0),
-                getInputData().getString(NotifBroadcastNames.EXTRA_CHANNEL_ID),
-                getInputData().getString(NotifBroadcastNames.EXTRA_NOTIFICATION_TITLE),
-                getInputData().getString(NotifBroadcastNames.EXTRA_NOTIFICATION_DESCRIPTION),
-                getInputData().getInt(NotifBroadcastNames.EXTRA_SMALL_ICON, 0),
-                getInputData().getInt(NotifBroadcastNames.EXTRA_NOTIFICATION_PRIORITY, NotificationManager.IMPORTANCE_DEFAULT)
+                getInputData().getInt(NotifExtraIntentNames.EXTRA_NOTIFICATION_ID, 0),
+                getInputData().getString(NotifExtraIntentNames.EXTRA_CHANNEL_ID),
+                getInputData().getString(NotifExtraIntentNames.EXTRA_NOTIFICATION_TITLE),
+                getInputData().getString(NotifExtraIntentNames.EXTRA_NOTIFICATION_DESCRIPTION),
+                getInputData().getInt(NotifExtraIntentNames.EXTRA_SMALL_ICON, 0),
+                getInputData().getInt(NotifExtraIntentNames.EXTRA_NOTIFICATION_PRIORITY, NotificationManager.IMPORTANCE_DEFAULT)
         );
         return Result.success();
     }

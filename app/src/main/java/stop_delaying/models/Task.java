@@ -79,4 +79,15 @@ public class Task {
     public void setTaskNotifying(boolean taskNotifying) {
         isTaskNotifying = taskNotifying;
     }
+
+
+    public boolean isDeadlineNear() {
+        long timeLeftUntilDeadline = dueDate.calcTimeUntil() + dueTimeOfDay.calcTimeUntil();
+        return timeLeftUntilDeadline <= 24 * 3600L;
+    }
+
+    public boolean hasReachedDeadline() {
+        long timeLeftUntilDeadline = dueDate.calcTimeUntil() + dueTimeOfDay.calcTimeUntil();
+        return timeLeftUntilDeadline <= 0;
+    }
 }

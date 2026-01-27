@@ -101,12 +101,10 @@ public class TasksToDoFragment extends Fragment {
             return;
         }
         // Create some dummy data
-        taskList.add(new Task("Code. Forever. :)", "No resting for dear Stav mwahahahaahhahaha", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
-//        taskList.add(new Task("Complete 2", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
-//        taskList.add(new Task("Complete 3", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
-//        taskList.add(new Task("Complete 4", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
-//        taskList.add(new Task("Schedule 5", "Organize a meeting to discuss the new project timeline.", new stop_delaying.models.Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
-//        taskList.add(new Task("Buy groceries 6", "Milk, bread, eggs, and cheese.", new Date(11, 4, 2026), new TimeOfDay(12, 45), Task.TaskStatus.TODO));
+        taskList.add(new Task("Code. Forever. :)", "No resting for dear Stav mwahahahaahhahaha", new stop_delaying.models.Date(26, 1, 2026), new TimeOfDay(0, 45), Task.TaskStatus.TODO));
+        taskList.add(new Task("Complete 2", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(28, 1, 2026), new TimeOfDay(3, 15), Task.TaskStatus.TODO));
+        taskList.add(new Task("Complete 3", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(28, 1, 2026), new TimeOfDay(3, 16), Task.TaskStatus.TODO));
+        taskList.add(new Task("Complete 4", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(29, 1, 2026), new TimeOfDay(2, 59), Task.TaskStatus.TODO));
 
         adapter.setTasks(taskList);
     }

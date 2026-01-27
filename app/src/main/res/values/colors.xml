@@ -8,8 +8,11 @@
     <color name="bg_card">#483C32</color>
 
     <color name="bg_task_card">#5E4F42</color>
-    <color name="bg_task_card_selected">#7B3F00</color>
-    <color name="bg_task_card_near_deadline">#60100B</color>
+    <color name="bg_task_card_selected">#78624E</color>
+    <color name="bg_task_card_near_deadline">#B8872E</color>
+    <color name="bg_task_card_post_deadline">#9C3A24</color>
+    <color name="task_card_icon">#FFFFFF</color>
+
 
 
     <color name="text_primary">#C5C5C5</color>

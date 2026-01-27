@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "293343384224",
+    "firebase_url": "https://stopdelaying-d80bd-default-rtdb.firebaseio.com",
+    "project_id": "stopdelaying-d80bd",
+    "storage_bucket": "stopdelaying-d80bd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293343384224:android:610489a901a5db7fffefc5",
+        "android_client_info": {
+          "package_name": "com.example.procrastination"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFsStEosTNoVluJFECAEnEZNwL4R0ne6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
