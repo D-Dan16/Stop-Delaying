@@ -7,12 +7,10 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.view.View;
-import androidx.cardview.widget.CardView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
-import androidx.work.Data;
 
 import com.example.procrastination.R;
 
@@ -22,8 +20,7 @@ import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
-import stop_delaying.utils.notifications_and_scheduling.NotifBroadcastNames;
-import stop_delaying.utils.notifications_and_scheduling.NotificationWorker;
+import stop_delaying.utils.Utils;
 import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
@@ -55,8 +52,10 @@ final class InsertCardResponsiveness {
             if (task.isTaskSelected())
                 return false;
 
-            ((CardView) v).setCardBackgroundColor(v.getResources().getColor(R.color.bg_task_card_selected, null));
             task.setTaskSelected(true);
+
+            // Set background based on the task's state
+            Utils.updateTaskCardBackgroundColor(holder, task);
 
             adapter.notifyStartSelection();
             adapter.notifySelectionChanged();
@@ -78,9 +77,10 @@ final class InsertCardResponsiveness {
                 return;
 
             // Toggle selection state
-            boolean nowSelected = !task.isTaskSelected();
-            task.setTaskSelected(nowSelected);
-            ((CardView) v).setCardBackgroundColor(v.getResources().getColor(nowSelected ? R.color.bg_task_card_selected : R.color.bg_task_card, null));
+            task.setTaskSelected(!task.isTaskSelected());
+
+            // Set background based on the task's state
+            Utils.updateTaskCardBackgroundColor(holder, task);
 
             adapter.notifySelectionChanged();
         });
@@ -128,19 +128,6 @@ final class InsertCardResponsiveness {
                 task.setTaskNotifying(true);
                 Toast.makeText(bellNotifButton.getContext(), "Notification alarm scheduled", Toast.LENGTH_SHORT).show();
                 ((ImageView) bellNotifButton).setImageResource(R.drawable.ic_turn_notifs_on);
-
-                // Schedule a task for changing a task card's color upon hitting the deadline.
-                Intent cardColorIntent = new Intent(bellNotifButton.getContext(), TasksFragment.class)
-                        .setAction(SET_CARD_COLOR_TO_POST_DEADLINE)
-                        .putExtra(EXTRA_TASK_HASH_CODE, task.hashCode());
-
-                TaskScheduler.schedule(
-                        bellNotifButton.getContext(),
-                        cardColorIntent,
-                        calculateScheduleDelay(0, task.getDueTimeOfDay(), task.getDueDate()),
-                        task.hashCode()
-                );
-
             } else {
                 TaskScheduler.cancelNotificationAlarm(bellNotifButton.getContext(), task.hashCode());
                 task.setTaskNotifying(false);
