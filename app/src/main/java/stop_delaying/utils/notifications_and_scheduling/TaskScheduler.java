@@ -2,7 +2,6 @@ package stop_delaying.utils.notifications_and_scheduling;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -13,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskScheduler {
     private static final String TAG = TaskScheduler.class.getName();
-
     private static boolean cannotSchedule(long delay) {
         return delay < 0;
     }
@@ -37,7 +35,6 @@ public class TaskScheduler {
                 .build();
         
         WorkManager.getInstance(context).enqueue(genericActionWorkRequest);
-        Log.d(TAG, "Generic action scheduled (ReqCode: " + requestCode + ", Time: " + scheduleDelay + ", Intent: " + intent.toUri(0) + ")");
 
         return true;
     }
@@ -54,10 +51,8 @@ public class TaskScheduler {
             int notificationPriority,
             String channelId
     ) {
-        if (scheduleDelays.size() != listOfNotificationTitles.size()) {
-            Log.e(TAG, "Number of trigger times and notification titles do not match.");
+        if (scheduleDelays.size() != listOfNotificationTitles.size())
             return false;
-        }
 
         for (int i = 0; i < scheduleDelays.size(); i++) {
             long scheduleDelay = scheduleDelays.get(i);
@@ -108,14 +103,12 @@ public class TaskScheduler {
                 .build();
 
         WorkManager.getInstance(context).enqueue(notificationWorkRequest);
-        Log.d(TAG, "Work scheduled (ReqCode: " + requestCode + ", Time: " + scheduleDelay + ", Title: " + notificationTitle + ")");
 
         return true;
     }
 
     public static boolean cancelNotificationAlarm(Context context, int requestCode) {
         WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(requestCode));
-        Log.d(TAG, "WorkManager alarm cancelled (ReqCode: " + requestCode + ")");
         return true;
     }
 }

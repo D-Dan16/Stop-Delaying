@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.settings.SettingsFragment;
 import stop_delaying.utils.Utils;
 
 @SuppressLint("NotifyDataSetChanged")
@@ -85,6 +86,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             case CANCELED -> R.drawable.ic_canceled_task;
         });
 
+        // Set the notif button color based on if the the user has enabled (in-app) notifications or not.
+        holder.ivTaskNotification.setColorFilter(
+                SettingsFragment.isNotificationsDisabled()
+                        ? holder.itemView.getResources().getColor(R.color.task_card_icon_disabled, null)
+                        : holder.itemView.getResources().getColor(R.color.task_card_icon, null)
+        );
+
+
         // Set background based on the task's state
         Utils.updateTaskCardBackgroundColor(holder, task);
     }
@@ -95,6 +104,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         TextView tvTaskDueDate;
         TextView tvTaskDueTime;
         ImageView ivTaskStatus;
+        ImageView ivTaskNotification;
+
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,6 +114,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             tvTaskDueDate = itemView.findViewById(R.id.tv_task_due_date);
             tvTaskDueTime = itemView.findViewById(R.id.tv_task_due_time);
             ivTaskStatus = itemView.findViewById(R.id.iv_task_status);
+            ivTaskNotification = itemView.findViewById(R.id.iv_task_notification);
         }
     }
 

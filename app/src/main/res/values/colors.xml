@@ -12,6 +12,7 @@
     <color name="bg_task_card_near_deadline">#B8872E</color>
     <color name="bg_task_card_post_deadline">#9C3A24</color>
     <color name="task_card_icon">#FFFFFF</color>
+    <color name="task_card_icon_disabled">#242424</color>
 
 
 

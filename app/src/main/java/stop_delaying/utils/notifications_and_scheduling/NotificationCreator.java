@@ -32,7 +32,9 @@ public class NotificationCreator {
     ) {
         // when clicking on the notif, the user goes to this activity.
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, 0, intent,
+                context,
+                0,
+                intent,
                 PendingIntent.FLAG_IMMUTABLE
         );
 

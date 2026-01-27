@@ -384,14 +384,10 @@ public class TasksFragment extends Fragment {
                     tilTaskDescription.setError("Description is required.");
                     return;
                 }
-                if (dialog.<TextView>findViewById(R.id.tvSelectedDate)
-                        .getText()
-                        .equals("No Date Set")
-                        || dialog.<TextView>findViewById(R.id.tvSelectedTime)
-                        .getText()
-                        .equals("No Time Set")) {
-                    Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT)
-                            .show();
+                if (dialog.<TextView>findViewById(R.id.tvSelectedDate).getText().equals("No Date Set") ||
+                    dialog.<TextView>findViewById(R.id.tvSelectedTime).getText().equals("No Time Set"))
+                {
+                    Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //</editor-fold>
