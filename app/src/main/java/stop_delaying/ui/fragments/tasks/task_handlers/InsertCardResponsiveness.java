@@ -53,6 +53,8 @@ public final class InsertCardResponsiveness {
             if (task.isTaskSelected())
                 return false;
 
+            task.setTaskSelected(true);
+
             // Set background based on the task's state
             Utils.updateTaskCardBackgroundColor(holder, task);
 
