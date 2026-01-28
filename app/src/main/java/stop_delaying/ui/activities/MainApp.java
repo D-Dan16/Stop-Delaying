@@ -1,8 +1,10 @@
 package stop_delaying.ui.activities;
 
 import android.os.Bundle;
+import android.content.Intent; // Import Intent
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,7 +17,10 @@ import stop_delaying.ui.fragments.home.ProcrastinationFragment;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 import stop_delaying.ui.fragments.home.TipsFragment;
+import stop_delaying.ui.fragments.tasks.task_handlers.InsertCardResponsiveness;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Objects;
 
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {
     BottomNavigationView bottomNavigationView;
@@ -43,7 +48,7 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         linksFragment = new LinksFragment();
         tipsFragment = new TipsFragment();
 
-        replaceFragment(homeFragment);
+        selectWantedFragment(getIntent());
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -62,6 +67,31 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
             }
             return false;
         });
+    }
+
+    @Override protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        selectWantedFragment(intent);
+    }
+
+    private void selectWantedFragment(@NonNull Intent intent) {
+        // Check for intent extras to determine which fragment to load
+        // Cur use: for tapping on notifications, load the tasks fragment that is hold as a reference in the intent
+        if (!intent.hasExtra(InsertCardResponsiveness.EXTRA_FRAGMENT_TO_LOAD)) {
+            replaceFragment(homeFragment);
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        } else {
+            String fragmentToLoad = intent.getStringExtra(InsertCardResponsiveness.EXTRA_FRAGMENT_TO_LOAD);
+            //noinspection SwitchStatementWithTooFewBranches
+            switch (Objects.requireNonNull(fragmentToLoad)) {
+                case TasksFragment.NAME -> {
+                    replaceFragment(tasksFragment);
+                    bottomNavigationView.setSelectedItemId(R.id.nav_tasks);
+                }
+                default -> throw new IllegalStateException("Unexpected value: " + fragmentToLoad);
+            }
+        }
     }
 
     private void replaceFragment(Fragment fragment) {

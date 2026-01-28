@@ -19,6 +19,7 @@ import java.util.List;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
+import stop_delaying.ui.activities.MainApp; // Import MainApp
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 import stop_delaying.utils.Utils;
 import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
@@ -28,10 +29,10 @@ import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
  * Helper utility for attaching interaction behavior to a task card (inserted card)
  * such as long-press selection, tap-to-toggle selection, and notification toggle.
  */
-final class InsertCardResponsiveness {
+public final class InsertCardResponsiveness {
     private static final String SET_CARD_COLOR_TO_POST_DEADLINE = "stop_delaying.action.UPDATE_CARD_COLOR";
     private static final String EXTRA_TASK_HASH_CODE = "task_hash_code";
-
+    public static final String EXTRA_FRAGMENT_TO_LOAD = "stop_delaying.EXTRA_FRAGMENT_TO_LOAD";
     /**
      * Attaches all listeners to the provided task card view.
      */
@@ -105,9 +106,15 @@ final class InsertCardResponsiveness {
 
             // <editor-fold desc="Notification creation logic">
             if (!task.isTaskNotifying()) {
+                // Create an Intent to open MainApp and specify TasksFragment
+                Intent tapActionIntent = new Intent(bellNotifButton.getContext(), MainApp.class);
+                // this line makes it so that if i already have an instance of the MainApp activity, don't create it from scratch again. FLAG_ACTIVITY_SINGLE_TOP will call the onNewIntent() method of the activity.
+                tapActionIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                tapActionIntent.putExtra(EXTRA_FRAGMENT_TO_LOAD, TasksFragment.NAME);
+
                 var hasSucceededScheduling = TaskScheduler.scheduleNotificationAlarms(
                         bellNotifButton.getContext(),
-                        new Intent(bellNotifButton.getContext(), TasksFragment.class),
+                        tapActionIntent, // Use the modified intent
                         List.of(
                                 calculateScheduleDelay(24 * 3600, task.getDueTimeOfDay(), task.getDueDate()),
                                 calculateScheduleDelay(5 * 3600, task.getDueTimeOfDay(), task.getDueDate()),

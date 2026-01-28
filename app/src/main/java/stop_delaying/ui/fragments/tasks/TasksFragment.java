@@ -49,6 +49,7 @@ import android.os.Looper; // Added import for Looper
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
 public class TasksFragment extends Fragment {
+    public static final String NAME = "tasks_fragment_for_debugging";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
