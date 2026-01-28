@@ -1,6 +1,7 @@
 package stop_delaying.ui.activities;
 
 import android.content.Intent;
+import android.hardware.lights.LightsManager;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
 import java.util.Objects;
 
 import stop_delaying.utils.FBBranches;
@@ -132,6 +134,7 @@ public class Login extends AppCompatActivity {
 
     private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {
         Exception exception = task.getException();
+
         if (exception instanceof FirebaseAuthInvalidUserException || exception instanceof FirebaseAuthInvalidCredentialsException) {
             tilEmailLogin.setError("Invalid email or password");
             tilPasswordLogin.setError("Invalid email or password");

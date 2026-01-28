@@ -19,7 +19,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_tasks"
-                app:tint="@color/neon_orange"
+                app:tint="@color/task_card_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -57,7 +57,7 @@
         <ImageView
                 android:layout_width="28dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/turn_notifs_on"
+                app:srcCompat="@drawable/ic_turn_notifs_off"
                 android:id="@+id/iv_task_notification"
                 app:layout_constraintTop_toTopOf="@+id/iv_task_tts"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_task_tts"

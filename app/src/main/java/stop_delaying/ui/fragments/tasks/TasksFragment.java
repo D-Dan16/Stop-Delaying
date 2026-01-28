@@ -1,7 +1,6 @@
 package stop_delaying.ui.fragments.tasks;
 
-import static stop_delaying.utils.Utils.applyDimmingEffect;
-
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -23,12 +23,22 @@ import com.example.procrastination.R;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
+import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
+import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.concurrent.TimeUnit;
+import android.os.Handler;
+import android.os.Looper; // Added import for Looper
 
 /**
  * Parent controller fragment for the Tasks screen.
@@ -39,17 +49,43 @@ import com.google.android.material.textfield.TextInputLayout;
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
 public class TasksFragment extends Fragment {
-    TabLayout tabLayout;
-    ViewPager2 viewPager;
-    com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
-    FloatingActionButton fabMainToggle;
-    FloatingActionButton fabAddTask;
-    FloatingActionButton fabSearchTask;
-    FloatingActionButton fabAiAnalyze;
-
-    FloatingActionButton fabOrderBy;
+    public static final String NAME = "tasks_fragment_for_debugging";
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
+    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
+    private FloatingActionButton fabMainToggle;
+    private FloatingActionButton fabAddTask;
+    private FloatingActionButton fabSearchTask;
+    private FloatingActionButton fabAiAnalyze;
+    private FloatingActionButton fabOrderBy;
 
     private SelectionActionHandler curCardSelectionHandler;
+
+    // Handler and Runnable for periodic UI updates
+    private final Handler handler = new Handler(Looper.getMainLooper()); // Explicitly associated with the main looper
+    private final Runnable cardBackgroundUpdater = new Runnable() {
+        @SuppressLint("NotifyDataSetChanged")
+        @Override public void run() {
+            // Get the adapter for the currently active tab
+            // This will cause onBindViewHolder to be called for visible items,
+            // re-evaluating their deadline status and updating colors.
+            switch (viewPager.getCurrentItem()) {
+                case TaskTabIndices.TO_DO ->
+                        TasksToDoFragment.getAdapter().notifyDataSetChanged();
+                case TaskTabIndices.COMPLETED ->
+                        TasksCompletedFragment.getAdapter().notifyDataSetChanged();
+                case TaskTabIndices.CANCELED ->
+                        TasksCanceledFragment.getAdapter().notifyDataSetChanged();
+            }
+
+            // Update every 1 minute
+             handler.postDelayed(this, TimeUnit.MINUTES.toMillis(1));
+        }
+    };
+
 
     @Nullable
     @Override
@@ -75,6 +111,25 @@ public class TasksFragment extends Fragment {
         createTabLayoutLogic();
 
         registerActionButtons();
+
+        NotificationCreator.createNotificationChannel(
+                requireContext(),
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME,
+                NotificationManagerCompat.IMPORTANCE_DEFAULT,
+                NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION
+        );
+
+
+        // Start the deadline updater when the view is created
+        handler.post(cardBackgroundUpdater);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Stop the deadline updater when the view is destroyed to prevent memory leaks
+        handler.removeCallbacks(cardBackgroundUpdater);
     }
 
     /**
@@ -91,9 +146,8 @@ public class TasksFragment extends Fragment {
             // and then hide the selection bar.
             cardSelectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
             cardSelectionToolbar.setNavigationOnClickListener(v -> {
-                if (curCardSelectionHandler != null) {
+                if (curCardSelectionHandler != null)
                     curCardSelectionHandler.onEscape();
-                }
                 hideSelectionBar();
             });
 
@@ -152,9 +206,8 @@ public class TasksFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 // Ask the active tab to clear its selection, then hide the inline selection bar
-                if (curCardSelectionHandler != null) {
+                if (curCardSelectionHandler != null)
                     curCardSelectionHandler.onEscape();
-                }
                 hideSelectionBar();
             }
         });
@@ -173,12 +226,13 @@ public class TasksFragment extends Fragment {
     }
 
     // Selection toolbar controls for child tabs
+
     /**
      * Shows the inline selection toolbar (inline CAB) and sets its title/subtitle.
      * Called by child fragments when the first item gets selected.
      *
      * @param selectedCount current number of selected tasks
-     * @param handler action handler provided by the active tab to execute move/delete
+     * @param handler       action handler provided by the active tab to execute move/delete
      */
     public void showSelectionBar(int selectedCount, SelectionActionHandler handler) {
         this.curCardSelectionHandler = handler;
@@ -194,13 +248,10 @@ public class TasksFragment extends Fragment {
      * Auto-hides the selection bar when the count reaches zero.
      */
     public void updateSelectionCount(int selectedCount) {
-        if (cardSelectionToolbar != null && cardSelectionToolbar.getVisibility() == View.VISIBLE) {
-            if (selectedCount <= 0) {
-                hideSelectionBar();
-            } else {
+        if (cardSelectionToolbar != null && cardSelectionToolbar.getVisibility() == View.VISIBLE)
+            if (selectedCount <= 0) hideSelectionBar();
+            else
                 cardSelectionToolbar.setSubtitle(selectedCount + " selected");
-            }
-        }
     }
 
     /**
@@ -208,9 +259,8 @@ public class TasksFragment extends Fragment {
      * Child fragments are responsible for clearing their adapter selection state.
      */
     public void hideSelectionBar() {
-        if (cardSelectionToolbar != null) {
+        if (cardSelectionToolbar != null)
             cardSelectionToolbar.setVisibility(View.GONE);
-        }
         curCardSelectionHandler = null;
     }
 
@@ -221,7 +271,8 @@ public class TasksFragment extends Fragment {
                 fabSearchTask.show();
                 fabAiAnalyze.show();
                 fabOrderBy.show();
-            } else {
+            }
+            else {
                 fabAddTask.hide();
                 fabSearchTask.hide();
                 fabAiAnalyze.hide();
@@ -296,6 +347,7 @@ public class TasksFragment extends Fragment {
                 }
         ));
     }
+
     private void addNewTask() {
         fabAddTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">
@@ -333,8 +385,9 @@ public class TasksFragment extends Fragment {
                     tilTaskDescription.setError("Description is required.");
                     return;
                 }
-                if (dialog.<TextView>findViewById(R.id.tvSelectedDate).getText().equals("No Date Set")
-                        || dialog.<TextView>findViewById(R.id.tvSelectedTime).getText().equals("No Time Set")) {
+                if (dialog.<TextView>findViewById(R.id.tvSelectedDate).getText().equals("No Date Set") ||
+                    dialog.<TextView>findViewById(R.id.tvSelectedTime).getText().equals("No Time Set"))
+                {
                     Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT).show();
                     return;
                 }

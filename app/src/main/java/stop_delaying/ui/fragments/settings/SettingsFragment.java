@@ -90,10 +90,31 @@ public class SettingsFragment extends Fragment {
         updateUserInfoAtTop();
 
         // Set up listeners for various actions
+        setupToggleNotificationsListener();
         setupEditProfileListener();
         setupChangePasswordListener();
         setupDeleteUserListener();
         loggingOutListener();
+    }
+
+
+    private static boolean isNotificationsEnabled = true;
+    public static boolean isNotificationsDisabled() {
+        return !isNotificationsEnabled;
+    }
+
+    private void setupToggleNotificationsListener() {
+        switchAllowNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isNotificationsEnabled = isChecked;
+
+            Toast.makeText(
+                    getContext(),
+                    isChecked ? "Notifications enabled" : "Notifications disabled",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            //! Updating all cards' Notif button's color based on the new state will be done in the appropriate Tasks fragment..
+        });
     }
 
     private void updateUserInfoAtTop() {
@@ -104,9 +125,8 @@ public class SettingsFragment extends Fragment {
                 .child(fbUser.getUid())
                 .child(FBBranches.USER_NAME)
                 .get().addOnSuccessListener(snapshot -> {
-                    if (snapshot.exists() && snapshot.getValue() != null) {
+                    if (snapshot.exists() && snapshot.getValue() != null)
                         username.setText(snapshot.getValue().toString());
-                    }
                 });
 
             email.setText(fbUser.getEmail());
@@ -136,9 +156,8 @@ public class SettingsFragment extends Fragment {
 
             // Set the current username and email in the EditText fields
             usernameRef.get().addOnSuccessListener(snapshot -> {
-                if (snapshot.exists() && snapshot.getValue() != null) {
+                if (snapshot.exists() && snapshot.getValue() != null)
                     etUsername.setText(snapshot.getValue().toString());
-                }
             });
             etEmail.setText(fbUser.getEmail());
 
@@ -173,11 +192,12 @@ public class SettingsFragment extends Fragment {
                 // Update the user's email and username in Firebase
                 usernameRef.setValue(newUsername);
                 fbUser.verifyBeforeUpdateEmail(newEmail).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Verification email sent to " + newEmail, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getContext(), "Failed to send verification. Is the email real?",Toast.LENGTH_LONG).show();
-                    }
+                    if (task.isSuccessful())
+                        Toast.makeText(getContext(), "Verification email sent to " + newEmail, Toast.LENGTH_LONG)
+                             .show();
+                    else
+                        Toast.makeText(getContext(), "Failed to send verification. Is the email real?", Toast.LENGTH_LONG)
+                             .show();
                 });
             });
             //endregion
@@ -223,11 +243,12 @@ public class SettingsFragment extends Fragment {
 
                 // Update user's password in Firebase Authentication
                 fbUser.updatePassword(newPassword).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Password successfully updated.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), "Failed to update password.",Toast.LENGTH_LONG).show();
-                    }
+                    if (task.isSuccessful())
+                        Toast.makeText(getContext(), "Password successfully updated.", Toast.LENGTH_SHORT)
+                             .show();
+                    else
+                        Toast.makeText(getContext(), "Failed to update password.", Toast.LENGTH_LONG)
+                             .show();
                 });
             });
 
@@ -256,9 +277,8 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
                         // Navigate to the opening screen after account deletion
                         startActivity(new Intent(getContext(), OpeningScreen.class));
-                    } else {
+                    } else
                         Toast.makeText(getContext(), "User cannot be deleted.", Toast.LENGTH_SHORT).show();
-                    }
                 });
 
             });

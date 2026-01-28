@@ -1,4 +1,4 @@
-package stop_delaying.adapters;
+package stop_delaying.ui.fragments.tasks.task_handlers;
 
 import static java.text.MessageFormat.format;
 
@@ -10,125 +10,67 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
-import stop_delaying.models.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * RecyclerView adapter for task cards with built-in multi-selection support.
- * <p>
- * Selection UX:
- * - Long-press a card to enter selection mode and select it.
- * - While any item is selected, tapping a card toggles its selection state.
- */
+import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.settings.SettingsFragment;
+import stop_delaying.utils.Utils;
+
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
     private List<Task> hiddenTasks;
     private List<Task> visibleTasks;
-    private OnSelectionChangeListener selectionChangeListener;
-    private OnStartSelectionListener startSelectionListener;
+    private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
+    private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
 
     public TaskListAdapter(List<Task> taskList) {
         this.hiddenTasks = new ArrayList<>();
         this.visibleTasks = new ArrayList<>(taskList);
     }
 
-    //<editor-fold desc="Internal Interfaces">
-    /**
-     * Notifies listeners whenever the number of selected items changes.
-     */
-    public interface OnSelectionChangeListener {
-        void onSelectionChanged(int selectedCount);
-    }
-
-    /**
-     * Fired on the very first long-press that begins selection mode.
-     */
-    public interface OnStartSelectionListener {
-        void onStartSelection();
-    }
-
-    public void setOnSelectionChangeListener(OnSelectionChangeListener listener) {
+    public void setOnSelectionChangeListener(SelectionActionHandler.OnSelectionChangeListener listener) {
         this.selectionChangeListener = listener;
     }
 
-    public void setOnStartSelectionListener(OnStartSelectionListener listener) {
+    public void setOnStartSelectionListener(SelectionActionHandler.OnStartSelectionListener listener) {
         this.startSelectionListener = listener;
     }
-    //</editor-fold>
+
+    // Helper notifiers used by helper util to keep adapter encapsulation
+    public void notifySelectionChanged() {
+        if (selectionChangeListener != null)
+            selectionChangeListener.onSelectionChanged(getSelectedCount());
+    }
+
+    public void notifyStartSelection() {
+        if (startSelectionListener != null)
+            startSelectionListener.onStartSelection();
+    }
 
     @NonNull
     @Override
     /// Called when a new card task is being made.
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_card_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                                  .inflate(R.layout.task_card_item, parent, false);
         TaskViewHolder holder = new TaskViewHolder(view);
 
         //Add listeners for the card upon creation
-        addCardListeners(view, holder);
+        InsertCardResponsiveness.configureCardInteractions(view, holder, this);
 
         return holder;
     }
 
-
-
-    /**
-     * Attaches click and long-click listeners to a card view for selection behavior.
-     * - Long-click: starts selection mode and selects the item
-     * - Click (while any selection exists): toggles selection state
-     */
-    private void addCardListeners(View view, TaskViewHolder holder) {
-        // Long press to select and start CAB
-        view.setOnLongClickListener(v -> {
-            int position = holder.getBindingAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                Task task = visibleTasks.get(position);
-                if (!task.isTaskSelected()) {
-                    ((CardView) v).setCardBackgroundColor(v.getResources().getColor(R.color.bg_task_card_selected, null));
-                    task.setTaskSelected(true);
-
-                    if (startSelectionListener != null)
-                        startSelectionListener.onStartSelection();
-                    if (selectionChangeListener != null)
-                        selectionChangeListener.onSelectionChanged(getSelectedCount());
-
-                    return true;
-                }
-            }
-            return false;
-        });
-
-        // Tap to toggle selection off (or on if selection is active)
-        view.setOnClickListener(v -> {
-            int position = holder.getBindingAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                Task task = visibleTasks.get(position);
-                int currentSelected = getSelectedCount();
-                if (currentSelected > 0) {
-                    // Toggle selection state
-                    boolean nowSelected = !task.isTaskSelected();
-                    task.setTaskSelected(nowSelected);
-                    ((CardView) v).setCardBackgroundColor(v.getResources().getColor(nowSelected ? R.color.bg_task_card_selected : R.color.bg_task_card, null));
-
-                    if (selectionChangeListener != null)
-                        selectionChangeListener.onSelectionChanged(getSelectedCount());
-                }
-            }
-        });
-    }
-
-    @SuppressLint("SetTextI18n")
     @Override
     /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
+        // When u ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
         Task task = visibleTasks.get(position);
-
-        // holder.itemView.setVisibility(task.isVisible() ? View.VISIBLE : View.GONE);
 
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
@@ -144,12 +86,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             case CANCELED -> R.drawable.ic_canceled_task;
         });
 
-        // Set background based on task's selected state
-        int colorRes = task.isTaskSelected() ?
-                R.color.bg_task_card_selected :
-                R.color.bg_task_card;
+        // Set the notif button color based on if the the user has enabled (in-app) notifications or not.
+        holder.ivTaskNotification.setColorFilter(
+                SettingsFragment.isNotificationsDisabled()
+                        ? holder.itemView.getResources().getColor(R.color.task_card_icon_disabled, null)
+                        : holder.itemView.getResources().getColor(R.color.task_card_icon, null)
+        );
 
-        ((CardView) holder.itemView).setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(colorRes, null));
+
+        // Set background based on the task's state
+        Utils.updateTaskCardBackgroundColor(holder, task);
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -158,6 +104,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         TextView tvTaskDueDate;
         TextView tvTaskDueTime;
         ImageView ivTaskStatus;
+        ImageView ivTaskNotification;
+
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -166,6 +114,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             tvTaskDueDate = itemView.findViewById(R.id.tv_task_due_date);
             tvTaskDueTime = itemView.findViewById(R.id.tv_task_due_time);
             ivTaskStatus = itemView.findViewById(R.id.iv_task_status);
+            ivTaskNotification = itemView.findViewById(R.id.iv_task_notification);
         }
     }
 
@@ -192,9 +141,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public int getSelectedCount() {
         int count = 0;
-        for (Task t : visibleTasks) {
-            if (t.isTaskSelected()) count++;
-        }
+        for (Task t : visibleTasks)
+            if (t.isTaskSelected())
+                count++;
         return count;
     }
 
@@ -203,9 +152,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
-        for (Task t : visibleTasks) {
-            if (t.isTaskSelected()) selected.add(t);
-        }
+        for (Task t : visibleTasks)
+            if (t.isTaskSelected())
+                selected.add(t);
         return selected;
     }
 
@@ -222,32 +171,28 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public void removeSelectedTasks() {
         List<Integer> selected = new ArrayList<>();
-        for (int i = 0; i < visibleTasks.size(); i++) {
-            if (visibleTasks.get(i).isTaskSelected()) {
+        for (int i = 0; i < visibleTasks.size(); i++)
+            if (visibleTasks.get(i).isTaskSelected())
                 selected.add(i);
-            }
-        }
 
-        for (int selectedTask : selected) {
+        for (int selectedTask : selected)
             notifyItemRemoved(selectedTask);
-        }
 
         visibleTasks.removeIf(Task::isTaskSelected);
     }
 
     public void filterTasks(String query) {
-        if (query == null || query.isEmpty()) return;
+        if (query == null || query.isEmpty())
+            return;
 
         hiddenTasks.clear();
 
-        for (Task task : visibleTasks) {
+        for (Task task : visibleTasks)
             if (
                 !task.getTitle().toLowerCase().contains(query.toLowerCase().trim()) &&
                 !task.getDescription().toLowerCase().contains(query.toLowerCase().trim())
-            ) {
-               hiddenTasks.add(task);
-            }
-        }
+            )
+                hiddenTasks.add(task);
 
         visibleTasks.removeAll(hiddenTasks);
         notifyDataSetChanged();
@@ -260,4 +205,3 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         notifyDataSetChanged();
     }
 }
-

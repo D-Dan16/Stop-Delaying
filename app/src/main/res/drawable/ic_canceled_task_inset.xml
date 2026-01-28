@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Made by: -->
+<!--  "https://www.flaticon.com/free-icons/reject" title="reject icons">Reject icons created by Freepik - Flaticon-->
+
+
+<!-- Wrapper to visually reduce the size of ic_canceled_task without changing the asset. 
+     Adjust the inset values if you want the icon slightly larger/smaller. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_canceled_task"
+    android:insetLeft="4dp"
+    android:insetTop="4dp"
+    android:insetRight="4dp"
+    android:insetBottom="4dp" />
