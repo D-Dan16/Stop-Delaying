@@ -1,6 +1,9 @@
 package stop_delaying.models;
 
+import java.util.UUID;
+
 public class Task {
+    private String taskId;
     private String title;
     private String description;
     private Date dueDate;
@@ -16,6 +19,7 @@ public class Task {
     }
 
     public Task(String title, String description, Date dueDate, TimeOfDay dueTimeOfDay, TaskStatus status) {
+        this.taskId = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -23,6 +27,14 @@ public class Task {
         this.status = status;
         this.isTaskSelected = false;
         this.isTaskNotifying = false;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getTitle() {

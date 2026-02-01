@@ -83,28 +83,25 @@ public class Register extends AppCompatActivity {
             String confirmPassword = Objects.requireNonNull(etConfirmPasswordRegister.getText()).toString();
             String userName = Objects.requireNonNull(etUsernameRegister.getText()).toString().trim();
 
-            if (!validateInput(email, password, confirmPassword, userName)) {
+            if (!validateInput(email, password, confirmPassword, userName))
                 return;
-            }
 
             Toast.makeText(Register.this, "Signing Up", Toast.LENGTH_SHORT).show();
 
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser fbUser = mAuth.getCurrentUser();
-                            createUserAndNextActivity(Objects.requireNonNull(fbUser).getUid(), userName);
-                        } else {
-                            Exception e = task.getException();
-                            if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                tilEmailRegister.setError("Invalid email format.");
-                            } else if (e instanceof FirebaseAuthUserCollisionException) {
-                                tilEmailRegister.setError("This email is already in use.");
-                            } else {
-                                Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser fbUser = mAuth.getCurrentUser();
+                        createUserAndNextActivity(Objects.requireNonNull(fbUser).getUid(), userName);
+                    } else {
+                        Exception e = task.getException();
+                        if (e instanceof FirebaseAuthInvalidCredentialsException)
+                            tilEmailRegister.setError("Invalid email format.");
+                        else if (e instanceof FirebaseAuthUserCollisionException)
+                            tilEmailRegister.setError("This email is already in use.");
+                        else
+                            Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    }
+                });
         });
     }
 
