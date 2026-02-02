@@ -51,6 +51,7 @@ public interface SelectionActionHandler {
             t.setTaskSelected(false);
             t.setStatus(status);
         }
+
         switch (status) {
             case TODO -> TasksToDoFragment.addTasks(selected);
             case COMPLETED -> TasksCompletedFragment.addTasks(selected);

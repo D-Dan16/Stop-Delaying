@@ -10,12 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -29,6 +29,7 @@ import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
+import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.FBBranches;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
@@ -38,14 +39,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper; // Added import for Looper
@@ -412,7 +408,8 @@ public class TasksFragment extends Fragment {
                 //<editor-fold desc="Handle the task creation logic here">
                 Toast.makeText(requireContext(), "Task added: " + title, Toast.LENGTH_LONG).show();
 
-                TasksToDoFragment.addTaskFromUser(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
+                TasksViewModel viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+                viewModel.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
 
                 // Dismiss the dialog
                 DialogFragment addTaskDialog = (DialogFragment) getParentFragmentManager().findFragmentByTag("custom_popup");
@@ -433,33 +430,6 @@ public class TasksFragment extends Fragment {
 
         DatabaseReference tasksOfUserNode = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS+"/"+fbUser.getUid());
 
-        tasksOfUserNode.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Task> todoTasks = new ArrayList<>();
-                List<Task> completedTasks = new ArrayList<>();
-                List<Task> canceledTasks = new ArrayList<>();
-
-                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
-                    Task task = taskSnapshot.getValue(Task.class);
-                    if (task != null)
-                        switch (task.getStatus()) {
-                            case TODO -> todoTasks.add(task);
-                            case COMPLETED -> completedTasks.add(task);
-                            case CANCELED -> canceledTasks.add(task);
-                            default -> throw new IllegalStateException("Unexpected value: " + task.getStatus());
-                        }
-                }
-
-                TasksToDoFragment.addTasks(todoTasks);
-                TasksCompletedFragment.addTasks(completedTasks);
-                TasksCanceledFragment.addTasks(canceledTasks);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle potential database errors here
-            }
-        });
+        ;
     }
 }

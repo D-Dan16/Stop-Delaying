@@ -23,14 +23,12 @@ import stop_delaying.utils.Utils;
 
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
-    private List<Task> hiddenTasks;
-    private List<Task> visibleTasks;
+    private final TasksViewModel.TaskLists taskLists;
     private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
     private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
 
-    public TaskListAdapter(List<Task> taskList) {
-        this.hiddenTasks = new ArrayList<>();
-        this.visibleTasks = new ArrayList<>(taskList);
+    public TaskListAdapter(TasksViewModel.TaskLists taskLists) {
+        this.taskLists = taskLists;
     }
 
     public void setOnSelectionChangeListener(SelectionActionHandler.OnSelectionChangeListener listener) {
@@ -70,7 +68,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         // When u ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
-        Task task = visibleTasks.get(position);
+        Task task = taskLists.visibleTasks().get(position);
 
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
@@ -118,22 +116,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         }
     }
 
-    public List<Task> getVisibleTasks() {
-        return visibleTasks;
-    }
-
-    public List<Task> getHiddenTasks() {
-        return hiddenTasks;
-    }
-
     public void setTasks(List<Task> newTasks) {
-        this.hiddenTasks = new ArrayList<>();
-        this.visibleTasks = new ArrayList<>(newTasks);
+        taskLists.setAllTasks(newTasks);
         notifyDataSetChanged();
     }
 
     @Override public int getItemCount() {
-        return visibleTasks.size();
+        return taskLists.visibleTasks().size();
     }
 
     /**
@@ -141,7 +130,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public int getSelectedCount() {
         int count = 0;
-        for (Task t : visibleTasks)
+        for (Task t : taskLists.visibleTasks())
             if (t.isTaskSelected())
                 count++;
         return count;
@@ -152,7 +141,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
-        for (Task t : visibleTasks)
+        for (Task t : taskLists.visibleTasks())
             if (t.isTaskSelected())
                 selected.add(t);
         return selected;
@@ -162,7 +151,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      * Clears the selection flag on all tasks and refreshes the list UI.
      */
     public void clearSelection() {
-        visibleTasks.forEach(t -> t.setTaskSelected(false));
+        taskLists.clearSelection();
         notifyDataSetChanged();
     }
 
@@ -170,38 +159,29 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      * Removes all currently selected tasks from the adapter data and refreshes the list UI.
      */
     public void removeSelectedTasks() {
-        List<Integer> selected = new ArrayList<>();
-        for (int i = 0; i < visibleTasks.size(); i++)
-            if (visibleTasks.get(i).isTaskSelected())
-                selected.add(i);
+        List<Integer> selectedIndices = new ArrayList<>();
+        for (int i = 0; i < taskLists.visibleTasks().size(); i++)
+            if (taskLists.visibleTasks().get(i).isTaskSelected())
+                selectedIndices.add(i);
 
-        for (int selectedTask : selected)
-            notifyItemRemoved(selectedTask);
+        taskLists.removeSelectedTasks(); // This modifies the underlying list
 
-        visibleTasks.removeIf(Task::isTaskSelected);
+        // Notify items removed in reverse order to avoid index shifting issues
+        for (int i = selectedIndices.size() - 1; i >= 0; i--) {
+            notifyItemRemoved(selectedIndices.get(i));
+        }
     }
 
     public void filterTasks(String query) {
         if (query == null || query.isEmpty())
             return;
 
-        hiddenTasks.clear();
-
-        for (Task task : visibleTasks)
-            if (
-                !task.getTitle().toLowerCase().contains(query.toLowerCase().trim()) &&
-                !task.getDescription().toLowerCase().contains(query.toLowerCase().trim())
-            )
-                hiddenTasks.add(task);
-
-        visibleTasks.removeAll(hiddenTasks);
+        taskLists.filterTasks(query);
         notifyDataSetChanged();
     }
 
     public void unfilterTasks() {
-        visibleTasks.addAll(hiddenTasks);
-        hiddenTasks.clear();
-
+        taskLists.unfilterTasks();
         notifyDataSetChanged();
     }
 }
