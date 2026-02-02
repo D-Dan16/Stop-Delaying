@@ -146,11 +146,11 @@ public class Register extends AppCompatActivity {
         User currentUser = new User(userName,0,0);
         DatabaseReference userNode = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);
         userNode.setValue(currentUser)
-        .addOnCompleteListener(aVoid -> {
-            Toast.makeText(Register.this, "User created successfully.", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(Register.this, MainApp.class));
-            finish();
-        })
-        .addOnFailureListener(e -> Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show());
+            .addOnCompleteListener(aVoid -> {
+                Toast.makeText(Register.this, "User created successfully.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Register.this, MainApp.class));
+                finish();
+            })
+            .addOnFailureListener(e -> Toast.makeText(Register.this, "Failed to create user in database.", Toast.LENGTH_SHORT).show());
     }
 }

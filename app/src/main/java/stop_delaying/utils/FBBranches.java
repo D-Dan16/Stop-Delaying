@@ -19,7 +19,6 @@ public final class FBBranches {
         public static final String TASK_DUE_DATE = "task_due_date";
         public static final String TASK_DUE_TIME_OF_DAY = "task_due_time_of_day";
         public static final String TASK_STATUS = "task_status";
-        public static final String TASK_SELECTED = "task_selected";
         public static final String TASK_NOTIFYING = "task_notifying";
     }
 }

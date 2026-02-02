@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
@@ -29,13 +30,22 @@ import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.FBBranches;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper; // Added import for Looper
@@ -120,9 +130,10 @@ public class TasksFragment extends Fragment {
                 NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION
         );
 
-
         // Start the deadline updater when the view is created
         handler.post(cardBackgroundUpdater);
+
+        fetchUserTasks();
     }
 
     @Override
@@ -225,8 +236,8 @@ public class TasksFragment extends Fragment {
         addNewTask();
     }
 
-    // Selection toolbar controls for child tabs
 
+    // Selection toolbar controls for child tabs
     /**
      * Shows the inline selection toolbar (inline CAB) and sets its title/subtitle.
      * Called by child fragments when the first item gets selected.
@@ -414,4 +425,41 @@ public class TasksFragment extends Fragment {
         }));
     }
 
+
+    private void fetchUserTasks() {
+        var fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (fbUser == null)
+            return;
+
+        DatabaseReference tasksOfUserNode = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS+"/"+fbUser.getUid());
+
+        tasksOfUserNode.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Task> todoTasks = new ArrayList<>();
+                List<Task> completedTasks = new ArrayList<>();
+                List<Task> canceledTasks = new ArrayList<>();
+
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    Task task = taskSnapshot.getValue(Task.class);
+                    if (task != null)
+                        switch (task.getStatus()) {
+                            case TODO -> todoTasks.add(task);
+                            case COMPLETED -> completedTasks.add(task);
+                            case CANCELED -> canceledTasks.add(task);
+                            default -> throw new IllegalStateException("Unexpected value: " + task.getStatus());
+                        }
+                }
+
+                TasksToDoFragment.addTasks(todoTasks);
+                TasksCompletedFragment.addTasks(completedTasks);
+                TasksCanceledFragment.addTasks(canceledTasks);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle potential database errors here
+            }
+        });
+    }
 }

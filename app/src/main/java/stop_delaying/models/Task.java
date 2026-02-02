@@ -18,6 +18,9 @@ public class Task {
         CANCELED
     }
 
+    public Task() {
+    }
+
     public Task(String title, String description, Date dueDate, TimeOfDay dueTimeOfDay, TaskStatus status) {
         this.taskId = UUID.randomUUID().toString();
         this.title = title;
