@@ -1,8 +1,8 @@
 package stop_delaying.ui.activities;
 
 import android.content.Intent;
-import android.hardware.lights.LightsManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
 import java.util.Objects;
 
 import stop_delaying.utils.FBBranches;
@@ -108,28 +107,30 @@ public class Login extends AppCompatActivity {
 
     private void executeSignIn() {
         FirebaseUser fbUser = mAuth.getCurrentUser();
-        if (fbUser != null) {
-            String uid = fbUser.getUid();
-            usersDBRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User currentUser = dataSnapshot.getValue(User.class);
-                    if (currentUser != null) {
-                        // You can add a singleton or another way to manage the user session here
-                        Toast.makeText(Login.this, "Sign in successful.", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(Login.this, MainApp.class));
-                        finish();
-                    } else {
-                        Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
-                    }
-                }
+        if (fbUser == null)
+            return;
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+        String uid = fbUser.getUid();
+        usersDBRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.getValue(User.class);
+                if (currentUser != null) {
+                    // You can add a singleton or another way to manage the user session here
+                    Toast.makeText(Login.this, "Sign in successful.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Login.this, MainApp.class));
+                    finish();
+                } else {
                     Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
+                Log.e("Login", "Database error: " + databaseError.getMessage());
+            }
+        });
     }
 
     private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {

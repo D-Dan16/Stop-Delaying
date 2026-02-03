@@ -30,8 +30,6 @@ import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
  * such as long-press selection, tap-to-toggle selection, and notification toggle.
  */
 public final class InsertCardResponsiveness {
-    private static final String SET_CARD_COLOR_TO_POST_DEADLINE = "stop_delaying.action.UPDATE_CARD_COLOR";
-    private static final String EXTRA_TASK_HASH_CODE = "task_hash_code";
     public static final String EXTRA_FRAGMENT_TO_LOAD = "stop_delaying.EXTRA_FRAGMENT_TO_LOAD";
     /**
      * Attaches all listeners to the provided task card view.
@@ -49,7 +47,7 @@ public final class InsertCardResponsiveness {
             if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
                 return false;
 
-            Task task = adapter.getVisibleTasks().get(position);
+            Task task = adapter.getSelectedTasks().get(position);
             if (task.isTaskSelected())
                 return false;
 
@@ -72,7 +70,7 @@ public final class InsertCardResponsiveness {
             if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
                 return;
 
-            Task task = adapter.getVisibleTasks().get(position);
+            Task task = adapter.getSelectedTasks().get(position);
             int currentSelected = adapter.getSelectedCount();
             if (currentSelected <= 0)
                 return;
@@ -94,7 +92,7 @@ public final class InsertCardResponsiveness {
             if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
                 return;
 
-            Task task = adapter.getVisibleTasks().get(position);
+            Task task = adapter.getSelectedTasks().get(position);
 
             // If there isn't permission to use the notification manager, ask for it, then return.
             if (ActivityCompat.checkSelfPermission(bellNotifButton.getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

@@ -49,19 +49,63 @@ public class TasksViewModel extends ViewModel {
     }
 
     public void addTask(Task task) {
-        TaskRepository.addTaskToFirebase(task);
-        // After adding to Firebase, re-fetch or update local lists to reflect change
+        TaskRepository.addTaskToFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override
+            public void onSuccess() {
+                loadTasks();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                System.err.println("Failed to add task: " + error);
+            }
+        });
+    }
+
+    public void addAllTasks(List<Task> task) {
+        for (Task t : task)
+            TaskRepository.addTaskToFirebase(t, new TaskRepository.TaskOperationCallback() {
+                @Override
+                public void onSuccess() {
+                    // Success for individual task
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    System.err.println("Failed to add task: " + error);
+                }
+            });
+
         loadTasks();
     }
 
+
     public void removeTask(Task task) {
-        TaskRepository.removeTaskFromFirebase(task);
-        loadTasks();
+        TaskRepository.removeTaskFromFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override
+            public void onSuccess() {
+                loadTasks();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                System.err.println("Failed to remove task: " + error);
+            }
+        });
     }
 
     public void updateTask(Task task) {
-        TaskRepository.updateTaskInFirebase(task);
-        loadTasks();
+        TaskRepository.updateTaskInFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override
+            public void onSuccess() {
+                loadTasks();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                System.err.println("Failed to update task: " + error);
+            }
+        });
     }
 
 

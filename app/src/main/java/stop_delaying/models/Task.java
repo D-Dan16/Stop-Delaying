@@ -1,15 +1,17 @@
 package stop_delaying.models;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.UUID;
 
 public class Task {
-    private String taskId;
+    @Exclude private String taskId;
     private String title;
     private String description;
     private Date dueDate;
     private TimeOfDay dueTimeOfDay;
     private TaskStatus status;
-    private boolean isTaskSelected;
+    @Exclude private boolean isTaskSelected;
     private boolean isTaskNotifying;
 
     public enum TaskStatus {
@@ -32,11 +34,11 @@ public class Task {
         this.isTaskNotifying = false;
     }
 
-    public String getTaskId() {
+    @Exclude public String getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(String taskId) {
+    @Exclude public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 
@@ -80,11 +82,11 @@ public class Task {
         this.status = status;
     }
 
-    public boolean isTaskSelected() {
+    @Exclude public boolean isTaskSelected() {
         return isTaskSelected;
     }
 
-    public void setTaskSelected(boolean taskSelected) {
+    @Exclude public void setTaskSelected(boolean taskSelected) {
         isTaskSelected = taskSelected;
     }
 
@@ -96,12 +98,12 @@ public class Task {
     }
 
 
-    public boolean isDeadlineNear() {
+    @Exclude public boolean isDeadlineNear() {
         long timeLeftUntilDeadline = dueDate.calcTimeUntil() + dueTimeOfDay.calcTimeUntil();
         return timeLeftUntilDeadline <= 24 * 3600L;
     }
 
-    public boolean hasReachedDeadline() {
+    @Exclude public boolean hasReachedDeadline() {
         long timeLeftUntilDeadline = dueDate.calcTimeUntil() + dueTimeOfDay.calcTimeUntil();
         return timeLeftUntilDeadline <= 0;
     }

@@ -1,5 +1,7 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +54,10 @@ public interface SelectionActionHandler {
             t.setStatus(status);
         }
 
-        switch (status) {
-            case TODO -> TasksToDoFragment.addTasks(selected);
-            case COMPLETED -> TasksCompletedFragment.addTasks(selected);
-            case CANCELED -> TasksCanceledFragment.addTasks(selected);
-        }
-
+        var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
+        
+        viewModel.addAllTasks(selected);
+        
         adapter.clearSelection();
         parent.hideSelectionBar();
     }

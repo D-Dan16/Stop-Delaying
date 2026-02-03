@@ -75,8 +75,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         var date = task.getDueDate();
         var timeOfDay = task.getDueTimeOfDay();
-        holder.tvTaskDueDate.setText(format("{0}/{1}/{2}", date.day(), date.month(), date.year()));
-        holder.tvTaskDueTime.setText(format("{0}:{1}", timeOfDay.hour(), timeOfDay.minute()));
+        holder.tvTaskDueDate.setText(format("{0}/{1}/{2}", date.getDay(), date.getMonth(), date.getYear()));
+        holder.tvTaskDueTime.setText(format("{0}:{1}", timeOfDay.getHour(), timeOfDay.getMinute()));
 
         holder.ivTaskStatus.setImageResource(switch (task.getStatus()) {
             case TODO -> R.drawable.ic_assignment;
