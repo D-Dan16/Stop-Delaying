@@ -2,6 +2,7 @@ package stop_delaying.ui.fragments.tasks;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,16 +32,12 @@ import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
-import stop_delaying.utils.FBBranches;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 import android.os.Handler;
@@ -55,10 +52,14 @@ import android.os.Looper; // Added import for Looper
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
 public class TasksFragment extends Fragment {
+    //<editor-fold desc="String Names">
     public static final String NAME = "tasks_fragment_for_debugging";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
+    //</editor-fold>
+
+    //<editor-fold desc="Views">
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
@@ -67,6 +68,9 @@ public class TasksFragment extends Fragment {
     private FloatingActionButton fabSearchTask;
     private FloatingActionButton fabAiAnalyze;
     private FloatingActionButton fabOrderBy;
+    //</editor-fold>
+
+    private TasksViewModel tasksViewModel;
 
     private SelectionActionHandler curCardSelectionHandler;
 
@@ -92,6 +96,13 @@ public class TasksFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Get the ViewModel instance
+        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -118,6 +129,8 @@ public class TasksFragment extends Fragment {
 
         registerActionButtons();
 
+        setupTaskObservers();
+
         NotificationCreator.createNotificationChannel(
                 requireContext(),
                 NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID,
@@ -128,8 +141,6 @@ public class TasksFragment extends Fragment {
 
         // Start the deadline updater when the view is created
         handler.post(cardBackgroundUpdater);
-
-        fetchUserTasks();
     }
 
     @Override
@@ -422,14 +433,23 @@ public class TasksFragment extends Fragment {
         }));
     }
 
+    /**
+     * creates an observer for the TaskViewModel that updates the different task adapters.
+     * This basically is responsible for all UI updates because it updates the adapters [the components that actually display the tasks].
+     */
+    private void setupTaskObservers() {
+        tasksViewModel.getUiTaskLists().observe(getViewLifecycleOwner(), taskListsMap -> {
+            if (taskListsMap == null)
+                return;
 
-    private void fetchUserTasks() {
-        var fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (fbUser == null)
-            return;
+            Log.d("TasksFragment", "Observer triggered - updating adapters");
+            Log.d("TasksFragment", "  TODO: " + taskListsMap.get(Task.TaskStatus.TODO).visibleTasks().size());
+            Log.d("TasksFragment", "  COMPLETED: " + taskListsMap.get(Task.TaskStatus.COMPLETED).visibleTasks().size());
+            Log.d("TasksFragment", "  CANCELED: " + taskListsMap.get(Task.TaskStatus.CANCELED).visibleTasks().size());
 
-        DatabaseReference tasksOfUserNode = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS+"/"+fbUser.getUid());
-
-        ;
+            TasksToDoFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.TODO).visibleTasks());
+            TasksCompletedFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.COMPLETED).visibleTasks());
+            TasksCanceledFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.CANCELED).visibleTasks());
+        });
     }
 }

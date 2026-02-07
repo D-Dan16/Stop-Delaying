@@ -1,5 +1,6 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static java.text.MessageFormat.format;
 
 import android.Manifest;
@@ -21,9 +22,9 @@ import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.activities.MainApp; // Import MainApp
 import stop_delaying.ui.fragments.tasks.TasksFragment;
-import stop_delaying.utils.Utils;
 import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
+
 
 /**
  * Helper utility for attaching interaction behavior to a task card (inserted card)
@@ -31,10 +32,14 @@ import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
  */
 public final class InsertCardResponsiveness {
     public static final String EXTRA_FRAGMENT_TO_LOAD = "stop_delaying.EXTRA_FRAGMENT_TO_LOAD";
+    static private TasksViewModel _tasksViewModel;
+
     /**
      * Attaches all listeners to the provided task card view.
      */
-    static void configureCardInteractions(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
+    static void configureCardInteractions(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter, TasksViewModel tasksViewModel) {
+        _tasksViewModel = tasksViewModel;
+
         holdCardForStartSelectionProcess(view, holder, adapter);
         toggleCardSelection(view, holder, adapter);
         toggleNotificationOfTask(view, holder, adapter);
@@ -44,17 +49,20 @@ public final class InsertCardResponsiveness {
     private static void holdCardForStartSelectionProcess(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.setOnLongClickListener(v -> {
             int position = holder.getBindingAdapterPosition();
-            if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
+            if (position == NO_POSITION)
                 return false;
 
-            Task task = adapter.getSelectedTasks().get(position);
+            Task task = adapter.getVisibleTasks().get(position);
+
+            // For cases where u are trying to select smth that already been selected
             if (task.isTaskSelected())
                 return false;
 
             task.setTaskSelected(true);
+            _tasksViewModel.updateTask(task);
 
             // Set background based on the task's state
-            Utils.updateTaskCardBackgroundColor(holder, task);
+            TasksViewModel.updateTaskCardBackgroundColor(holder, task);
 
             adapter.notifyStartSelection();
             adapter.notifySelectionChanged();
@@ -67,19 +75,20 @@ public final class InsertCardResponsiveness {
     private static void toggleCardSelection(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.setOnClickListener(v -> {
             int position = holder.getBindingAdapterPosition();
-            if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
+            if (position == NO_POSITION)
                 return;
 
-            Task task = adapter.getSelectedTasks().get(position);
+            Task task = adapter.getVisibleTasks().get(position);
             int currentSelected = adapter.getSelectedCount();
             if (currentSelected <= 0)
                 return;
 
             // Toggle selection state
             task.setTaskSelected(!task.isTaskSelected());
+            _tasksViewModel.updateTask(task);
 
             // Set background based on the task's state
-            Utils.updateTaskCardBackgroundColor(holder, task);
+            TasksViewModel.updateTaskCardBackgroundColor(holder, task);
 
             adapter.notifySelectionChanged();
         });
@@ -89,10 +98,10 @@ public final class InsertCardResponsiveness {
     private static void toggleNotificationOfTask(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.findViewById(R.id.iv_task_notification).setOnClickListener(bellNotifButton -> {
             int position = holder.getBindingAdapterPosition();
-            if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION)
+            if (position == NO_POSITION)
                 return;
 
-            Task task = adapter.getSelectedTasks().get(position);
+            Task task = adapter.getVisibleTasks().get(position);
 
             // If there isn't permission to use the notification manager, ask for it, then return.
             if (ActivityCompat.checkSelfPermission(bellNotifButton.getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -140,6 +149,8 @@ public final class InsertCardResponsiveness {
 
                 Toast.makeText(bellNotifButton.getContext(), "Notification alarm cancelled", Toast.LENGTH_SHORT).show();
             }
+
+            _tasksViewModel.updateTask(task);
             //</editor-fold>
         });
     }

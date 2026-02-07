@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
 
-import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
+import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * - Executes move/delete, then clears selection and hides the bar
  */
 public class TasksCompletedFragment extends Fragment {
-    private static final TaskListAdapter adapter = new TaskListAdapter(new TasksViewModel.TaskLists(new ArrayList<>(), new ArrayList<>()));
+    private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
     public static TaskListAdapter getAdapter() {
         return adapter;
     }

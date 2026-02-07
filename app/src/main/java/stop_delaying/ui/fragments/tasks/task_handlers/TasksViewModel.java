@@ -1,8 +1,16 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
-import androidx.lifecycle.LiveData;
+import android.graphics.Color;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.procrastination.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,64 +18,90 @@ import java.util.List;
 import java.util.Map;
 
 import stop_delaying.models.Task;
-
-
 /**
  * ViewModel responsible for managing task-related UI state and business logic.
  * It holds task lists, handles filtering, selection, and coordinates data flow between the UI and TaskRepository.
  */
 public class TasksViewModel extends ViewModel {
-    // LiveData to hold the categorized tasks for the UI
-    private final MutableLiveData<Map<Task.TaskStatus, List<Task>>> _categorizedTasks = new MutableLiveData<>();
-    // LiveData for holding filtered tasks (if filtering is applied)
-    private final MutableLiveData<Map<Task.TaskStatus, TaskLists>> _uiTaskLists = new MutableLiveData<>();
+    /// The data structure holding tasks categorized by their status for UI display
+    private final MutableLiveData<Map<Task.TaskStatus, Tasks>> _uiTaskLists = new MutableLiveData<>();
+    private final String TAG = "TasksViewModel";
 
-    // Being called by the ViewModelProvider
+    /// Being called by the ViewModelProvider
     public TasksViewModel() {
-        loadTasks();
-    }
-
-    public void loadTasks() {
-        TaskRepository.fetchUserTasks(new TaskRepository.TaskFetchCallback() {
+        TaskRepository.observeUserTasks(new TaskRepository.TaskFetchCallback() {
             @Override public void onTasksFetched(Map<Task.TaskStatus, List<Task>> fetchedCategorizedTasks) {
-                _categorizedTasks.setValue(fetchedCategorizedTasks);
+                for (Map.Entry<Task.TaskStatus, List<Task>> entry : fetchedCategorizedTasks.entrySet())
+                    Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue().size() + " tasks");
 
                 // Initialize UI TaskLists based on fetched data
-                Map<Task.TaskStatus, TaskLists> newUiTaskLists = new HashMap<>();
+                Map<Task.TaskStatus, Tasks> newUiTaskLists = new HashMap<>();
                 for (Map.Entry<Task.TaskStatus, List<Task>> entry : fetchedCategorizedTasks.entrySet())
-                    newUiTaskLists.put(entry.getKey(), new TaskLists(new ArrayList<>(entry.getValue()), new ArrayList<>()));
+                    newUiTaskLists.put(entry.getKey(), new Tasks(new ArrayList<>(entry.getValue()), new ArrayList<>()));
 
                 _uiTaskLists.setValue(newUiTaskLists);
+                Log.d(TAG, "UI TaskLists updated");
             }
 
             @Override public void onFetchFailed(String error) {
-                // Handle error, maybe update a LiveData for error messages
-                // For now, just log it
-                System.err.println("Failed to load tasks: " + error);
+                Log.e(TAG, "Failed to fetch tasks: " + error);
             }
         });
     }
 
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        TaskRepository.removeTasksListener();
+    }
+
+    /**
+     * Adds a task optimistically to the UI and saves it to Firebase.
+     * The real-time listener will handle the confirmation from Firebase.
+     */
     public void addTask(Task task) {
-        TaskRepository.addTaskToFirebase(task, new TaskRepository.TaskOperationCallback() {
-            @Override
-            public void onSuccess() {
-                loadTasks();
-            }
+        // Optimistic update - add to UI immediately
+        Map<Task.TaskStatus, Tasks> currentUiTaskLists = _uiTaskLists.getValue();
 
-            @Override
-            public void onFailure(String error) {
+        if (currentUiTaskLists != null) {
+            currentUiTaskLists.get(task.getStatus()).add(task);
+            _uiTaskLists.setValue(currentUiTaskLists);
+        }
+
+        // Save to Firebase - real-time listener will sync any conflicts
+        TaskRepository.addTaskToFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override public void onSuccess() {
+                // No action needed - listener handles updates
+            }
+            @Override public void onFailure(String error) {
                 System.err.println("Failed to add task: " + error);
+                // Could rollback optimistic update here if needed
             }
         });
     }
 
-    public void addAllTasks(List<Task> task) {
-        for (Task t : task)
+    /**
+     * Adds multiple tasks optimistically to the UI and saves them to Firebase.
+     * The real-time listener will handle the confirmation from Firebase.
+     */
+    public void addAllTasks(List<Task> tasks) {
+        // Optimistic update - add to UI immediately
+        Map<Task.TaskStatus, Tasks> currentUiTaskLists = _uiTaskLists.getValue();
+
+        if (currentUiTaskLists != null) {
+            for (Task task : tasks) {
+                Task.TaskStatus status = task.getStatus();
+                currentUiTaskLists.get(status).add(task);
+            }
+            _uiTaskLists.setValue(currentUiTaskLists);
+        }
+
+        // Save to Firebase - real-time listener will sync any conflicts
+        for (Task t : tasks)
             TaskRepository.addTaskToFirebase(t, new TaskRepository.TaskOperationCallback() {
                 @Override
                 public void onSuccess() {
-                    // Success for individual task
+                    // No action needed - listener handles updates
                 }
 
                 @Override
@@ -75,110 +109,74 @@ public class TasksViewModel extends ViewModel {
                     System.err.println("Failed to add task: " + error);
                 }
             });
-
-        loadTasks();
-    }
-
-
-    public void removeTask(Task task) {
-        TaskRepository.removeTaskFromFirebase(task, new TaskRepository.TaskOperationCallback() {
-            @Override
-            public void onSuccess() {
-                loadTasks();
-            }
-
-            @Override
-            public void onFailure(String error) {
-                System.err.println("Failed to remove task: " + error);
-            }
-        });
-    }
-
-    public void updateTask(Task task) {
-        TaskRepository.updateTaskInFirebase(task, new TaskRepository.TaskOperationCallback() {
-            @Override
-            public void onSuccess() {
-                loadTasks();
-            }
-
-            @Override
-            public void onFailure(String error) {
-                System.err.println("Failed to update task: " + error);
-            }
-        });
     }
 
 
     /**
-     * Represents a collection of tasks, divided into visible and hidden tasks.
-     * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (ie. To Do, Completed, Canceled).
-     *
-     * @param visibleTasks The list of tasks currently visible.
-     * @param hiddenTasks The list of tasks currently hidden.
+     * Removes a task optimistically from the UI and deletes it from Firebase.
+     * The real-time listener will handle the confirmation from Firebase.
      */
-    public record TaskLists(ArrayList<Task> visibleTasks, ArrayList<Task> hiddenTasks) {
-        public List<Task> getAllVisibleTasks() {
-                return visibleTasks;
+    public void removeTask(Task task) {
+        // Optimistic update - remove from UI immediately
+        Map<Task.TaskStatus, Tasks> currentUiTaskLists = _uiTaskLists.getValue();
+
+        if (currentUiTaskLists != null) {
+            currentUiTaskLists.get(task.getStatus()).visibleTasks().remove(task);
+            _uiTaskLists.setValue(currentUiTaskLists);
         }
 
-        public List<Task> getAllHiddenTasks() {
-            return hiddenTasks;
-        }
-
-        public void setAllTasks(List<Task> tasks) {
-            visibleTasks.clear();
-            visibleTasks.addAll(tasks);
-            hiddenTasks.clear();
-        }
-
-        public int getSelectedCount() {
-            int count = 0;
-            for (Task t : visibleTasks)
-                if (t.isTaskSelected())
-                    count++;
-            return count;
-        }
-
-        public List<Task> getSelectedTasks() {
-            List<Task> selected = new ArrayList<>();
-            for (Task t : visibleTasks)
-                if (t.isTaskSelected())
-                    selected.add(t);
-            return selected;
-        }
-
-        public void clearSelection() {
-            for (Task t : visibleTasks)
-                t.setTaskSelected(false);
-        }
-
-        public void removeSelectedTasks() {
-            visibleTasks.removeIf(Task::isTaskSelected);
-            hiddenTasks.removeIf(Task::isTaskSelected);
-        }
-
-        public void filterTasks(String query) {
-            if (query == null || query.isEmpty())
-                return;
-
-            hiddenTasks.clear();
-
-            for (Task t : visibleTasks) {
-                String q = query.toLowerCase().trim();
-                if (!t.getTitle().toLowerCase().contains(q) && !t.getDescription().toLowerCase().contains(q))
-                    hiddenTasks.add(t);
+        // Delete from Firebase - real-time listener will sync any conflicts
+        TaskRepository.removeTaskFromFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override public void onSuccess() {
+                // No action needed - listener handles updates
             }
+            @Override public void onFailure(String error) {
+                System.err.println("Failed to remove task: " + error);
+                // Could rollback optimistic update here if needed
+            }
+        });
+    }
 
-            visibleTasks.removeAll(hiddenTasks);
+    /**
+     * Updates a task's status and syncs to Firebase. Used when moving tasks between lists.
+     * The real-time listener will handle updating the UI in all lists.
+     */
+    public void updateTask(Task task) {
+        if (task.getTaskId() == null) {
+            Log.e(TAG, "Cannot update task with null taskId");
+            return;
         }
 
-        public void unfilterTasks() {
-            visibleTasks.addAll(hiddenTasks);
-            hiddenTasks.clear();
-        }
+        // Update in Firebase - real-time listener will handle UI updates
+        TaskRepository.updateTaskInFirebase(task, new TaskRepository.TaskOperationCallback() {
+            @Override public void onSuccess() {
+                Log.d(TAG, "Task updated successfully: " + task.getTaskId());
+            }
+            @Override public void onFailure(String error) {
+                Log.e(TAG, "Failed to update task: " + error);
+            }
+        });
+    }
 
-        public void add(Task task) {
-            visibleTasks.add(task);
-        }
+    /**
+     * Returns the LiveData for all tasks.
+     */
+    public MutableLiveData<Map<Task.TaskStatus, Tasks>> getUiTaskLists() {
+        return this._uiTaskLists;
+    }
+
+    public static void updateTaskCardBackgroundColor(@NonNull TaskListAdapter.TaskViewHolder holder, Task task) {
+        int colorRes = task.hasReachedDeadline() ? R.color.bg_task_card_post_deadline :
+                task.isDeadlineNear() ? R.color.bg_task_card_near_deadline :
+                        R.color.bg_task_card;
+
+        int baseColor = ContextCompat.getColor(holder.itemView.getContext(), colorRes);
+
+        ((CardView) holder.itemView).setCardBackgroundColor(
+                // Lighten the color if the task is selected
+                task.isTaskSelected()
+                        ? ColorUtils.blendARGB(baseColor, Color.LTGRAY, 0.3f)
+                        : baseColor
+        );
     }
 }

@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
@@ -19,16 +22,15 @@ import java.util.List;
 
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
-import stop_delaying.utils.Utils;
 
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
-    private final TasksViewModel.TaskLists taskLists;
+    private final Tasks tasks;
     private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
     private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
 
-    public TaskListAdapter(TasksViewModel.TaskLists taskLists) {
-        this.taskLists = taskLists;
+    public TaskListAdapter(Tasks taskLists) {
+        this.tasks = taskLists;
     }
 
     public void setOnSelectionChangeListener(SelectionActionHandler.OnSelectionChangeListener listener) {
@@ -59,7 +61,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         TaskViewHolder holder = new TaskViewHolder(view);
 
         //Add listeners for the card upon creation
-        InsertCardResponsiveness.configureCardInteractions(view, holder, this);
+        InsertCardResponsiveness.configureCardInteractions(view, holder, this, new ViewModelProvider((ViewModelStoreOwner) parent.getContext()).get(TasksViewModel.class));
 
         return holder;
     }
@@ -68,7 +70,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         // When u ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
-        Task task = taskLists.visibleTasks().get(position);
+        Task task = tasks.visibleTasks().get(position);
 
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
@@ -93,17 +95,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
 
         // Set background based on the task's state
-        Utils.updateTaskCardBackgroundColor(holder, task);
+        TasksViewModel.updateTaskCardBackgroundColor(holder, task);
     }
-
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
+
         TextView tvTaskTitle;
         TextView tvTaskDescription;
         TextView tvTaskDueDate;
         TextView tvTaskDueTime;
         ImageView ivTaskStatus;
         ImageView ivTaskNotification;
-
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,15 +115,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             ivTaskStatus = itemView.findViewById(R.id.iv_task_status);
             ivTaskNotification = itemView.findViewById(R.id.iv_task_notification);
         }
-    }
 
-    public void setTasks(List<Task> newTasks) {
-        taskLists.setAllTasks(newTasks);
+    }
+    public void setTasks(@Nullable List<Task> newTasks) {
+        if (newTasks == null) return;
+
+        tasks.setAllTasks(newTasks);
         notifyDataSetChanged();
     }
 
     @Override public int getItemCount() {
-        return taskLists.visibleTasks().size();
+        return tasks.visibleTasks().size();
     }
 
     /**
@@ -130,10 +133,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public int getSelectedCount() {
         int count = 0;
-        for (Task t : taskLists.visibleTasks())
+        for (Task t : tasks.visibleTasks())
             if (t.isTaskSelected())
                 count++;
         return count;
+    }
+
+    public List<Task> getVisibleTasks() {
+        return tasks.visibleTasks();
     }
 
     /**
@@ -141,17 +148,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
-        for (Task t : taskLists.visibleTasks())
+        for (Task t : tasks.visibleTasks())
             if (t.isTaskSelected())
                 selected.add(t);
+
         return selected;
     }
+
+
 
     /**
      * Clears the selection flag on all tasks and refreshes the list UI.
      */
     public void clearSelection() {
-        taskLists.clearSelection();
+        tasks.clearSelection();
         notifyDataSetChanged();
     }
 
@@ -160,28 +170,32 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public void removeSelectedTasks() {
         List<Integer> selectedIndices = new ArrayList<>();
-        for (int i = 0; i < taskLists.visibleTasks().size(); i++)
-            if (taskLists.visibleTasks().get(i).isTaskSelected())
+        for (int i = 0; i < tasks.visibleTasks().size(); i++)
+            if (tasks.visibleTasks().get(i).isTaskSelected())
                 selectedIndices.add(i);
 
-        taskLists.removeSelectedTasks(); // This modifies the underlying list
+        tasks.removeSelectedTasks(); // This modifies the underlying list
 
         // Notify items removed in reverse order to avoid index shifting issues
-        for (int i = selectedIndices.size() - 1; i >= 0; i--) {
+        for (int i = selectedIndices.size() - 1; i >= 0; i--)
             notifyItemRemoved(selectedIndices.get(i));
-        }
     }
 
     public void filterTasks(String query) {
         if (query == null || query.isEmpty())
             return;
 
-        taskLists.filterTasks(query);
+        tasks.filterTasks(query);
         notifyDataSetChanged();
     }
 
     public void unfilterTasks() {
-        taskLists.unfilterTasks();
+        tasks.unfilterTasks();
         notifyDataSetChanged();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        notifyItemInserted(tasks.visibleTasks().size() - 1);
     }
 }

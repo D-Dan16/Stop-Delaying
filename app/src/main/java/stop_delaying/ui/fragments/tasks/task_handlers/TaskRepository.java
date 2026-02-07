@@ -29,6 +29,9 @@ import stop_delaying.utils.FBBranches;
  * Acts as the single source of truth for task data, providing abstraction over database calls.
  */
 class TaskRepository {
+    private static ValueEventListener activeListener = null;
+    private static DatabaseReference activeListenerRef = null;
+
     public interface TaskFetchCallback {
         void onTasksFetched(Map<Task.TaskStatus, List<Task>> categorizedTasks);
         void onFetchFailed(String error);
@@ -39,18 +42,27 @@ class TaskRepository {
         void onFailure(String error);
     }
 
-    // --- Fetching from Firebase ---
-    public static void fetchUserTasks(@NonNull TaskFetchCallback callback) {
+    // --- Real-time Fetching from Firebase ---
+    /**
+     * Sets up a real-time listener for user tasks. The callback will be triggered whenever
+     * the tasks change in Firebase (add/update/delete), eliminating the need to manually refetch.
+     */
+    public static void observeUserTasks(@NonNull TaskFetchCallback callback) {
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fbUser == null) {
             callback.onFetchFailed("User not logged in.");
             return;
         }
+        Log.w("TaskRepository", "Setting up real-time listener for user: " + fbUser.getUid());
 
-        DatabaseReference tasksRef =
-                FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
+        // Remove previous listener if exists
+        removeTasksListener();
 
-        tasksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        activeListenerRef = FirebaseDatabase.getInstance()
+                .getReference(FBBranches.TASKS)
+                .child(fbUser.getUid());
+
+        activeListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Map<Task.TaskStatus, List<Task>> categorizedTasks = new HashMap<>();
@@ -60,6 +72,9 @@ class TaskRepository {
                 for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
                     Task task = taskSnapshot.getValue(Task.class);
                     if (task == null) continue;
+
+                    // Set taskId from Firebase key (since it's @Excluded from serialization)
+                    task.setTaskId(taskSnapshot.getKey());
 
                     Objects.requireNonNull(categorizedTasks.get(task.getStatus())).add(task);
                 }
@@ -72,50 +87,90 @@ class TaskRepository {
                 Log.e("TaskRepository", "Failed to fetch tasks", error.toException());
                 callback.onFetchFailed(error.getMessage());
             }
-        });
+        };
+
+        activeListenerRef.addValueEventListener(activeListener);
     }
 
-
+    /**
+     * Removes the active real-time listener. Should be called when the ViewModel is cleared
+     * or when the user logs out to prevent memory leaks.
+     */
+    public static void removeTasksListener() {
+        if (activeListenerRef != null && activeListener != null) {
+            activeListenerRef.removeEventListener(activeListener);
+            activeListener = null;
+            activeListenerRef = null;
+            Log.d("TaskRepository", "Removed real-time task listener");
+        }
+    }
 
     public static void addTaskToFirebase(Task task, @NonNull TaskOperationCallback callback) {
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (fbUser == null) {
-            callback.onFailure("User not logged in.");
-            return;
+        try {
+            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser == null) {
+                callback.onFailure("User not logged in.");
+                return;
+            }
+
+            DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS);
+
+            tasksRef.child(fbUser.getUid())
+                    .child(task.getTaskId())
+                    .setValue(task)
+                    .addOnSuccessListener(aVoid -> callback.onSuccess())
+                    .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+        } catch (Exception e) {
+            Log.e("TaskRepository", "Failed to add task", e);
         }
-
-        DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS);
-
-        tasksRef.child(fbUser.getUid())
-                .child(task.getTaskId())
-                .setValue(task)
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
     public static void removeTaskFromFirebase(Task task, @NonNull TaskOperationCallback callback) {
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (fbUser == null) {
-            callback.onFailure("User not logged in.");
-            return;
-        }
+        try {
+            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser == null) {
+                callback.onFailure("User not logged in.");
+                return;
+            }
 
-        DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
-        tasksRef.child(task.getTaskId()).removeValue()
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+            DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
+            tasksRef.child(task.getTaskId()).removeValue()
+                    .addOnSuccessListener(aVoid -> callback.onSuccess())
+                    .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+        } catch (Exception e) {
+            Log.e("TaskRepository", "Failed to remove task", e);
+        }
     }
 
     public static void updateTaskInFirebase(Task task, @NonNull TaskOperationCallback callback) {
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (fbUser == null) {
-            callback.onFailure("User not logged in.");
-            return;
-        }
+        try {
+            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser == null) {
+                callback.onFailure("User not logged in.");
+                return;
+            }
 
-        DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
-        tasksRef.child(task.getTaskId()).setValue(task)
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+            if (task.getTaskId() == null || task.getTaskId().isEmpty()) {
+                callback.onFailure("Task ID is null or empty.");
+                Log.e("TaskRepository", "Attempted to update task with null/empty taskId");
+                return;
+            }
+
+            Log.d("TaskRepository", "Updating task: " + task.getTaskId() + " with status: " + task.getStatus());
+
+            DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
+            tasksRef.child(task.getTaskId()).setValue(task)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("TaskRepository", "Task updated successfully: " + task.getTaskId());
+                        callback.onSuccess();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("TaskRepository", "Failed to update task in Firebase: " + e.getMessage());
+                        callback.onFailure(e.getMessage());
+                    });
+        } catch (Exception e) {
+            Log.e("TaskRepository", "Failed to update task", e);
+            callback.onFailure(e.getMessage());
+        }
     }
 }
