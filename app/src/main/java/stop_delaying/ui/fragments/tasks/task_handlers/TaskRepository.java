@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Objects;
 
-import kotlin.jvm.Throws;
 import stop_delaying.models.Task;
 import stop_delaying.utils.FBBranches;
 
@@ -28,17 +26,17 @@ import stop_delaying.utils.FBBranches;
  * Data repository responsible for handling all task-related operations with Firebase.
  * Acts as the single source of truth for task data, providing abstraction over database calls.
  */
-class TaskRepository {
+public class TaskRepository {
     private static ValueEventListener activeListener = null;
     private static DatabaseReference activeListenerRef = null;
 
     public interface TaskFetchCallback {
+
         void onTasksFetched(Map<Task.TaskStatus, List<Task>> categorizedTasks);
         void onFetchFailed(String error);
     }
-
     public interface TaskOperationCallback {
-        void onSuccess();
+        default void onSuccess() {}
         void onFailure(String error);
     }
 
@@ -91,7 +89,6 @@ class TaskRepository {
 
         activeListenerRef.addValueEventListener(activeListener);
     }
-
     /**
      * Removes the active real-time listener. Should be called when the ViewModel is cleared
      * or when the user logs out to prevent memory leaks.
@@ -172,5 +169,12 @@ class TaskRepository {
             Log.e("TaskRepository", "Failed to update task", e);
             callback.onFailure(e.getMessage());
         }
+    }
+
+    public static void removeUserTasksFromFirebase(String userUID, TaskOperationCallback taskOperationCallback) {
+        DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + userUID);
+        tasksRef.removeValue()
+                .addOnSuccessListener(aVoid -> taskOperationCallback.onSuccess())
+                .addOnFailureListener(e -> taskOperationCallback.onFailure(e.getMessage()));
     }
 }

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.procrastination.R;
 
+import stop_delaying.ui.fragments.tasks.task_handlers.TaskRepository;
 import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.FBBranches;
 import stop_delaying.ui.activities.OpeningScreen;
@@ -277,8 +279,20 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
                         // Navigate to the opening screen after account deletion
                         startActivity(new Intent(getContext(), OpeningScreen.class));
-                    } else
+                    } else {
                         Toast.makeText(getContext(), "User cannot be deleted.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
+
+                // We need to delete the user's tasks stored in the Firebase as well
+                TaskRepository.removeUserTasksFromFirebase(fbUser.getUid(),new TaskRepository.TaskOperationCallback() {
+                    @Override public void onSuccess() {
+                        Log.d("TaskRepository", "User tasks deleted successfully.");
+                    }
+                    @Override public void onFailure(String error) {
+                        Log.e("TaskRepository", "Failed to delete user tasks: " + error);
+                    }
                 });
 
             });
