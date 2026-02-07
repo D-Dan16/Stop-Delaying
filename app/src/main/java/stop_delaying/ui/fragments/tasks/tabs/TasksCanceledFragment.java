@@ -14,13 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
 
+import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
-import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tab fragment that shows tasks with status `Canceled`.
@@ -31,13 +30,10 @@ import java.util.List;
  * - Executes move/delete, then clears selection and hides the bar
  */
 public class TasksCanceledFragment extends Fragment {
-    private static final TaskListAdapter adapter = new TaskListAdapter(new ArrayList<>());
+    private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
 
     public static TaskListAdapter getAdapter() {
         return adapter;
-    }
-    public static List<Task> getTaskList() {
-        return adapter.getVisibleTasks();
     }
 
     @Override
@@ -81,10 +77,4 @@ public class TasksCanceledFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
     }
-
-    public static void addTasks(List<Task> tasks) {
-        getTaskList().addAll(tasks);
-        adapter.notifyDataSetChanged();
-    }
-
 }

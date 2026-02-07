@@ -2,6 +2,7 @@ package stop_delaying.ui.fragments.tasks;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -28,6 +30,7 @@ import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
+import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
@@ -49,10 +52,14 @@ import android.os.Looper; // Added import for Looper
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
 public class TasksFragment extends Fragment {
+    //<editor-fold desc="String Names">
     public static final String NAME = "tasks_fragment_for_debugging";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
     public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
+    //</editor-fold>
+
+    //<editor-fold desc="Views">
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private com.google.android.material.appbar.MaterialToolbar cardSelectionToolbar;
@@ -61,6 +68,9 @@ public class TasksFragment extends Fragment {
     private FloatingActionButton fabSearchTask;
     private FloatingActionButton fabAiAnalyze;
     private FloatingActionButton fabOrderBy;
+    //</editor-fold>
+
+    private TasksViewModel tasksViewModel;
 
     private SelectionActionHandler curCardSelectionHandler;
 
@@ -86,6 +96,13 @@ public class TasksFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Get the ViewModel instance
+        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -112,6 +129,8 @@ public class TasksFragment extends Fragment {
 
         registerActionButtons();
 
+        setupTaskObservers();
+
         NotificationCreator.createNotificationChannel(
                 requireContext(),
                 NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID,
@@ -119,7 +138,6 @@ public class TasksFragment extends Fragment {
                 NotificationManagerCompat.IMPORTANCE_DEFAULT,
                 NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION
         );
-
 
         // Start the deadline updater when the view is created
         handler.post(cardBackgroundUpdater);
@@ -225,8 +243,8 @@ public class TasksFragment extends Fragment {
         addNewTask();
     }
 
-    // Selection toolbar controls for child tabs
 
+    // Selection toolbar controls for child tabs
     /**
      * Shows the inline selection toolbar (inline CAB) and sets its title/subtitle.
      * Called by child fragments when the first item gets selected.
@@ -401,7 +419,8 @@ public class TasksFragment extends Fragment {
                 //<editor-fold desc="Handle the task creation logic here">
                 Toast.makeText(requireContext(), "Task added: " + title, Toast.LENGTH_LONG).show();
 
-                TasksToDoFragment.addTaskFromUser(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
+                TasksViewModel viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+                viewModel.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
 
                 // Dismiss the dialog
                 DialogFragment addTaskDialog = (DialogFragment) getParentFragmentManager().findFragmentByTag("custom_popup");
@@ -414,4 +433,23 @@ public class TasksFragment extends Fragment {
         }));
     }
 
+    /**
+     * creates an observer for the TaskViewModel that updates the different task adapters.
+     * This basically is responsible for all UI updates because it updates the adapters [the components that actually display the tasks].
+     */
+    private void setupTaskObservers() {
+        tasksViewModel.getUiTaskLists().observe(getViewLifecycleOwner(), taskListsMap -> {
+            if (taskListsMap == null)
+                return;
+
+            Log.d("TasksFragment", "Observer triggered - updating adapters");
+            Log.d("TasksFragment", "  TODO: " + taskListsMap.get(Task.TaskStatus.TODO).visibleTasks().size());
+            Log.d("TasksFragment", "  COMPLETED: " + taskListsMap.get(Task.TaskStatus.COMPLETED).visibleTasks().size());
+            Log.d("TasksFragment", "  CANCELED: " + taskListsMap.get(Task.TaskStatus.CANCELED).visibleTasks().size());
+
+            TasksToDoFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.TODO).visibleTasks());
+            TasksCompletedFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.COMPLETED).visibleTasks());
+            TasksCanceledFragment.getAdapter().setTasks(taskListsMap.get(Task.TaskStatus.CANCELED).visibleTasks());
+        });
+    }
 }

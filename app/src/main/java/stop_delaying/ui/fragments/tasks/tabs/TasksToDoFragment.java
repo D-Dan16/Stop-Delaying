@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
 
+import java.util.ArrayList;
+
+import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
-import stop_delaying.models.Task;
-import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tab fragment that shows tasks with status `To Do`.
@@ -32,10 +31,7 @@ import java.util.List;
  * - On action (move/delete), updates local list and delegates cross-tab moves, then clears selection and hides the bar.
  */
 public class TasksToDoFragment extends Fragment {
-    private static final TaskListAdapter adapter = new TaskListAdapter(new ArrayList<>());
-    public static List<Task> getTaskList() {
-        return adapter.getVisibleTasks();
-    }
+    private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
 
     public static TaskListAdapter getAdapter() {
         return adapter;
@@ -80,32 +76,6 @@ public class TasksToDoFragment extends Fragment {
             }
         });
 
-        loadDummyTasks();
-
         recyclerView.setAdapter(adapter);
-    }
-
-    public static void addTaskFromUser(Task task) {
-        getTaskList().add(task);
-        adapter.notifyDataSetChanged();
-    }
-
-    public static void addTasks(List<Task> tasks) {
-        getTaskList().addAll(tasks);
-        adapter.notifyDataSetChanged();
-    }
-
-    private static void loadDummyTasks() {
-        List<Task> taskList = getTaskList();
-        if (!taskList.isEmpty()) {
-            return;
-        }
-        // Create some dummy data
-        taskList.add(new Task("Code. Forever. :)", "No resting for dear Stav mwahahahaahhahaha", new stop_delaying.models.Date(26, 1, 2026), new TimeOfDay(0, 45), Task.TaskStatus.TODO));
-        taskList.add(new Task("Complete 2", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(28, 1, 2026), new TimeOfDay(3, 15), Task.TaskStatus.TODO));
-        taskList.add(new Task("Complete 3", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(28, 1, 2026), new TimeOfDay(3, 16), Task.TaskStatus.TODO));
-        taskList.add(new Task("Complete 4", "Finish the final report for the Q2 project.", new stop_delaying.models.Date(29, 1, 2026), new TimeOfDay(21, 6), Task.TaskStatus.TODO));
-
-        adapter.setTasks(taskList);
     }
 }

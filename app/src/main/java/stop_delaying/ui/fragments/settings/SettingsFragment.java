@@ -123,7 +123,7 @@ public class SettingsFragment extends Fragment {
             FirebaseDatabase.getInstance()
                 .getReference(FBBranches.USERS)
                 .child(fbUser.getUid())
-                .child(FBBranches.USER_NAME)
+                .child(FBBranches.Users.USER_NAME)
                 .get().addOnSuccessListener(snapshot -> {
                     if (snapshot.exists() && snapshot.getValue() != null)
                         username.setText(snapshot.getValue().toString());
@@ -152,7 +152,7 @@ public class SettingsFragment extends Fragment {
             DatabaseReference usernameRef = FirebaseDatabase.getInstance()
                     .getReference(FBBranches.USERS)
                     .child(fbUser.getUid())
-                    .child(FBBranches.USER_NAME);
+                    .child(FBBranches.Users.USER_NAME);
 
             // Set the current username and email in the EditText fields
             usernameRef.get().addOnSuccessListener(snapshot -> {
