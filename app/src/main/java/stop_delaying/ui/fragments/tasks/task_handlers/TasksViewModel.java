@@ -161,8 +161,12 @@ public class TasksViewModel extends ViewModel {
     /**
      * Returns the LiveData for all tasks.
      */
-    public MutableLiveData<Map<Task.TaskStatus, Tasks>> getUiTaskLists() {
+    public MutableLiveData<Map<Task.TaskStatus, Tasks>> getLiveData() {
         return this._uiTaskLists;
+    }
+
+    public Map<Task.TaskStatus, Tasks> getTasks() {
+        return this._uiTaskLists.getValue();
     }
 
     public static void updateTaskCardBackgroundColor(@NonNull TaskListAdapter.TaskViewHolder holder, Task task) {
