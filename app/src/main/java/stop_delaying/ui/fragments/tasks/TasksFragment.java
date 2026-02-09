@@ -30,8 +30,11 @@ import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
+import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.ai_recommendations.AnalysisResult;
+import stop_delaying.utils.ai_recommendations.TaskAnalyzer;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,6 +42,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper; // Added import for Looper
@@ -304,7 +310,35 @@ public class TasksFragment extends Fragment {
     }
 
     private void aiAnalyzeTasks() {
-        fabAiAnalyze.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze));
+        fabAiAnalyze.setOnClickListener(v -> {
+            // Collect only TO DO tasks (active tasks that need analysis)
+            TasksViewModel viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+            List<Task> todoTasks = new ArrayList<>(viewModel.getTasks().get(Task.TaskStatus.TODO).visibleTasks());
+
+            if (todoTasks.isEmpty()) {
+                Toast.makeText(requireContext(), "No tasks to analyze", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Analyze tasks
+            TaskAnalyzer analyzer = new TaskAnalyzer();
+            analyzer.analyzeTasks(todoTasks, new TaskAnalyzer.AnalysisCallback() {
+                @Override public void onSuccess(AnalysisResult result) {
+                    // Show results in dialog
+                    ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze,
+                            (dialogView) -> {
+                                TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
+                                if (tvAnalysisResult != null)
+                                    tvAnalysisResult.setText(result.getSummary());
+                            }
+                    );
+                }
+
+                @Override public void onError(String errorMessage) {
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     private void searchForTask() {
@@ -438,7 +472,7 @@ public class TasksFragment extends Fragment {
      * This basically is responsible for all UI updates because it updates the adapters [the components that actually display the tasks].
      */
     private void setupTaskObservers() {
-        tasksViewModel.getUiTaskLists().observe(getViewLifecycleOwner(), taskListsMap -> {
+        tasksViewModel.getLiveData().observe(getViewLifecycleOwner(), taskListsMap -> {
             if (taskListsMap == null)
                 return;
 
