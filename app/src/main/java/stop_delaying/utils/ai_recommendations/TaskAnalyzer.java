@@ -1,60 +1,104 @@
 package stop_delaying.utils.ai_recommendations;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.ai.FirebaseAI;
+import com.google.firebase.ai.GenerativeModel;
+import com.google.firebase.ai.java.GenerativeModelFutures;
+import com.google.firebase.ai.type.Content;
+import com.google.firebase.ai.type.GenerateContentResponse;
+import com.google.firebase.ai.type.GenerationConfig;
+import com.google.firebase.ai.type.GenerativeBackend;
+
+
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import stop_delaying.models.Task;
 
-/**
- * Analyzes tasks using AI to provide insights and recommendations.
- * Encapsulates all AI-related logic for task analysis.
- */
 public class TaskAnalyzer {
-    private static final AnalysisResult.Builder builder = new AnalysisResult.Builder();
 
-    /**
-     * Analyzes a list of tasks and provides insights.
-     *
-     * @param tasks    List of tasks to analyze
-     * @param callback Callback to handle the analysis result
-     */
+    private final Executor executor = Executors.newSingleThreadExecutor();
+
     public void analyzeTasks(List<Task> tasks, AnalysisCallback callback) {
+
         if (tasks == null || tasks.isEmpty()) {
             callback.onError("No tasks to analyze");
             return;
         }
 
-        // TODO: Implement AI analysis logic
-        // For now, provide a basic analysis structure
-        AnalysisResult result = performBasicAnalysis(tasks);
-        callback.onSuccess(result);
+
+        GenerationConfig config = new GenerationConfig.Builder()
+                .setTemperature(0.7f)
+                .build();
+
+        FirebaseAI ai = FirebaseAI.getInstance(GenerativeBackend.googleAI());
+        GenerativeModel gm = ai.generativeModel(
+                "gemini-1.5-flash",
+                config
+        );
+
+        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+
+
+        String prompt = buildPrompt(tasks);
+        Content content = new Content.Builder()
+                .addText(prompt)
+                .build();
+
+        ListenableFuture<GenerateContentResponse> response =
+                model.generateContent(content);
+
+        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            @Override
+            public void onSuccess(GenerateContentResponse result) {
+
+                String aiText = result.getText();
+
+                AnalysisResult analysisResult = new AnalysisResult.Builder()
+                        .setTotalTasks(tasks.size())
+                        .build();
+
+                new Handler(Looper.getMainLooper()).post(() ->
+                        callback.onSuccess(analysisResult));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                new Handler(Looper.getMainLooper()).post(() ->
+                        callback.onError(t.getMessage()));
+            }
+        }, executor);
     }
 
-    /**
-     * Performs basic statistical analysis of tasks.
-     * This is a placeholder that can be expanded with actual AI logic.
-     */
-    private AnalysisResult performBasicAnalysis(List<Task> tasks) {
-        int todoCount = 0;
-        int nearDeadlineCount = 0;
-        int overdueCount = 0;
+    private String buildPrompt(List<Task> tasks) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Analyze the following tasks and provide productivity insights:\n\n");
 
         for (Task task : tasks) {
-            todoCount++;
-            if (task.isDeadlineNear()) nearDeadlineCount++;
-            if (task.hasReachedDeadline()) overdueCount++;
+            sb.append("- ")
+                    .append(task.getTitle())
+                    .append(", Due: ")
+                    .append(task.getDueDate())
+                    .append(", Status: ")
+                    .append(task.getStatus())
+                    .append("\n");
         }
 
-        return builder
-                .setTotalTasks(tasks.size())
-                .setTodoCount(todoCount)
-                .setNearDeadlineCount(nearDeadlineCount)
-                .setOverdueCount(overdueCount)
-                .build();
+        sb.append("\nProvide:\n");
+        sb.append("1. Productivity analysis\n");
+        sb.append("2. Risk assessment\n");
+        sb.append("3. Action recommendations\n");
+
+        return sb.toString();
     }
 
-    /**
-     * Callback interface for handling analysis results.
-     */
     public interface AnalysisCallback {
         void onSuccess(AnalysisResult result);
         void onError(String errorMessage);
