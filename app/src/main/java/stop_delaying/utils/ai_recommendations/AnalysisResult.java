@@ -5,12 +5,14 @@ package stop_delaying.utils.ai_recommendations;
  * Contains insights and statistics about the analyzed tasks.
  */
 public class AnalysisResult {
+    private final String suggestedTasksToDo;
     private final int totalTasks;
     private final int todoCount;
     private final int nearDeadlineCount;
     private final int overdueCount;
 
-    private AnalysisResult(Builder builder) {
+    private AnalysisResult(String suggestedTasksToDo, Builder builder) {
+        this.suggestedTasksToDo = suggestedTasksToDo;
         this.totalTasks = builder.totalTasks;
         this.todoCount = builder.todoCount;
         this.nearDeadlineCount = builder.nearDeadlineCount;
@@ -47,16 +49,6 @@ public class AnalysisResult {
 
         // Add insights
         summary.append("\n💡 Insights:\n");
-        if (totalTasks == 0)
-            summary.append("• No active tasks. Great job! 🎉\n");
-        else {
-            if (overdueCount > 0)
-                summary.append("• You have ").append(overdueCount).append(" overdue task(s). Consider prioritizing them!\n");
-            if (nearDeadlineCount > 0)
-                summary.append("• ").append(nearDeadlineCount).append(" task(s) are due within 24 hours.\n");
-            if (overdueCount == 0 && nearDeadlineCount == 0)
-                summary.append("• All tasks are on track! Keep it up! ✨\n");
-        }
 
         return summary.toString();
     }
@@ -91,7 +83,7 @@ public class AnalysisResult {
         }
 
         public AnalysisResult build() {
-            return new AnalysisResult(this);
+            return new AnalysisResult("", this);
         }
     }
 }
