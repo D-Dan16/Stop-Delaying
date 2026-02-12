@@ -25,6 +25,7 @@ import com.example.procrastination.R;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
+import stop_delaying.ui.fragments.tasks.task_handlers.InsertCardResponsiveness;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
@@ -34,6 +35,7 @@ import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.ai_recommendations.AnalysisResult;
+import stop_delaying.utils.ai_recommendations.AnalysisResultHandler;
 import stop_delaying.utils.ai_recommendations.TaskAnalyzer;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
 
@@ -108,6 +110,7 @@ public class TasksFragment extends Fragment {
 
         // Get the ViewModel instance
         tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        InsertCardResponsiveness.setTasksViewModel(tasksViewModel);
     }
 
     @Nullable
@@ -312,30 +315,26 @@ public class TasksFragment extends Fragment {
     private void aiAnalyzeTasks() {
         fabAiAnalyze.setOnClickListener(v -> {
             // Collect only TO DO tasks (active tasks that need analysis)
-            TasksViewModel viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-            List<Task> todoTasks = new ArrayList<>(viewModel.getTasks().get(Task.TaskStatus.TODO).visibleTasks());
+            List<Task> todoTasks = new ArrayList<>(tasksViewModel.getTasks().get(Task.TaskStatus.TODO).visibleTasks());
 
-            if (todoTasks.isEmpty()) {
-                Toast.makeText(requireContext(), "No tasks to analyze", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            Toast.makeText(requireContext(), "Analyzing tasks... Popup soon", Toast.LENGTH_LONG).show();
 
             // Analyze tasks
-            TaskAnalyzer analyzer = new TaskAnalyzer();
-            analyzer.analyzeTasks(todoTasks, new TaskAnalyzer.AnalysisCallback() {
+            TaskAnalyzer.analyzeTasks(todoTasks, new TaskAnalyzer.AnalysisCallback() {
                 @Override public void onSuccess(AnalysisResult result) {
                     // Show results in dialog
                     ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze,
                             (dialogView) -> {
                                 TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
                                 if (tvAnalysisResult != null)
-                                    tvAnalysisResult.setText(result.getSummary());
+                                    tvAnalysisResult.setText(AnalysisResultHandler.getSummary(result));
                             }
                     );
                 }
 
                 @Override public void onError(String errorMessage) {
                     Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    Log.e("TasksFragment", "AI Analysis Error: " + errorMessage);
                 }
             });
         });
@@ -453,8 +452,7 @@ public class TasksFragment extends Fragment {
                 //<editor-fold desc="Handle the task creation logic here">
                 Toast.makeText(requireContext(), "Task added: " + title, Toast.LENGTH_LONG).show();
 
-                TasksViewModel viewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-                viewModel.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
+                tasksViewModel.addTask(new Task(title, description, dueDate, dueTime, Task.TaskStatus.TODO));
 
                 // Dismiss the dialog
                 DialogFragment addTaskDialog = (DialogFragment) getParentFragmentManager().findFragmentByTag("custom_popup");

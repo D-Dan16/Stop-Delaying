@@ -10,24 +10,11 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        // --- קוד מתוקן ל-Kotlin DSL ---
-        val properties = Properties()
-        val localPropertiesFile = project.rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
-        }
-
-        // שליפת המפתח בצורה בטוחה
-        val apiKey = properties.getProperty("apiKey") ?: ""
-        buildConfigField("String", "GEMINI_API_KEY", "\"$apiKey\"")
-        // ------------------------------
-
-
         applicationId = "com.example.procrastination"
         minSdk = 31
         targetSdk = 36
         versionCode = 1
-        versionName = "b1.1.0"
+        versionName = "b1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,10 +39,10 @@ android {
 }
 
 dependencies {
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+    implementation("com.google.firebase:firebase-ai")
     implementation("com.google.guava:guava:31.0.1-android")
-    implementation("com.google.firebase:firebase-ai:1.0.0")
-    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+    implementation("org.reactivestreams:reactive-streams:1.0.4")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-auth")
     implementation(libs.appcompat)

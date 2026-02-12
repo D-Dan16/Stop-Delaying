@@ -61,7 +61,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         TaskViewHolder holder = new TaskViewHolder(view);
 
         //Add listeners for the card upon creation
-        InsertCardResponsiveness.configureCardInteractions(view, holder, this, new ViewModelProvider((ViewModelStoreOwner) parent.getContext()).get(TasksViewModel.class));
+        InsertCardResponsiveness.configureCardInteractions(
+                view,
+                holder,
+                this
+        );
 
         return holder;
     }
