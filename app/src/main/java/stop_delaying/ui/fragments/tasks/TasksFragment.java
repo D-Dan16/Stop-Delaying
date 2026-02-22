@@ -1,6 +1,7 @@
 package stop_delaying.ui.fragments.tasks;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +34,6 @@ import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
-import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
 import stop_delaying.utils.ai_recommendations.AnalysisResult;
@@ -48,7 +48,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper; // Added import for Looper
@@ -152,6 +151,18 @@ public class TasksFragment extends Fragment {
                 NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION
         );
 
+        // Observe AI analysis progress from ViewModel
+        tasksViewModel.getAiAnalysisInProgress().observe(getViewLifecycleOwner(), isInProgress -> {
+            if (isInProgress) {
+                aiAnalysisProgress.setVisibility(View.VISIBLE);
+                aiAnalysisProgress.setProgress(0);
+                aiAnalysisProgress.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.progress_bar_animation));
+            } else {
+                aiAnalysisProgress.clearAnimation();
+                aiAnalysisProgress.setVisibility(View.GONE);
+            }
+        });
+
         // Start the deadline updater when the view is created
         handler.post(cardBackgroundUpdater);
     }
@@ -182,7 +193,7 @@ public class TasksFragment extends Fragment {
                 hideSelectionBar();
             });
 
-            // Route action clicks to the child fragment-provided handler.
+            // Route action clicks to the child fragment-provided handler.S
             cardSelectionToolbar.setOnMenuItemClickListener(item -> {
                 if (curCardSelectionHandler == null) return false;
                 int id = item.getItemId();
@@ -318,6 +329,12 @@ public class TasksFragment extends Fragment {
 
     private void aiAnalyzeTasks() {
         fabAiAnalyze.setOnClickListener(v -> {
+            // forbid a second analysis while the first one is still running
+            if (tasksViewModel.getAiAnalysisInProgress().getValue() == true) {
+                Toast.makeText(requireContext(), "Please wait for the current analysis to complete", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // Collect only TO DO tasks (active tasks that need analysis)
             List<Task> todoTasks = new ArrayList<>(tasksViewModel.getTasks().get(Task.TaskStatus.TODO).visibleTasks());
 
@@ -332,30 +349,33 @@ public class TasksFragment extends Fragment {
                 return;
             }
 
-            aiAnalysisProgress.setVisibility(View.VISIBLE);
-            aiAnalysisProgress.setProgress(0);
-            aiAnalysisProgress.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.progress_bar_animation));
+            tasksViewModel.getAiAnalysisInProgress().setValue(true);
 
             // Analyze tasks
             TaskAnalyzer.analyzeTasks(todoTasks, new TaskAnalyzer.AnalysisCallback() {
                 @Override public void onSuccess(AnalysisResult result) {
+                    tasksViewModel.getAiAnalysisInProgress().setValue(false);
+                    View view = getView();
                     // Show results in dialog
-                    ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_ai_analyze,
-                            (dialogView) -> {
-                                TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
-                                if (tvAnalysisResult != null)
-                                    tvAnalysisResult.setText(AnalysisResultHandler.getSummary(result));
-                            }
-                    );
-                    aiAnalysisProgress.clearAnimation();
-                    aiAnalysisProgress.setVisibility(View.GONE);
+                    if (view != null)
+                        ConfigurableDialogFragment.showDialog(
+                                view, getParentFragmentManager(), R.layout.cv_search_ai_analyze,
+                                (dialogView) -> {
+                                    TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
+                                    if (tvAnalysisResult != null)
+                                        tvAnalysisResult.setText(AnalysisResultHandler.getSummary(
+                                                result));
+                                }
+                        );
                 }
 
                 @Override public void onError(String errorMessage) {
-                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    tasksViewModel.getAiAnalysisInProgress().setValue(false);
+                    Context context = getContext();
+                    if (context != null)
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+
                     Log.e("TasksFragment", "AI Analysis Error: " + errorMessage);
-                    aiAnalysisProgress.clearAnimation();
-                    aiAnalysisProgress.setVisibility(View.GONE);
                 }
             });
         });
