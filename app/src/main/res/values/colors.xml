@@ -7,6 +7,7 @@
     <color name="bg_orange_dialog">#CC8B14</color>
     <color name="bg_card">#483C32</color>
 
+
     <color name="bg_task_card">#5E4F42</color>
     <color name="bg_task_card_selected">#78624E</color>
     <color name="bg_task_card_near_deadline">#B8872E</color>
@@ -14,6 +15,7 @@
     <color name="task_card_icon">#FFFFFF</color>
     <color name="task_card_icon_disabled">#242424</color>
 
+    <color name="bg_leaderboard_card">#483C32</color>
 
 
     <color name="text_primary">#C5C5C5</color>

@@ -1,25 +1,27 @@
 package stop_delaying.models;
 
 public class LeaderboardEntry {
-    private final int rank;
-    private final String userName;
-    private final int score;
+    private int rank;
+    private User user;
 
-    public LeaderboardEntry(int rank, String userName, int score) {
+    public LeaderboardEntry(int rank, User user) {
         this.rank = rank;
-        this.userName = userName;
-        this.score = score;
+        this.user = user;
     }
 
     public int getRank() {
         return rank;
     }
 
-    public String getUserName() {
-        return userName;
+    public User getUser() {
+        return user;
     }
 
-    public int getScore() {
-        return score;
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

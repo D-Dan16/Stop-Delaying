@@ -15,6 +15,9 @@ import com.example.procrastination.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardDayStreakFragment;
+import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardTaskStreakFragment;
+
 public class LeaderboardFragment extends Fragment {
     ViewPager2 viewPager;
     TabLayout tabLayout;
