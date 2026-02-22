@@ -27,6 +27,9 @@ public class TasksViewModel extends ViewModel {
     private final MutableLiveData<Map<Task.TaskStatus, Tasks>> _uiTaskLists = new MutableLiveData<>();
     private final String TAG = "TasksViewModel";
 
+    /// LiveData to track if AI analysis is in progress
+    private final MutableLiveData<Boolean> aiAnalysisInProgress = new MutableLiveData<>(false);
+
     /// Being called by the ViewModelProvider
     public TasksViewModel() {
         TaskRepository.observeUserTasks(new TaskRepository.TaskFetchCallback() {
@@ -161,8 +164,12 @@ public class TasksViewModel extends ViewModel {
     /**
      * Returns the LiveData for all tasks.
      */
-    public MutableLiveData<Map<Task.TaskStatus, Tasks>> getUiTaskLists() {
+    public MutableLiveData<Map<Task.TaskStatus, Tasks>> getLiveData() {
         return this._uiTaskLists;
+    }
+
+    public Map<Task.TaskStatus, Tasks> getTasks() {
+        return this._uiTaskLists.getValue();
     }
 
     public static void updateTaskCardBackgroundColor(@NonNull TaskListAdapter.TaskViewHolder holder, Task task) {
@@ -178,5 +185,9 @@ public class TasksViewModel extends ViewModel {
                         ? ColorUtils.blendARGB(baseColor, Color.LTGRAY, 0.3f)
                         : baseColor
         );
+    }
+
+    public MutableLiveData<Boolean> getAiAnalysisInProgress() {
+        return aiAnalysisInProgress;
     }
 }

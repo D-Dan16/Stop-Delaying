@@ -37,9 +37,7 @@ public final class InsertCardResponsiveness {
     /**
      * Attaches all listeners to the provided task card view.
      */
-    static void configureCardInteractions(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter, TasksViewModel tasksViewModel) {
-        _tasksViewModel = tasksViewModel;
-
+    static void configureCardInteractions(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         holdCardForStartSelectionProcess(view, holder, adapter);
         toggleCardSelection(view, holder, adapter);
         toggleNotificationOfTask(view, holder, adapter);
@@ -157,5 +155,9 @@ public final class InsertCardResponsiveness {
 
     private static long calculateScheduleDelay(long timeLeftUntilDeadline, TimeOfDay dueTimeOfDay, Date dueDate) {
         return dueTimeOfDay.calcTimeUntil() + dueDate.calcTimeUntil() - timeLeftUntilDeadline;
+    }
+
+    public static void setTasksViewModel(TasksViewModel tasksViewModel) {
+        _tasksViewModel = tasksViewModel;
     }
 }
