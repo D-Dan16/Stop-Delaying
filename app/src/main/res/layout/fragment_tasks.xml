@@ -63,55 +63,70 @@
                 app:theme="@style/ThemeOverlay.Material3.Dark.ActionBar" />
 
         <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcv_filter_clear_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/neon_orange"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="6dp"
-                tools:visibility="visible"
-                android:paddingStart="20dp"
-                android:paddingEnd="10dp">
+            android:id="@+id/mcv_filter_clear_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/neon_orange"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="6dp"
+            tools:ignore="TouchTargetSizeCheck"
+            tools:visibility="visible">
 
             <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" Stop Filter"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-medium" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text=" Stop Filter"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_canceled"
-                        android:id="@+id/imageView2"
-                        android:layout_weight="1" />
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_canceled" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/tasks_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+    </androidx.viewpager2.widget.ViewPager2>
+
+    <!-- Moved ProgressBar out of AppBarLayout to be on top of other elements -->
+    <ProgressBar
+        android:id="@+id/ai_analysis_progress"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="@color/neon_orange"
+        android:elevation="8dp"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fab_menu_container"

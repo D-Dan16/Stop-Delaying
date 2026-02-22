@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +78,7 @@ public class TasksFragment extends Fragment {
     private FloatingActionButton fabSearchTask;
     private FloatingActionButton fabAiAnalyze;
     private FloatingActionButton fabOrderBy;
+    private ProgressBar aiAnalysisProgress;
     //</editor-fold>
 
     private TasksViewModel tasksViewModel;
@@ -131,6 +134,7 @@ public class TasksFragment extends Fragment {
         fabSearchTask = view.findViewById(R.id.fab_search_task);
         fabAiAnalyze = view.findViewById(R.id.fab_ai_analyze);
         fabOrderBy = view.findViewById(R.id.fab_order_by);
+        aiAnalysisProgress = view.findViewById(R.id.ai_analysis_progress);
 
         selectionToolBarLogic();
 
@@ -319,6 +323,19 @@ public class TasksFragment extends Fragment {
 
             Toast.makeText(requireContext(), "Analyzing tasks... Popup soon", Toast.LENGTH_LONG).show();
 
+            if (todoTasks.isEmpty()) {
+                Toast.makeText(requireContext(), "No tasks to analyze", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (todoTasks.size() == 1) {
+                Toast.makeText(requireContext(), "Not enough tasks to analyze", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            aiAnalysisProgress.setVisibility(View.VISIBLE);
+            aiAnalysisProgress.setProgress(0);
+            aiAnalysisProgress.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.progress_bar_animation));
+
             // Analyze tasks
             TaskAnalyzer.analyzeTasks(todoTasks, new TaskAnalyzer.AnalysisCallback() {
                 @Override public void onSuccess(AnalysisResult result) {
@@ -330,11 +347,15 @@ public class TasksFragment extends Fragment {
                                     tvAnalysisResult.setText(AnalysisResultHandler.getSummary(result));
                             }
                     );
+                    aiAnalysisProgress.clearAnimation();
+                    aiAnalysisProgress.setVisibility(View.GONE);
                 }
 
                 @Override public void onError(String errorMessage) {
                     Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     Log.e("TasksFragment", "AI Analysis Error: " + errorMessage);
+                    aiAnalysisProgress.clearAnimation();
+                    aiAnalysisProgress.setVisibility(View.GONE);
                 }
             });
         });

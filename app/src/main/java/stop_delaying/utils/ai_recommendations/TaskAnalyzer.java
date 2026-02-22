@@ -56,16 +56,6 @@ public class TaskAnalyzer {
 
 
     public static void analyzeTasks(List<Task> tasks, AnalysisCallback callback) {
-        if (tasks == null || tasks.isEmpty()) {
-            callback.onError("No tasks to analyze");
-            return;
-        }
-        if (tasks.size() == 1) {
-            callback.onError("Not enough tasks to analyze");
-            return;
-        }
-
-
         Content userContent = new Content.Builder()
                 .addText(buildPrompt(tasks))
                 .build();
