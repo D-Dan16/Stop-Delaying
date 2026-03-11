@@ -24,4 +24,16 @@ public class LeaderboardEntry {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public int getDayStreak() {
+        return user.getDayStreak();
+    }
+
+    public int getTaskStreak() {
+        return user.getTaskStreak();
+    }
+
+    public String getUserName() {
+        return user.getUserName();
+    }
 }

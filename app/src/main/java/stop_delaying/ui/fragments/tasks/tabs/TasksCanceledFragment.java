@@ -31,7 +31,6 @@ import java.util.ArrayList;
  */
 public class TasksCanceledFragment extends Fragment {
     private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
-
     public static TaskListAdapter getAdapter() {
         return adapter;
     }

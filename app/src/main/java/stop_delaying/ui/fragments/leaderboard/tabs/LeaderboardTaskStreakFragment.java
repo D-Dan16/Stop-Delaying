@@ -14,7 +14,16 @@ import android.view.ViewGroup;
 
 import com.example.procrastination.R;
 
+import java.util.ArrayList;
+
+import stop_delaying.ui.fragments.leaderboard.leaderboard_handlers.LeaderboardAdapter;
+
 public class LeaderboardTaskStreakFragment extends Fragment {
+    private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());
+
+    public static LeaderboardAdapter getAdapter() {
+        return adapter;
+    }
     @Override
     public View onCreateView(
             LayoutInflater inflater,
@@ -30,6 +39,8 @@ public class LeaderboardTaskStreakFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_task_streak);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        recyclerView.setAdapter(adapter);
     }
 
 }
