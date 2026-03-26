@@ -1,12 +1,16 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
-import android.util.Log;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import stop_delaying.models.Task;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
+import stop_delaying.ui.fragments.leaderboard.helpers.streak_handlers.TaskStreakHandler;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
@@ -75,6 +79,18 @@ public interface SelectionActionHandler {
         var viewModel = new ViewModelProvider(parent).get(TasksViewModel.class);
         for (Task task : selected)
             viewModel.updateTask(task);
+
+        /// Update streaks
+        if (status == Task.TaskStatus.COMPLETED) {
+            // If tasks are sent to be "completed" , Figure out if streaks should be incremented or reset
+            TaskStreakHandler.inspectTasks(selected);
+
+            // Tick the "Has done a task today" tracker for Day streak maintainment.
+            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null)
+                UsersRepository.updateUserHasCompletedTodayATask(fbUser.getUid(), true);
+
+        }
     }
 
     /**

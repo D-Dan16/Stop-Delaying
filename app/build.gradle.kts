@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
+    compileOnly("org.projectlombok:lombok:1.18.44")
     implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
     implementation("com.google.firebase:firebase-ai")
     implementation("com.google.guava:guava:31.0.1-android")

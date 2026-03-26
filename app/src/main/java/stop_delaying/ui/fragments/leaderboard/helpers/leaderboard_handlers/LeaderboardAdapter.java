@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.leaderboard.leaderboard_handlers;
+package stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;

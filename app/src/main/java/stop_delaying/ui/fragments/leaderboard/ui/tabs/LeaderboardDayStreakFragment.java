@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.leaderboard.tabs;
+package stop_delaying.ui.fragments.leaderboard.ui.tabs;
 
 import android.os.Bundle;
 
@@ -16,7 +16,7 @@ import com.example.procrastination.R;
 
 import java.util.ArrayList;
 
-import stop_delaying.ui.fragments.leaderboard.leaderboard_handlers.LeaderboardAdapter;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardAdapter;
 
 public class LeaderboardDayStreakFragment extends Fragment {
     private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());

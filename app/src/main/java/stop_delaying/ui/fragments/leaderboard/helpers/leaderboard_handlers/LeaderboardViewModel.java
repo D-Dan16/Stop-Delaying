@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.leaderboard.leaderboard_handlers;
+package stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import stop_delaying.models.LeaderboardEntry;
 import stop_delaying.models.User;
-import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardTab;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository.UserWithId;
+import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTab;
 
 /**
  * ViewModel responsible for managing leaderboard UI state and business logic.
@@ -42,11 +44,16 @@ public class LeaderboardViewModel extends ViewModel {
         showLoadingRunnable = () -> _leaderboardLoading.setValue(true);
         handler.postDelayed(showLoadingRunnable, LOADING_DELAY_MS);
 
-        UsersRepository.fetchUsers(new UsersFetchCallback() {
-            @Override public void onUsersFetched(List<User> fetchedUserEntries) {
+        UsersRepository.fetchUsers(new UsersRepository.UsersFetchCallback() {
+            @Override public void onUsersFetched(List<UserWithId> fetchedUserWithIdEntries) {
                 // If data is fetched quickly, cancel the loading runnable to avoid showing the progress bar
                 if (showLoadingRunnable != null)
                     handler.removeCallbacks(showLoadingRunnable);
+
+                List<User> fetchedUserEntries = fetchedUserWithIdEntries.stream()
+                        .map(userWithId -> userWithId.user)
+                        .collect(Collectors.toList());
+
                 ArrayList<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 
                 // Sort the fetched entries based on the selected leaderboard type

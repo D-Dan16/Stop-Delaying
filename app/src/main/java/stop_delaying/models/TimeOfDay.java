@@ -2,30 +2,23 @@ package stop_delaying.models;
 
 import android.icu.util.Calendar;
 
+import androidx.annotation.IntRange;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter @Getter
 public class TimeOfDay {
     private int hour;
     private int minute;
 
     public TimeOfDay() {}
 
-    public TimeOfDay(int hour, int minute) {
+    public TimeOfDay(
+            @IntRange(from = 0, to = 23) int hour,
+            @IntRange(from = 0, to = 59) int minute
+    ) {
         this.hour = hour;
-        this.minute = minute;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
         this.minute = minute;
     }
 

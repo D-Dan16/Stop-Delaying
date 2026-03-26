@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.leaderboard.tabs;
+package stop_delaying.ui.fragments.leaderboard.ui.tabs;
 
 public class LeaderboardTab {
     public static final int DAY_STREAK = 0;

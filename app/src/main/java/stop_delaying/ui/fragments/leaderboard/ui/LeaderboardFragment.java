@@ -1,4 +1,4 @@
-package stop_delaying.ui.fragments.leaderboard;
+package stop_delaying.ui.fragments.leaderboard.ui;
 
 import android.os.Bundle;
 
@@ -18,10 +18,10 @@ import com.example.procrastination.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import stop_delaying.ui.fragments.leaderboard.leaderboard_handlers.LeaderboardViewModel;
-import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardDayStreakFragment;
-import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardTaskStreakFragment;
-import stop_delaying.ui.fragments.leaderboard.tabs.LeaderboardTab;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardViewModel;
+import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardDayStreakFragment;
+import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTaskStreakFragment;
+import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTab;
 
 public class LeaderboardFragment extends Fragment {
     ViewPager2 viewPager;
