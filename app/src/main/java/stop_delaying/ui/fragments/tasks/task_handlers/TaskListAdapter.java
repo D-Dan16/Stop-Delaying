@@ -102,14 +102,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTaskTitle;
-        TextView tvTaskDescription;
-        TextView tvTaskDueDate;
-        TextView tvTaskDueTime;
-        ImageView ivTaskStatus;
-        ImageView ivTaskNotification;
+        final TextView tvTaskTitle;
+        final TextView tvTaskDescription;
+        final TextView tvTaskDueDate;
+        final TextView tvTaskDueTime;
+        final ImageView ivTaskStatus;
+        final ImageView ivTaskNotification;
 
-        public TaskViewHolder(@NonNull View itemView) {
+        TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTaskTitle = itemView.findViewById(R.id.tv_task_title);
             tvTaskDescription = itemView.findViewById(R.id.tv_task_description);

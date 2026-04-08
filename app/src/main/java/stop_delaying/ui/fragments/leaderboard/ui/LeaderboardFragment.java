@@ -24,9 +24,9 @@ import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTaskStreakFragm
 import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTab;
 
 public class LeaderboardFragment extends Fragment {
-    ViewPager2 viewPager;
-    TabLayout tabLayout;
-    ProgressBar leaderboardProgressBar; // Declare ProgressBar
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private ProgressBar leaderboardProgressBar; // Declare ProgressBar
     private LeaderboardViewModel leaderboardViewModel;
 
     @Override

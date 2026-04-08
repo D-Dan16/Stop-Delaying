@@ -13,7 +13,7 @@ public final class FBBranches {
     }
 
     public static final String TASKS = "tasks";
-    public static class Tasks {
+    private static class Tasks {
         public static final String TASK_ID = "taskId";
         public static final String TASK_NAME = "taskName";
         public static final String TASK_DESCRIPTION = "taskDescription";

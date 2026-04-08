@@ -73,7 +73,7 @@ public class TaskScheduler {
         return true;
     }
 
-    private static boolean scheduleNotificationAlarm(
+    private static void scheduleNotificationAlarm(
             Context context,
             Intent tapActionIntent,
             long scheduleDelay, // Time in seconds till the alarm should go off
@@ -84,7 +84,7 @@ public class TaskScheduler {
             int notificationPriority,
             String channelId
     ) {
-        if (cannotSchedule(scheduleDelay)) return false;
+        if (cannotSchedule(scheduleDelay)) return;
 
         Data inputData = new Data.Builder()
                 .putString(NotifExtraIntentNames.EXTRA_INTENT, tapActionIntent.toUri(0))
@@ -104,11 +104,9 @@ public class TaskScheduler {
 
         WorkManager.getInstance(context).enqueue(notificationWorkRequest);
 
-        return true;
     }
 
-    public static boolean cancelNotificationAlarm(Context context, int requestCode) {
+    public static void cancelNotificationAlarm(Context context, int requestCode) {
         WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(requestCode));
-        return true;
     }
 }

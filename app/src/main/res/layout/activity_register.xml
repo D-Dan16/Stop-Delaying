@@ -31,14 +31,12 @@
 
 
         <LinearLayout
-            android:id="@+id/llInputFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/tvEmail"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +60,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/tvUsername"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +84,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/tvPassword"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -115,7 +111,6 @@
 
 
             <TextView
-                android:id="@+id/tvConfirmPassword"
                 style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

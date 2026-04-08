@@ -23,15 +23,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Objects;
 
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {
-    BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
 
-    HomeFragment homeFragment;
-    TasksFragment tasksFragment;
-    LeaderboardFragment leaderboardFragment;
-    SettingsFragment settingsFragment;
-    ProcrastinationFragment procrastinationFragment;
-    LinksFragment linksFragment;
-    TipsFragment tipsFragment;
+    private HomeFragment homeFragment;
+    private TasksFragment tasksFragment;
+    private LeaderboardFragment leaderboardFragment;
+    private SettingsFragment settingsFragment;
+    private ProcrastinationFragment procrastinationFragment;
+    private LinksFragment linksFragment;
+    private TipsFragment tipsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

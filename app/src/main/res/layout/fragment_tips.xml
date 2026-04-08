@@ -21,7 +21,8 @@
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_left" />
+            android:contentDescription="TODO"
+            android:src="@drawable/ic_arrow_left" />
 
         <TextView
                 android:layout_width="wrap_content"
@@ -41,7 +42,6 @@
         app:layout_constraintTop_toBottomOf="@id/back_button">
 
         <LinearLayout
-            android:id="@+id/tips_card_container"
             style="@style/BgLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -40,12 +40,12 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     public static class LeaderboardEntryViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvRank;
-        TextView tvUserName;
-        TextView tvDayStreak;
-        TextView tvTaskStreak;
+        final TextView tvRank;
+        final TextView tvUserName;
+        final TextView tvDayStreak;
+        final TextView tvTaskStreak;
 
-        public LeaderboardEntryViewHolder(@NonNull View itemView) {
+        LeaderboardEntryViewHolder(@NonNull View itemView) {
             super(itemView);
             tvRank = itemView.findViewById(R.id.tv_rank);
             tvUserName = itemView.findViewById(R.id.tv_rank_name);

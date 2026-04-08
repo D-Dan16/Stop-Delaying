@@ -63,9 +63,9 @@ import android.os.Looper; // Added import for Looper
 public class TasksFragment extends Fragment {
     //<editor-fold desc="String Names">
     public static final String NAME = "tasks_fragment_for_debugging";
-    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
-    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
-    public static String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
+    public static final String NOTIFICATION_CHANNEL_TASKS_CHANNEL_ID = "tasks";
+    private static final String NOTIFICATION_CHANNEL_TASKS_CHANNEL_NAME = "Tasks";
+    private static final String NOTIFICATION_CHANNEL_TASKS_CHANNEL_DESCRIPTION = "Notifications for tasks";
     //</editor-fold>
 
     //<editor-fold desc="Views">

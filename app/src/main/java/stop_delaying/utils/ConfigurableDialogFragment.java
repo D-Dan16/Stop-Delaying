@@ -19,13 +19,23 @@ public class ConfigurableDialogFragment extends DialogFragment {
     private final Runnable onDismissCallback;
     private final Consumer<View> onViewCreatedListener;
 
-    public ConfigurableDialogFragment(int layoutResId, Consumer<View> onViewCreatedListener, Runnable onDismissCallback) {
+    private ConfigurableDialogFragment(
+            int layoutResId,
+            Consumer<View> onViewCreatedListener,
+            Runnable onDismissCallback
+    ) {
         this.layoutResId = layoutResId;
         this.onDismissCallback = onDismissCallback;
         this.onViewCreatedListener = onViewCreatedListener;
     }
 
-    public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer, Runnable onDismiss) {
+    private static void showDialog(
+            View containerView,
+            FragmentManager fragmentManager,
+            int popupLayout,
+            Consumer<View> viewInitializer,
+            Runnable onDismiss
+    ) {
         ConfigurableDialogFragment dialog = new ConfigurableDialogFragment(
                 popupLayout,
                 (v) -> {

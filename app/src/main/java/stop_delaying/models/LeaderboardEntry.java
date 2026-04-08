@@ -1,27 +1,16 @@
 package stop_delaying.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class LeaderboardEntry {
     private int rank;
     private User user;
 
     public LeaderboardEntry(int rank, User user) {
         this.rank = rank;
-        this.user = user;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public void setUser(User user) {
         this.user = user;
     }
 

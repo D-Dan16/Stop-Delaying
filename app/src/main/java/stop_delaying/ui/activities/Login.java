@@ -45,7 +45,6 @@ public class Login extends AppCompatActivity {
     private TextInputLayout tilPasswordLogin;
     private TextInputLayout tilEmailLogin;
     private Button bToSignIn;
-    private TextView tvToRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +65,7 @@ public class Login extends AppCompatActivity {
         tilPasswordLogin = findViewById(R.id.tilPasswordLogin);
         tilEmailLogin = findViewById(R.id.tilEmailLogin);
         bToSignIn = findViewById(R.id.bToSignIn);
-        tvToRegister = findViewById(R.id.tvToRegister);
+        TextView tvToRegister = findViewById(R.id.tvToRegister);
 
         signInButtonLogic();
 
@@ -96,11 +95,10 @@ public class Login extends AppCompatActivity {
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful())
                             executeSignIn();
-                        } else {
+                        else
                             logReasonForUnsuccessfulSignIn(task);
-                        }
                     });
         });
     }
@@ -120,9 +118,8 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Sign in successful.", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Login.this, MainApp.class));
                     finish();
-                } else {
+                } else
                     Toast.makeText(Login.this, "Failed to retrieve user information.", Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
@@ -139,8 +136,7 @@ public class Login extends AppCompatActivity {
         if (exception instanceof FirebaseAuthInvalidUserException || exception instanceof FirebaseAuthInvalidCredentialsException) {
             tilEmailLogin.setError("Invalid email or password");
             tilPasswordLogin.setError("Invalid email or password");
-        } else {
+        } else
             Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_LONG).show();
-        }
     }
 }

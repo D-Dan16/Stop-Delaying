@@ -34,16 +34,16 @@ public class Register extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    Button bRegisterSignUp;
-    TextView tvToLogin;
-    EditText etEmailRegister;
-    EditText etUsernameRegister;
-    TextInputEditText etPasswordRegister;
-    TextInputEditText etConfirmPasswordRegister;
-    TextInputLayout tilPasswordRegister;
-    TextInputLayout tilConfirmPasswordRegister;
-    TextInputLayout tilEmailRegister;
-    TextInputLayout tilUsernameRegister;
+    private Button bRegisterSignUp;
+    private TextView tvToLogin;
+    private EditText etEmailRegister;
+    private EditText etUsernameRegister;
+    private TextInputEditText etPasswordRegister;
+    private TextInputEditText etConfirmPasswordRegister;
+    private TextInputLayout tilPasswordRegister;
+    private TextInputLayout tilConfirmPasswordRegister;
+    private TextInputLayout tilEmailRegister;
+    private TextInputLayout tilUsernameRegister;
 
 
     @Override

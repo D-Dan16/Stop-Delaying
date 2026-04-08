@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
@@ -8,6 +6,7 @@ plugins {
 android {
     namespace = "com.example.procrastination"
     compileSdk = 36
+    compileSdkExtension = 19
 
     defaultConfig {
         applicationId = "com.example.procrastination"
@@ -39,20 +38,20 @@ android {
 }
 
 dependencies {
-    annotationProcessor("org.projectlombok:lombok:1.18.44")
-    compileOnly("org.projectlombok:lombok:1.18.44")
-    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
-    implementation("com.google.firebase:firebase-ai")
-    implementation("com.google.guava:guava:31.0.1-android")
-    implementation("org.reactivestreams:reactive-streams:1.0.4")
-    implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-auth")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
+    implementation(libs.guava)
+    implementation(libs.reactive.streams)
+    implementation(libs.google.firebase.database)
+    implementation(libs.google.firebase.auth)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.gridlayout)
-    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation(libs.circleimageview)
     implementation(libs.cardview)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)

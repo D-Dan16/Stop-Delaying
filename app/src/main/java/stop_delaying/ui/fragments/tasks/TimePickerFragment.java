@@ -11,9 +11,13 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import lombok.Getter;
+
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
+    @Getter
     private int hourChosen;
+    @Getter
     private int minuteChosen;
 
     private final TextView textViewToDisplayInfo;
@@ -42,11 +46,4 @@ public class TimePickerFragment extends DialogFragment
         textViewToDisplayInfo.setText(hourOfDay+":"+minute);
     }
 
-    public int getHourChosen() {
-        return hourChosen;
-    }
-
-    public int getMinuteChosen() {
-        return minuteChosen;
-    }
 }

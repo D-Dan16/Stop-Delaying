@@ -34,19 +34,8 @@
     </style>
 
     <!-- Body / subtle text like "Must be at least 8 characters" -->
-    <style name="BodyHintText">
-        <item name="android:textColor">@color/text_hint</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:paddingTop">6dp</item>
-        <item name="android:paddingBottom">6dp</item>
-    </style>
 
     <!-- Links: "Terms & Privacy Policy", "Log In" -->
-    <style name="LinkText">
-        <item name="android:textColor">@color/accent_orange</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 
 
     <!-- ─────────────────────────────────────────────── -->
@@ -67,22 +56,8 @@
     </style>
 
     <!-- Secondary button (dark background, border) -->
-    <style name="SecondaryButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="backgroundTint">@color/accent_orange</item>
-        <item name="android:textColor">@color/text_on_accent</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:gravity">center</item>
-        <item name="cornerRadius">12dp</item>
-    </style>
 
     <!-- Text-only button (used for links) -->
-    <style name="FlatButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/accent_orange</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-    </style>
 
     <style name="Widget.App.Button.OutlinedButton.Red" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/accent_red_logout</item>
@@ -113,10 +88,6 @@
         <item name="android:background">@drawable/input_field_bg</item>
     </style>
 
-    <style name="InputFieldPassword" parent="InputField">
-        <item name="android:inputType">textPassword</item>
-    </style>
-
     <style name="TextInputLayout.ErrorDimGray" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxStrokeErrorColor">@android:color/transparent</item>
         <item name="errorTextColor">@color/error_dim_gray</item>
@@ -131,36 +102,11 @@
     <!-- MENU ITEMS                                      -->
     <!-- ─────────────────────────────────────────────── -->
 
-    <style name="MenuItem">
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:paddingStart">20dp</item>
-        <item name="android:paddingEnd">20dp</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
-    </style>
-
-    <style name="MenuSectionHeader">
-        <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingStart">20dp</item>
-        <item name="android:paddingTop">18dp</item>
-        <item name="android:paddingBottom">6dp</item>
-    </style>
-
 
     <style name="BgLinearLayout">
         <item name="android:padding">25dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:gravity">center_horizontal</item>
-    </style>
-
-    <style name="InputTextWithTitle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginBottom">16dp</item>
     </style>
 
     <!-- ─────────────────────────────────────────────── -->

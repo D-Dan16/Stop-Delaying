@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cv_search_ai_analyze"
-        style="@style/Widget.App.PopupCardView"
-        android:visibility="visible">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.App.PopupCardView"
+    android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,8 +24,7 @@
                     android:text="AI's Suggestions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/tv_popup_title_ai"
-                    style="@style/HeaderText"
+                style="@style/HeaderText"
                      />
 
             <Space

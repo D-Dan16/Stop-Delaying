@@ -42,6 +42,7 @@
             android:id="@+id/iv_task_streak_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:contentDescription="TODO"
             android:src="@drawable/ic_tasks_streak"
             app:layout_constraintBottom_toBottomOf="@+id/tv_rank_task_streak"
             app:layout_constraintEnd_toStartOf="@+id/tv_rank_task_streak"
@@ -59,9 +60,9 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/iv_day_streak_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:contentDescription="TODO"
             android:src="@drawable/ic_days_streak"
             app:layout_constraintBottom_toBottomOf="@+id/tv_rank_day_streak"
             app:layout_constraintEnd_toStartOf="@+id/tv_rank_day_streak"

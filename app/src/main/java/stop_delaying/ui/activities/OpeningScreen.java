@@ -14,8 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.procrastination.R;
 
 public class OpeningScreen extends AppCompatActivity {
-    Button bToSignIn;
-    TextView tvToRegister;
+    private Button bToSignIn;
+    private TextView tvToRegister;
 
 
     @Override

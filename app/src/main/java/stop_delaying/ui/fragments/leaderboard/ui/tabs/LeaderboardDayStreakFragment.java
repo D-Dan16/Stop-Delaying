@@ -16,14 +16,13 @@ import com.example.procrastination.R;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardAdapter;
 
 public class LeaderboardDayStreakFragment extends Fragment {
+    @Getter
     private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());
 
-    public static LeaderboardAdapter getAdapter() {
-        return adapter;
-    }
     @Override
     public View onCreateView(
             LayoutInflater inflater,

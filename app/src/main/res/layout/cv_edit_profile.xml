@@ -23,8 +23,7 @@
                     android:text="Edit Properties"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_popup_title"
-                    style="@style/HeaderText" />
+                style="@style/HeaderText" />
 
             <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

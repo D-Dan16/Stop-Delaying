@@ -12,6 +12,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+/** @noinspection deprecation*/
 @UtilityClass
 public class DailyStreakWorkerCaller {
     private static final String WORK_TAG = "daily_streak_check";
@@ -22,6 +23,7 @@ public class DailyStreakWorkerCaller {
      * Schedule the daily streak worker to run once per day at midnight.
      * This checks the currently logged-in user on THIS device only.
      * Uses SharedPreferences to ensure scheduling happens only ONCE per device installation.
+     * @noinspection deprecation
      */
     public static void scheduleDailyStreakWorker(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(APP_SHARED_PREFS, Context.MODE_PRIVATE);

@@ -41,16 +41,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class SettingsFragment extends Fragment {
     // UI elements
-    CircleImageView profileImage;
-    TextView username;
-    TextView email;
-    MaterialCardView cardToggleNotifications;
-    MaterialCardView cardEditProfilePopup;
-    MaterialCardView cardChangePasswordPopup;
+    private CircleImageView profileImage;
+    private TextView username;
+    private TextView email;
+    private MaterialCardView cardToggleNotifications;
+    private MaterialCardView cardEditProfilePopup;
+    private MaterialCardView cardChangePasswordPopup;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private
     Switch switchAllowNotifications;
-    MaterialButton btnLogout;
-    MaterialButton btnDeleteUserPopup;
+    private MaterialButton btnLogout;
+    private MaterialButton btnDeleteUserPopup;
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -281,7 +282,6 @@ public class SettingsFragment extends Fragment {
                         startActivity(new Intent(getContext(), OpeningScreen.class));
                     } else {
                         Toast.makeText(getContext(), "User cannot be deleted.", Toast.LENGTH_SHORT).show();
-                        return;
                     }
                 });
 

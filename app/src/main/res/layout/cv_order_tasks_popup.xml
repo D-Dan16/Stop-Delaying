@@ -3,8 +3,7 @@
         tools:ignore="HardcodedText"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cv_order_tasks_popup"
-        style="@style/Widget.App.PopupCardView"
+    style="@style/Widget.App.PopupCardView"
         android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,8 +26,7 @@
                     android:text="Order Tasks By"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/tvPopupTitle2"
-                    style="@style/HeaderText"
+                style="@style/HeaderText"
                      />
 
             <Space
@@ -38,8 +36,7 @@
             <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/rg_order_tasks_by"
-                    android:checkedButton="@id/rb_order_by_date_created">
+                android:checkedButton="@id/rb_order_by_date_created">
 
                 <RadioButton
                         android:text="By Date Created"
@@ -54,8 +51,7 @@
                         android:text="By Due Date (Ascending)"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rb_order_by_due_date_ascending"
-                        app:useMaterialThemeColors="true"
+                    app:useMaterialThemeColors="true"
                         android:textColor="@color/accent_orange"
                         style="@style/RadioButton" />
 
@@ -63,8 +59,7 @@
                         android:text="By Due Date (Descending)"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rb_order_by_due_date_descending"
-                        app:useMaterialThemeColors="true"
+                    app:useMaterialThemeColors="true"
                         android:textColor="@color/accent_orange"
                         style="@style/RadioButton" />
 
@@ -72,8 +67,7 @@
                         android:text="By Description Length"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/rb_order_by_task_description_length"
-                        app:useMaterialThemeColors="true"
+                    app:useMaterialThemeColors="true"
                         android:textColor="@color/accent_orange"
                         style="@style/RadioButton" />
             </RadioGroup>
@@ -82,8 +76,7 @@
                     android:text="Order tasks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/b_confirm_order_tasks"
-                    style="@style/PrimaryButton" />
+                style="@style/PrimaryButton" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

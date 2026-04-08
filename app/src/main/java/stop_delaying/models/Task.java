@@ -7,26 +7,15 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter @Setter
 public class Task {
     @Exclude private String taskId;
-    @Getter
-    @Setter
     private String title;
-    @Getter
-    @Setter
     private String description;
-    @Getter
-    @Setter
     private Date dueDate;
-    @Getter
-    @Setter
     private TimeOfDay dueTimeOfDay;
-    @Getter
-    @Setter
     private TaskStatus status;
     @Exclude private boolean isTaskSelected;
-    @Getter
-    @Setter
     private boolean isTaskNotifying;
 
     public enum TaskStatus {

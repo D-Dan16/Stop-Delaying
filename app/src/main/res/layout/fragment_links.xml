@@ -23,7 +23,8 @@
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_left" />
+            android:contentDescription="TODO"
+            android:src="@drawable/ic_arrow_left" />
 
         <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +111,8 @@
                         <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="243dp"
-                                android:scaleType="centerCrop"
+                            android:contentDescription="TODO"
+                            android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_1" />
 
                         <TextView
@@ -139,7 +141,8 @@
                         <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="243dp"
-                                android:scaleType="centerCrop"
+                            android:contentDescription="TODO"
+                            android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_2" />
 
                         <TextView
@@ -168,7 +171,8 @@
                         <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="243dp"
-                                android:scaleType="centerCrop"
+                            android:contentDescription="TODO"
+                            android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_3" />
 
                         <TextView
@@ -197,7 +201,8 @@
                         <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="243dp"
-                                android:scaleType="centerCrop"
+                            android:contentDescription="TODO"
+                            android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_4" />
 
                         <TextView
@@ -225,7 +230,8 @@
                         <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="243dp"
-                                android:scaleType="centerCrop"
+                            android:contentDescription="TODO"
+                            android:scaleType="centerCrop"
                                 android:src="@drawable/procrastination_5" />
 
                         <TextView

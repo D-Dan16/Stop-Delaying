@@ -16,6 +16,7 @@ import com.example.procrastination.R;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
 import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
@@ -31,11 +32,8 @@ import stop_delaying.ui.fragments.tasks.TasksFragment;
  * - On action (move/delete), updates local list and delegates cross-tab moves, then clears selection and hides the bar.
  */
 public class TasksToDoFragment extends Fragment {
+    @Getter
     private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
-
-    public static TaskListAdapter getAdapter() {
-        return adapter;
-    }
 
     @Override
     public View onCreateView(

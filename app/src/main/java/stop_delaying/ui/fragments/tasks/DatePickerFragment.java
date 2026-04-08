@@ -10,10 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import lombok.Getter;
+
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
+    @Getter
     private int dayChosen = 0;
+    @Getter
     private int monthChosen = 0;
+    @Getter
     private int yearChosen = 0;
 
     private final TextView textViewToDisplayInfo;
@@ -45,15 +50,4 @@ public class DatePickerFragment extends DialogFragment
         textViewToDisplayInfo.setText(dayChosen+"/"+monthChosen+"/"+yearChosen);
     }
 
-    public int getDayChosen() {
-        return dayChosen;
-    }
-
-    public int getMonthChosen() {
-        return monthChosen;
-    }
-
-    public int getYearChosen() {
-        return yearChosen;
-    }
 }

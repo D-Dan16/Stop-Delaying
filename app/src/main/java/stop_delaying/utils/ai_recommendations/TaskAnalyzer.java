@@ -2,7 +2,6 @@ package stop_delaying.utils.ai_recommendations;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 

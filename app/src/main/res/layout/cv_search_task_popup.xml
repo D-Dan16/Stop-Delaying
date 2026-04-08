@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cv_search_task_popup"
-        style="@style/Widget.App.PopupCardView"
+    style="@style/Widget.App.PopupCardView"
         android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,8 +24,7 @@
                     android:text="Search For Task"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/tv_popup_title_search"
-                    style="@style/HeaderText"
+                style="@style/HeaderText"
                      />
 
             <LinearLayout
@@ -38,9 +36,9 @@
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_stt"
-                        android:id="@+id/iv_stt_search"
-                        android:layout_marginEnd="7dp" />
+                    android:contentDescription="TODO"
+                    app:srcCompat="@drawable/ic_stt"
+                    android:layout_marginEnd="7dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_task_search_name_search"

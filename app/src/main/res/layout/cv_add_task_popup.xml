@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cv_add_task_popup"
-        style="@style/Widget.App.PopupCardView"
-        android:visibility="visible">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.App.PopupCardView"
+    android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,8 +24,7 @@
                     android:text="Add Task"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_popup_title"
-                    style="@style/HeaderText" />
+                style="@style/HeaderText" />
 
             <LinearLayout
                     android:orientation="horizontal"
@@ -38,9 +35,9 @@
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_stt"
-                        android:id="@+id/iv_stt_2"
-                        android:layout_marginEnd="7dp" />
+                    android:contentDescription="TODO"
+                    app:srcCompat="@drawable/ic_stt"
+                    android:layout_marginEnd="7dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_task_title"
@@ -74,9 +71,9 @@
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_stt"
-                        android:id="@+id/iv_stt_3"
-                        android:layout_marginEnd="7dp" />
+                    android:contentDescription="TODO"
+                    app:srcCompat="@drawable/ic_stt"
+                    android:layout_marginEnd="7dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_task_description"

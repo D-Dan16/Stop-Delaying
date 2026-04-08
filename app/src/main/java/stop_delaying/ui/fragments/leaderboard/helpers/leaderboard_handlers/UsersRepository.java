@@ -38,10 +38,10 @@ public class UsersRepository {
     
     // Helper class to hold both user data and their ID
     public static class UserWithId {
-        public String userId;
-        public User user;
+        final String userId;
+        public final User user;
         
-        public UserWithId(String userId, User user) {
+        UserWithId(String userId, User user) {
             this.userId = userId;
             this.user = user;
         }

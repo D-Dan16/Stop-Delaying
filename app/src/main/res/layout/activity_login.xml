@@ -34,14 +34,12 @@
             android:layout_height="30dp" />
 
         <TextView
-            android:id="@+id/textView"
             style="@style/SubHeaderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login and break your habits" />
 
         <LinearLayout
-            android:id="@+id/llInputFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

@@ -3,8 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         tools:ignore="HardcodedText,RtlHardcoded"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/tasks"
-        android:layoutDirection="ltr"
+    android:layoutDirection="ltr"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_primary">
@@ -98,10 +97,10 @@
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:contentDescription="TODO"
                     app:srcCompat="@drawable/ic_canceled" />
 
             </LinearLayout>
@@ -122,8 +121,7 @@
     <include layout="@layout/layout_spinning_progress_bar" android:id="@+id/ai_analysis_progress"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fab_menu_container"
-            android:layout_width="wrap_content"
+        android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="30dp"
