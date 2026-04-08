@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home"
+    android:layoutDirection="ltr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_primary">
@@ -23,57 +24,100 @@
                     android:layout_height="50dp" />
 
             <androidx.cardview.widget.CardView
-                    android:id="@+id/cvImportantTask"
+                android:id="@+id/cvImportantTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="8dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/importantTaskDisplay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    app:cardBackgroundColor="@color/bg_card"
-                    app:cardCornerRadius="8dp">
+                    android:padding="16dp">
 
-                <LinearLayout
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/iv_important_task_status"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="0dp"
+                        android:src="@drawable/ic_tasks"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/task_card_icon" />
+
+                    <TextView
+                        android:id="@+id/tvImportantTaskTitle"
+                        style="@style/HeaderText"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_marginEnd="8dp"
+                        android:gravity="left"
+                        android:paddingBottom="0dp"
+                        android:text="Task Title"
+                        android:textSize="22sp"
+                        app:layout_constraintEnd_toStartOf="@id/iv_important_task_status"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                            style="@style/HeaderText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Important Task" />
+                        android:id="@+id/tvImportantTaskDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Task Description"
+                        android:textColor="@color/text_primary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvImportantTaskTitle" />
+
+                    <ImageView
+                        android:id="@+id/ivImportantTaskTts"
+                        android:layout_width="28dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="12dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvImportantTaskDescription"
+                        app:srcCompat="@drawable/ic_tts" />
+
+                    <ImageView
+                        android:id="@+id/ivImportantTaskClock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="104dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/ivImportantTaskTts"
+                        app:layout_constraintStart_toEndOf="@+id/ivImportantTaskTts"
+                        app:layout_constraintTop_toTopOf="@+id/ivImportantTaskTts"
+                        app:srcCompat="@drawable/ic_due_date" />
 
                     <TextView
-                            android:id="@+id/tvImportantTask"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="This is where the most important task will be displayed."
-                            android:textColor="@color/text_primary"
-                            android:layout_marginBottom="7dp" />
+                        android:id="@+id/tvImportantTaskDueDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="DD-MM-YY"
+                        android:textColor="@color/text_primary"
+                        app:layout_constraintBottom_toBottomOf="@+id/ivImportantTaskClock"
+                        app:layout_constraintStart_toEndOf="@+id/ivImportantTaskClock"
+                        app:layout_constraintTop_toTopOf="@+id/ivImportantTaskClock" />
 
-                    <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvImportantTaskDueTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="HH:MM"
+                        android:textColor="@color/text_primary"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvImportantTaskDueDate"
+                        app:layout_constraintStart_toEndOf="@+id/tvImportantTaskDueDate"
+                        app:layout_constraintTop_toTopOf="@+id/tvImportantTaskDueDate" />
 
-                        <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/ic_time_left"
-                                android:id="@+id/imageView"
-                                android:layout_weight="1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                                android:text="2:30"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/textView2"
-                                android:layout_weight="1"
-                                android:textColor="@color/text_on_accent"
-                                android:layout_marginStart="5dp" />
-                    </LinearLayout>
-
-                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <HorizontalScrollView
@@ -140,45 +184,46 @@
                     android:layout_margin="0dp">
 
                 <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                    android:id="@+id/streaksDisplay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                            style="@style/HeaderText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Your Streaks" />
+                        style="@style/HeaderText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Streaks" />
 
                     <LinearLayout
-                            android:layout_width="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvDaysStreak"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:orientation="horizontal">
+                            android:drawableStart="@drawable/ic_days_streak"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:text="5 days"
+                            android:textColor="@color/text_primary"
+                            app:drawableTint="@color/neon_orange" />
 
                         <TextView
-                                android:id="@+id/tvDaysStreak"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:drawableStart="@drawable/ic_days_streak"
-                                android:drawablePadding="8dp"
-                                android:gravity="center_vertical"
-                                android:text="5 days"
-                                android:textColor="@color/text_primary"
-                                app:drawableTint="@color/neon_orange" />
-
-                        <TextView
-                                android:id="@+id/tvTasksStreak"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:drawableStart="@drawable/ic_tasks_streak"
-                                android:drawablePadding="8dp"
-                                android:gravity="center_vertical"
-                                android:text="12 tasks"
-                                android:textColor="@color/text_primary"
-                                app:drawableTint="@color/neon_orange" />
+                            android:id="@+id/tvTasksStreak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:drawableStart="@drawable/ic_tasks_streak"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:text="12 tasks"
+                            android:textColor="@color/text_primary"
+                            app:drawableTint="@color/neon_orange" />
                     </LinearLayout>
 
                 </LinearLayout>

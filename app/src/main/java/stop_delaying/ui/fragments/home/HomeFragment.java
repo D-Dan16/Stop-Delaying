@@ -1,25 +1,59 @@
 package stop_delaying.ui.fragments.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.procrastination.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Map;
+
+import stop_delaying.models.Task;
+import stop_delaying.models.User;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardViewModel;
+import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
+import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
+import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
+
+@SuppressLint("SetTextI18n")
 public class HomeFragment extends Fragment {
 
-    private OnHomeFragmentInteractionListener mListener;
+    private OnHomeFragmentInteractionListener onHomeFragmentInteractionListener;
+    private TasksViewModel tasksViewModel;
+    private LeaderboardViewModel leaderboardViewModel;
+
+    // UI elements for important task display
+    private TextView tvImportantTaskTitle;
+    private TextView tvImportantTaskDescription;
+    private TextView tvImportantTaskDueDate;
+    private TextView tvImportantTaskDueTime;
+    private View importantTaskCardView;
+
+    // UI elements for streaks display
+    private TextView tvTasksStreak;
+    private TextView tvDaysStreak;
+
+    private static final String TAG = "HomeFragment";
+
+    @SuppressLint("SetTextI18n")
 
     public interface OnHomeFragmentInteractionListener {
         void onWhatIsProcrastinationClicked();
+
         void onLinksAndVideosClicked();
+
         void onTipsAndTricksClicked();
     }
 
@@ -35,44 +69,233 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initComponents(view);
 
+        // Observe tasks and display the most urgent "To Do" task
+        observeAndDisplayImportantTask();
+
+        observeAndDisplayTasksStreaks();
+
+        setOnClickListeners(view);
+    }
+
+    private void initComponents(@NonNull View view) {
+        // Initialize UI elements
+        tvImportantTaskTitle = view.findViewById(R.id.tvImportantTaskTitle);
+        tvImportantTaskDescription = view.findViewById(R.id.tvImportantTaskDescription);
+        tvImportantTaskDueDate = view.findViewById(R.id.tvImportantTaskDueDate);
+        tvImportantTaskDueTime = view.findViewById(R.id.tvImportantTaskDueTime);
+        importantTaskCardView = view.findViewById(R.id.cvImportantTask);
+
+        tvTasksStreak = view.findViewById(R.id.tvTasksStreak);
+        tvDaysStreak = view.findViewById(R.id.tvDaysStreak);
+
+        // Initialize streaks display
+        tvTasksStreak.setText("0");
+        tvDaysStreak.setText("0");
+
+
+        // Initialize ViewModel
+        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        leaderboardViewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+    }
+
+    private void setOnClickListeners(View view) {
         MaterialButton btnWhatIsProcrastination = view.findViewById(R.id.btnWhatIsProcrastination);
         MaterialButton btnLinksAndVideos = view.findViewById(R.id.btnLinksAndVideos);
         MaterialButton btnTipsAndTricks = view.findViewById(R.id.btnTipsAndTricks);
 
         btnWhatIsProcrastination.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onWhatIsProcrastinationClicked();
-            }
+            if (onHomeFragmentInteractionListener != null)
+                onHomeFragmentInteractionListener.onWhatIsProcrastinationClicked();
         });
 
         btnLinksAndVideos.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onLinksAndVideosClicked();
-            }
+            if (onHomeFragmentInteractionListener != null)
+                onHomeFragmentInteractionListener.onLinksAndVideosClicked();
         });
 
         btnTipsAndTricks.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onTipsAndTricksClicked();
+            if (onHomeFragmentInteractionListener != null)
+                onHomeFragmentInteractionListener.onTipsAndTricksClicked();
+        });
+    }
+
+    private void observeAndDisplayTasksStreaks() {
+        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        displayStreaks(UID);
+
+        leaderboardViewModel.getLiveData().observe(getViewLifecycleOwner(), leaderboardEntries -> {
+            displayStreaks(UID);
+        });
+    }
+
+    private void displayStreaks(String UID) {
+        UsersRepository.fetchUserById(UID, new UsersRepository.UserFetchCallback() {
+            @Override public void onUserFetched(User user) {
+                tvDaysStreak.setText(String.valueOf(user.getDayStreak()));
+                tvTasksStreak.setText(String.valueOf(user.getTaskStreak()));
             }
+
+            @Override public void onFetchFailed(String errorMessage) {}
         });
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnHomeFragmentInteractionListener) {
-            mListener = (OnHomeFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnHomeFragmentInteractionListener");
-        }
+        if (context instanceof OnHomeFragmentInteractionListener)
+            onHomeFragmentInteractionListener = (OnHomeFragmentInteractionListener) context;
+        else
+            throw new RuntimeException(context + " must implement OnHomeFragmentInteractionListener");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        onHomeFragmentInteractionListener = null;
+    }
+
+    /**
+     * Observes the user's tasks and displays the most urgent "To Do" task
+     * based on the deadline.
+     */
+    private void observeAndDisplayImportantTask() {
+        Log.d(TAG, "Setting up LiveData observer for important task");
+
+        tasksViewModel.getLiveData().observe(
+                getViewLifecycleOwner(), taskListsMap -> {
+                    if (taskListsMap == null) {
+                        Log.w(TAG, "Received null task list map");
+                        return;
+                    }
+
+                    displayUrgentTask(taskListsMap);
+                }
+        );
+    }
+
+    private void displayUrgentTask(Map<Task.TaskStatus, Tasks> taskListsMap) {
+        // Get the "To Do" tasks
+        var todoTasks = taskListsMap.get(Task.TaskStatus.TODO);
+        Log.d(TAG, "TODO tasks count: " + (todoTasks == null ? 0 : todoTasks.visibleTasks().size()));
+
+        if (todoTasks == null || todoTasks.visibleTasks().isEmpty()) {
+            Log.d(TAG, "No TODO tasks available, showing default message");
+            displayNoTaskMessage();
+            return;
+        }
+
+        // Find the task with the soonest deadline
+        Task mostUrgentTask = findMostUrgentTask(todoTasks.visibleTasks());
+        Log.d(TAG, "Most urgent task: " + (mostUrgentTask != null ? mostUrgentTask.getTitle() : "null"));
+
+        if (mostUrgentTask != null) {
+            Log.d(
+                    TAG, "Displaying task: " + mostUrgentTask.getTitle() +
+                            " | Due: " + mostUrgentTask.getDueDate().getDay() + "-" +
+                            mostUrgentTask.getDueDate().getMonth() + "-" +
+                            mostUrgentTask.getDueDate().getYear() + " " +
+                            mostUrgentTask.getDueTimeOfDay().getHour() + ":" +
+                            mostUrgentTask.getDueTimeOfDay().getMinute()
+            );
+            displayTask(mostUrgentTask);
+        } else {
+            Log.d(TAG, "No urgent task found, showing default message");
+            displayNoTaskMessage();
+        }
+    }
+
+    /**
+     * Finds the task with the soonest deadline from a list of tasks.
+     * Uses the Task API methods isDeadlineNear() and hasReachedDeadline() to determine urgency.
+     */
+    private Task findMostUrgentTask(java.util.List<Task> tasks) {
+        if (tasks.isEmpty())
+            return null;
+
+        Task mostUrgent = null;
+        long shortestTimeUntilDeadline = Long.MAX_VALUE;
+
+        for (Task task : tasks) {
+            // Calculate time until deadline using the same logic as Task.isDeadlineNear()
+            long timeLeftUntilDeadline = task.getDueDate().calcTimeUntil() +
+                    task.getDueTimeOfDay().calcTimeUntil();
+
+            // Prioritize tasks that have reached their deadline (negative time)
+            // Then prioritize by shortest time remaining
+            if (mostUrgent == null || timeLeftUntilDeadline < shortestTimeUntilDeadline) {
+                mostUrgent = task;
+                shortestTimeUntilDeadline = timeLeftUntilDeadline;
+            }
+        }
+
+        return mostUrgent;
+    }
+
+    /**
+     * Displays the given task in the important task card.
+     */
+    @SuppressLint("DefaultLocale")
+    private void displayTask(Task task) {
+        tvImportantTaskTitle.setText(task.getTitle());
+        tvImportantTaskDescription.setText(task.getDescription());
+
+        // Format and display due date (DD-MM-YY)
+        String formattedDate = String.format(
+                "%02d-%02d-%02d",
+                task.getDueDate().getDay(),
+                task.getDueDate().getMonth(),
+                task.getDueDate().getYear() % 100
+        );
+        tvImportantTaskDueDate.setText(formattedDate);
+
+        // Format and display due time (HH:MM)
+        String formattedTime = String.format(
+                "%02d:%02d",
+                task.getDueTimeOfDay().getHour(),
+                task.getDueTimeOfDay().getMinute()
+        );
+        tvImportantTaskDueTime.setText(formattedTime);
+
+        // Update card background color based on deadline status
+        updateTaskCardBackgroundColor(task);
+    }
+
+    /**
+     * Displays a message when there are no "To Do" tasks.
+     */
+
+
+    private void displayNoTaskMessage() {
+        tvImportantTaskTitle.setText("No Important Task");
+        tvImportantTaskDescription.setText("You have no pending tasks. Great job!");
+        tvImportantTaskDueDate.setText("--");
+        tvImportantTaskDueTime.setText("--");
+
+        // Reset card background color
+        if (importantTaskCardView != null) {
+            androidx.cardview.widget.CardView cardView = (androidx.cardview.widget.CardView) importantTaskCardView;
+            int baseColor = getResources().getColor(R.color.bg_task_card, getContext().getTheme());
+            cardView.setCardBackgroundColor(baseColor);
+        }
+    }
+
+    /**
+     * Updates the card background color based on deadline status.
+     * Matches the behavior of TasksViewModel.updateTaskCardBackgroundColor().
+     */
+    private void updateTaskCardBackgroundColor(Task task) {
+        if (importantTaskCardView == null)
+            return;
+
+        int colorRes = task.hasReachedDeadline() ? R.color.bg_task_card_post_deadline :
+                task.isDeadlineNear() ? R.color.bg_task_card_near_deadline :
+                        R.color.bg_task_card;
+
+        int baseColor = getResources().getColor(colorRes, getContext().getTheme());
+        androidx.cardview.widget.CardView cardView = (androidx.cardview.widget.CardView) importantTaskCardView;
+        cardView.setCardBackgroundColor(baseColor);
     }
 }

@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,4 +103,5 @@ public class LeaderboardViewModel extends ViewModel {
     public MutableLiveData<Boolean> getLeaderboardLoading() {
         return this._leaderboardLoading;
     }
+
 }

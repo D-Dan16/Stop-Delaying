@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import stop_delaying.models.Task;
 /**
  * ViewModel responsible for managing task-related UI state and business logic.
@@ -28,12 +29,15 @@ public class TasksViewModel extends ViewModel {
     private final String TAG = "TasksViewModel";
 
     /// LiveData to track if AI analysis is in progress
+    @Getter
     private final MutableLiveData<Boolean> aiAnalysisInProgress = new MutableLiveData<>(false);
 
     /// Being called by the ViewModelProvider
     public TasksViewModel() {
         TaskRepository.observeUserTasks(new TaskRepository.TaskFetchCallback() {
-            @Override public void onTasksFetched(Map<Task.TaskStatus, List<Task>> fetchedCategorizedTasks) {
+            @Override 
+            public void onTasksFetched(Map<Task.TaskStatus, List<Task>> fetchedCategorizedTasks) {
+                Log.d(TAG, "onTasksFetched called - Firebase data changed");
                 for (Map.Entry<Task.TaskStatus, List<Task>> entry : fetchedCategorizedTasks.entrySet())
                     Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue().size() + " tasks");
 
@@ -43,10 +47,11 @@ public class TasksViewModel extends ViewModel {
                     newUiTaskLists.put(entry.getKey(), new Tasks(new ArrayList<>(entry.getValue()), new ArrayList<>()));
 
                 _uiTaskLists.setValue(newUiTaskLists);
-                Log.d(TAG, "UI TaskLists updated");
+                Log.d(TAG, "UI TaskLists updated via setValue() - observers should be notified");
             }
 
-            @Override public void onFetchFailed(String error) {
+            @Override 
+            public void onFetchFailed(String error) {
                 Log.e(TAG, "Failed to fetch tasks: " + error);
             }
         });
@@ -187,7 +192,4 @@ public class TasksViewModel extends ViewModel {
         );
     }
 
-    public MutableLiveData<Boolean> getAiAnalysisInProgress() {
-        return aiAnalysisInProgress;
-    }
 }
