@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
@@ -23,6 +21,8 @@ import java.util.List;
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 
+
+/// A new card will be created from {@link #setTasks}, which is being called from TasksFragment.setupTaskObservers() - this method triggers the task observer setup inside the fragment.
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
     private final Tasks tasks;
@@ -41,7 +41,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         this.startSelectionListener = listener;
     }
 
-    // Helper notifiers used by helper util to keep adapter encapsulation
     public void notifySelectionChanged() {
         if (selectionChangeListener != null)
             selectionChangeListener.onSelectionChanged(getSelectedCount());
@@ -52,10 +51,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             startSelectionListener.onStartSelection();
     }
 
-    @NonNull
-    @Override
+
     /// Called when a new card task is being made.
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    /// A new card will be created from {@link #setTasks}, which is being called from TasksFragment.setupTaskObservers() - this method triggers the task observer setup inside the fragment.
+    @NonNull @Override public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                                   .inflate(R.layout.task_card_item, parent, false);
         TaskViewHolder holder = new TaskViewHolder(view);
@@ -121,6 +120,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         }
 
     }
+
+    /// Being called from the TasksFragment, in setupTaskObservers()
     public void setTasks(@Nullable List<Task> newTasks) {
         if (newTasks == null) return;
 

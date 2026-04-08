@@ -9,6 +9,7 @@ public final class FBBranches {
         public static final String DAY_STREAK = "dayStreak";
         public static final String TASK_STREAK = "taskStreak";
         public static final String USER_NAME = "userName";
+        public static final String HAS_COMPLETED_TODAY_A_TASK = "hasCompletedTodayATask";
     }
 
     public static final String TASKS = "tasks";

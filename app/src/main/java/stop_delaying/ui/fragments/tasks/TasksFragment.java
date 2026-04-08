@@ -86,23 +86,19 @@ public class TasksFragment extends Fragment {
 
     // Handler and Runnable for periodic UI updates
     private final Handler handler = new Handler(Looper.getMainLooper()); // Explicitly associated with the main looper
+
+    // Update every 1 minute the UI
     private final Runnable cardBackgroundUpdater = new Runnable() {
         @SuppressLint("NotifyDataSetChanged")
         @Override public void run() {
-            // Get the adapter for the currently active tab
-            // This will cause onBindViewHolder to be called for visible items,
-            // re-evaluating their deadline status and updating colors.
             switch (viewPager.getCurrentItem()) {
-                case TaskTabIndices.TO_DO ->
-                        TasksToDoFragment.getAdapter().notifyDataSetChanged();
-                case TaskTabIndices.COMPLETED ->
-                        TasksCompletedFragment.getAdapter().notifyDataSetChanged();
-                case TaskTabIndices.CANCELED ->
-                        TasksCanceledFragment.getAdapter().notifyDataSetChanged();
+                case TaskTabIndices.TO_DO -> TasksToDoFragment.getAdapter().notifyDataSetChanged();
+                case TaskTabIndices.COMPLETED -> TasksCompletedFragment.getAdapter().notifyDataSetChanged();
+                case TaskTabIndices.CANCELED -> TasksCanceledFragment.getAdapter().notifyDataSetChanged();
             }
 
-            // Update every 1 minute
-             handler.postDelayed(this, TimeUnit.MINUTES.toMillis(1));
+            // recursive call for periodic updates
+            handler.postDelayed(this, TimeUnit.MINUTES.toMillis(1));
         }
     };
 
@@ -142,6 +138,7 @@ public class TasksFragment extends Fragment {
         registerActionButtons();
 
         setupTaskObservers();
+
 
         NotificationCreator.createNotificationChannel(
                 requireContext(),
@@ -217,14 +214,11 @@ public class TasksFragment extends Fragment {
 
     private void createTabLayoutLogic() {
         viewPager.setAdapter(new FragmentStateAdapter(this) {
-            @Override
-            public int getItemCount() {
+            @Override public int getItemCount() {
                 return 3;
             }
 
-            @NonNull
-            @Override
-            public Fragment createFragment(int position) {
+            @NonNull @Override public Fragment createFragment(int position) {
                 return switch (position) {
                     case TaskTabIndices.TO_DO -> new TasksToDoFragment();
                     case TaskTabIndices.COMPLETED -> new TasksCompletedFragment();
@@ -244,8 +238,7 @@ public class TasksFragment extends Fragment {
 
         // Clear any active selections when switching tabs (both via swipe and tab tap)
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
+            @Override public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 // Ask the active tab to clear its selection, then hide the inline selection bar
                 if (curCardSelectionHandler != null)
@@ -291,7 +284,8 @@ public class TasksFragment extends Fragment {
      */
     public void updateSelectionCount(int selectedCount) {
         if (cardSelectionToolbar != null && cardSelectionToolbar.getVisibility() == View.VISIBLE)
-            if (selectedCount <= 0) hideSelectionBar();
+            if (selectedCount <= 0)
+                hideSelectionBar();
             else
                 cardSelectionToolbar.setSubtitle(selectedCount + " selected");
     }
@@ -313,8 +307,7 @@ public class TasksFragment extends Fragment {
                 fabSearchTask.show();
                 fabAiAnalyze.show();
                 fabOrderBy.show();
-            }
-            else {
+            } else {
                 fabAddTask.hide();
                 fabSearchTask.hide();
                 fabAiAnalyze.hide();

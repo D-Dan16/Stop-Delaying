@@ -78,15 +78,14 @@
                 android:layout_marginTop="16dp" />
 
         <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_due_date"
-                android:id="@+id/iv_clock"
-                android:layout_marginStart="104dp"
-                app:layout_constraintStart_toEndOf="@+id/iv_task_notification"
-                app:layout_constraintTop_toTopOf="@+id/iv_task_notification"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_task_notification"
-                app:layout_constraintVertical_bias="1.0" />
+            android:id="@+id/iv_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="104dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_task_notification"
+            app:layout_constraintStart_toEndOf="@+id/iv_task_notification"
+            app:layout_constraintTop_toTopOf="@+id/iv_task_notification"
+            app:srcCompat="@drawable/ic_due_date" />
 
         <TextView
                 android:text="DD-MM-YY"

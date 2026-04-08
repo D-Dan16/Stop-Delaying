@@ -63,6 +63,7 @@ public class TaskRepository {
         activeListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("TaskRepository", "Firebase onDataChange triggered - snapshot exists: " + snapshot.exists());
                 Map<Task.TaskStatus, List<Task>> categorizedTasks = new HashMap<>();
                 for (Task.TaskStatus status : Task.TaskStatus.values())
                     categorizedTasks.put(status, new ArrayList<>());
@@ -77,6 +78,7 @@ public class TaskRepository {
                     Objects.requireNonNull(categorizedTasks.get(task.getStatus())).add(task);
                 }
 
+                Log.d("TaskRepository", "Calling callback with " + categorizedTasks.values().stream().mapToInt(List::size).sum() + " total tasks");
                 callback.onTasksFetched(categorizedTasks);
             }
 

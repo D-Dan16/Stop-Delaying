@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.procrastination.R;
 import stop_delaying.ui.fragments.home.HomeFragment;
-import stop_delaying.ui.fragments.leaderboard.LeaderboardFragment;
+import stop_delaying.ui.fragments.leaderboard.ui.LeaderboardFragment;
 import stop_delaying.ui.fragments.home.LinksFragment;
 import stop_delaying.ui.fragments.home.ProcrastinationFragment;
 import stop_delaying.ui.fragments.settings.SettingsFragment;

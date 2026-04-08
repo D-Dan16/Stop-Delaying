@@ -5,6 +5,7 @@
     android:id="@+id/leaderboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="ltr"
     android:background="@color/bg_primary">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -33,9 +34,10 @@
                     android:text="Day Streak" />
 
             <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Task Streak" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task Streak" />
+
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,5 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <include layout="@layout/layout_spinning_progress_bar" android:id="@+id/leaderboard_progress_bar"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

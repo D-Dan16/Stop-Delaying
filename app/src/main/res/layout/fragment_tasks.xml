@@ -4,7 +4,7 @@
         tools:ignore="HardcodedText,RtlHardcoded"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/tasks"
-        android:layoutDirection="rtl"
+        android:layoutDirection="ltr"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_primary">
@@ -118,15 +118,8 @@
     </androidx.viewpager2.widget.ViewPager2>
 
     <!-- Moved ProgressBar out of AppBarLayout to be on top of other elements -->
-    <ProgressBar
-        android:id="@+id/ai_analysis_progress"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:indeterminateTint="@color/neon_orange"
-        android:elevation="8dp"
-        tools:visibility="visible" />
+
+    <include layout="@layout/layout_spinning_progress_bar" android:id="@+id/ai_analysis_progress"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fab_menu_container"

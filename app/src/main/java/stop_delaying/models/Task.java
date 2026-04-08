@@ -4,14 +4,29 @@ import com.google.firebase.database.Exclude;
 
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Task {
     @Exclude private String taskId;
+    @Getter
+    @Setter
     private String title;
+    @Getter
+    @Setter
     private String description;
+    @Getter
+    @Setter
     private Date dueDate;
+    @Getter
+    @Setter
     private TimeOfDay dueTimeOfDay;
+    @Getter
+    @Setter
     private TaskStatus status;
     @Exclude private boolean isTaskSelected;
+    @Getter
+    @Setter
     private boolean isTaskNotifying;
 
     public enum TaskStatus {
@@ -42,59 +57,12 @@ public class Task {
         this.taskId = taskId;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public TimeOfDay getDueTimeOfDay() {
-        return dueTimeOfDay;
-    }
-
-    public void setDueTimeOfDay(TimeOfDay dueTimeOfDay) {
-        this.dueTimeOfDay = dueTimeOfDay;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
     @Exclude public boolean isTaskSelected() {
         return isTaskSelected;
     }
 
     @Exclude public void setTaskSelected(boolean taskSelected) {
         isTaskSelected = taskSelected;
-    }
-
-    public boolean isTaskNotifying() {
-        return isTaskNotifying;
-    }
-    public void setTaskNotifying(boolean taskNotifying) {
-        isTaskNotifying = taskNotifying;
     }
 
 

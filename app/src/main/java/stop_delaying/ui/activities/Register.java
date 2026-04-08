@@ -143,7 +143,7 @@ public class Register extends AppCompatActivity {
     }
 
     private void createUserAndNextActivity(String uid, String userName) {
-        User currentUser = new User(userName,0,0);
+        User currentUser = new User(userName,0,0,false);
         DatabaseReference userNode = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);
         userNode.setValue(currentUser)
             .addOnCompleteListener(aVoid -> {

@@ -1,5 +1,10 @@
 package stop_delaying.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class User {
     /**
      * The username of the user.
@@ -16,36 +21,18 @@ public class User {
      */
     private int taskStreak;
 
+    /**
+     * Represents whether the user has completed at least one task today.
+     */
+    private boolean hasCompletedTodayATask;
+
     public User() {
     }
 
-    public User(String userName, int dayStreak, int taskStreak) {
+    public User(String userName, int dayStreak, int taskStreak, boolean hasCompletedTodayATask) {
         this.userName = userName;
         this.dayStreak = dayStreak;
         this.taskStreak = taskStreak;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public int getDayStreak() {
-        return dayStreak;
-    }
-
-    public void setDayStreak(int dayStreak) {
-        this.dayStreak = dayStreak;
-    }
-
-    public int getTaskStreak() {
-        return taskStreak;
-    }
-
-    public void setTaskStreak(int taskStreak) {
-        this.taskStreak = taskStreak;
+        this.hasCompletedTodayATask = hasCompletedTodayATask;
     }
 }
