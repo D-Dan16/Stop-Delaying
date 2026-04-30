@@ -52,7 +52,7 @@ public final class InsertCardResponsiveness {
 
             Task task = adapter.getVisibleTasks().get(position);
 
-            // For cases where u are trying to select smth that already been selected
+            // For cases where you're trying to select smth that already been selected
             if (task.isTaskSelected())
                 return false;
 
@@ -115,7 +115,7 @@ public final class InsertCardResponsiveness {
             if (!task.isTaskNotifying()) {
                 // Create an Intent to open MainApp and specify TasksFragment
                 Intent tapActionIntent = new Intent(bellNotifButton.getContext(), MainApp.class);
-                // this line makes it so that if i already have an instance of the MainApp activity, don't create it from scratch again. FLAG_ACTIVITY_SINGLE_TOP will call the onNewIntent() method of the activity.
+                // this line makes it so that if I already have an instance of the MainApp activity, don't create it from scratch again. FLAG_ACTIVITY_SINGLE_TOP will call the onNewIntent() method of the activity.
                 tapActionIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 tapActionIntent.putExtra(EXTRA_FRAGMENT_TO_LOAD, TasksFragment.NAME);
 

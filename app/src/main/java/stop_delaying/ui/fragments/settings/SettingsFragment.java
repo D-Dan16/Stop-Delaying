@@ -40,11 +40,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Allows users to update their profile, change password, delete account, and log out.
  */
 public class SettingsFragment extends Fragment {
-    // UI elements
-    private CircleImageView profileImage;
     private TextView username;
     private TextView email;
-    private MaterialCardView cardToggleNotifications;
     private MaterialCardView cardEditProfilePopup;
     private MaterialCardView cardChangePasswordPopup;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -79,10 +76,11 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Initialize UI elements
-        profileImage = view.findViewById(R.id.profileImage);
+        // UI elements
+        CircleImageView profileImage = view.findViewById(R.id.profileImage);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
-        cardToggleNotifications = view.findViewById(R.id.cardToggleNotifications);
+        MaterialCardView cardToggleNotifications = view.findViewById(R.id.cardToggleNotifications);
         cardEditProfilePopup = view.findViewById(R.id.cardEditProfilePopup);
         cardChangePasswordPopup = view.findViewById(R.id.cardChangePasswordPopup);
         switchAllowNotifications = view.findViewById(R.id.switchAllowNotifications);
@@ -280,9 +278,8 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getContext(), "User deleted.", Toast.LENGTH_SHORT).show();
                         // Navigate to the opening screen after account deletion
                         startActivity(new Intent(getContext(), OpeningScreen.class));
-                    } else {
+                    } else
                         Toast.makeText(getContext(), "User cannot be deleted.", Toast.LENGTH_SHORT).show();
-                    }
                 });
 
                 // We need to delete the user's tasks stored in the Firebase as well

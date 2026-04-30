@@ -7,12 +7,26 @@ import stop_delaying.models.Task;
 
 /**
  * Represents a collection of tasks, divided into visible and hidden tasks.
- * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (ie. To Do, Completed, Canceled).
- *
- * @param visibleTasks The list of tasks currently visible.
- * @param hiddenTasks  The list of tasks currently hidden.
+ * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (i.e. To Do, Completed, Canceled).
  */
-public record Tasks(ArrayList<Task> visibleTasks, ArrayList<Task> hiddenTasks) {
+@SuppressWarnings("ClassCanBeRecord")
+public final class Tasks {
+    private final ArrayList<Task> visibleTasks;
+    private final ArrayList<Task> hiddenTasks;
+
+    public Tasks(ArrayList<Task> visibleTasks, ArrayList<Task> hiddenTasks) {
+        this.visibleTasks = visibleTasks;
+        this.hiddenTasks = hiddenTasks;
+    }
+
+    public ArrayList<Task> visibleTasks() {
+        return visibleTasks;
+    }
+
+    public ArrayList<Task> hiddenTasks() {
+        return hiddenTasks;
+    }
+
     public void setAllTasks(List<Task> tasks) {
         visibleTasks.clear();
         visibleTasks.addAll(tasks);

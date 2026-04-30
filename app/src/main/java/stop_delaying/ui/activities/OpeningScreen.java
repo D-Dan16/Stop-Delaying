@@ -14,8 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.procrastination.R;
 
 public class OpeningScreen extends AppCompatActivity {
-    private Button bToSignIn;
-    private TextView tvToRegister;
 
 
     @Override
@@ -29,8 +27,8 @@ public class OpeningScreen extends AppCompatActivity {
             return insets;
         });
 
-        bToSignIn = findViewById(R.id.bToSignIn);
-        tvToRegister = findViewById(R.id.tvToRegister);
+        Button bToSignIn = findViewById(R.id.bToSignIn);
+        TextView tvToRegister = findViewById(R.id.tvToRegister);
 
         bToSignIn.setOnClickListener(v -> {
             startActivity(new Intent(this, Login.class));

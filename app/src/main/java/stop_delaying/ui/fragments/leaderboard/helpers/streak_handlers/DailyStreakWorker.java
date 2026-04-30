@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import stop_delaying.models.User;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
 
-public class DailyStreakWorker extends Worker {
+class DailyStreakWorker extends Worker {
 
     public DailyStreakWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);

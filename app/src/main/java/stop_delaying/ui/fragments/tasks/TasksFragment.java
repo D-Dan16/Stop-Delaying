@@ -1,8 +1,14 @@
 package stop_delaying.ui.fragments.tasks;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -60,6 +68,7 @@ import android.os.Looper; // Added import for Looper
  * - Exposes an inline selection toolbar (inline CAB) shown under the tabs when tasks are selected
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
+@SuppressLint("SetTextI18n")
 public class TasksFragment extends Fragment {
     //<editor-fold desc="String Names">
     public static final String NAME = "tasks_fragment_for_debugging";
@@ -87,7 +96,7 @@ public class TasksFragment extends Fragment {
     // Handler and Runnable for periodic UI updates
     private final Handler handler = new Handler(Looper.getMainLooper()); // Explicitly associated with the main looper
 
-    // Update every 1 minute the UI
+    // Update the UI every 1 minute
     private final Runnable cardBackgroundUpdater = new Runnable() {
         @SuppressLint("NotifyDataSetChanged")
         @Override public void run() {
@@ -181,7 +190,7 @@ public class TasksFragment extends Fragment {
             // Inflate icon-only menu for move/delete actions
             cardSelectionToolbar.inflateMenu(R.menu.menu_tasks_selection_bar);
 
-            // Left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
+            // The left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
             // and then hide the selection bar.
             cardSelectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
             cardSelectionToolbar.setNavigationOnClickListener(v -> {
@@ -349,7 +358,7 @@ public class TasksFragment extends Fragment {
                 @Override public void onSuccess(AnalysisResult result) {
                     tasksViewModel.getAiAnalysisInProgress().setValue(false);
                     View view = getView();
-                    // Show results in dialog
+                    // Show results in the dialog
                     if (view != null)
                         ConfigurableDialogFragment.showDialog(
                                 view, getParentFragmentManager(), R.layout.cv_search_ai_analyze,
@@ -377,7 +386,7 @@ public class TasksFragment extends Fragment {
     private void searchForTask() {
         fabSearchTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup,
                 (dialogView) -> {
-                    // If there are selected tasks, unselect them so there won't be menu over-dumping and to keep logic simpler, without wierd edge-cases.
+                    // If there are selected tasks, unselect them, so there won't be menu over-dumping and to keep logic simpler, without weird edge-cases.
                     switch (viewPager.getCurrentItem()) {
                         case TaskTabIndices.TO_DO ->
                                 TasksToDoFragment.getAdapter().clearSelection();
@@ -411,7 +420,7 @@ public class TasksFragment extends Fragment {
                             return;
                         }
 
-                        // Obtain all task lists and filter based on search query
+                        // Get all task lists and filter based on a search query
                         TasksToDoFragment.getAdapter().filterTasks(taskName);
                         TasksCompletedFragment.getAdapter().filterTasks(taskName);
                         TasksCanceledFragment.getAdapter().filterTasks(taskName);
@@ -441,13 +450,22 @@ public class TasksFragment extends Fragment {
             TextInputLayout tilTaskTitle = dialog.findViewById(R.id.til_task_title);
             TextInputLayout tilTaskDescription = dialog.findViewById(R.id.til_task_description);
 
+            ImageView ivSpeechToTextTitle = dialog.findViewById(R.id.ivSpeechToTextTitle);
+            ImageView ivSpeechToTextDescription = dialog.findViewById(R.id.ivSpeechToTextDescription);
+
             Button bDate = dialog.findViewById(R.id.bSetTime);
             Button bTimeOfDay = dialog.findViewById(R.id.bSetDate);
-            //</editor-fold>
 
             TimePickerFragment timePickerFragment = new TimePickerFragment(dialog.findViewById(R.id.tvSelectedTime));
             DatePickerFragment datePickerFragment = new DatePickerFragment(dialog.findViewById(R.id.tvSelectedDate));
+            //</editor-fold>
 
+            //<editor-fold desc="Config Speech To Text buttons">
+            configSTTButton(ivSpeechToTextTitle,etTitle);
+            configSTTButton(ivSpeechToTextDescription,etDescription);
+            //</editor-fold>
+
+            //<editor-fold desc="config timer pickers">
             bDate.setOnClickListener(v1 -> {
                 timePickerFragment.show(getParentFragmentManager(), "dueTimeOfDayPicker");
             });
@@ -455,6 +473,7 @@ public class TasksFragment extends Fragment {
             bTimeOfDay.setOnClickListener(v1 -> {
                 datePickerFragment.show(getParentFragmentManager(), "dueDayOfDayPicker");
             });
+            //</editor-fold>
 
             //<editor-fold desc="Confirm add task logic">
             dialog.findViewById(R.id.bConfirmAddTask).setOnClickListener(v1 -> {
@@ -495,8 +514,74 @@ public class TasksFragment extends Fragment {
                 //</editor-fold>
             });
             //</editor-fold>
-
         }));
+    }
+
+    private void configSTTButton(View speechToTextComponent, EditText textInput) {
+        speechToTextComponent.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                //noinspection deprecation
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 101);
+                return;
+            }
+
+            if (!SpeechRecognizer.isRecognitionAvailable(requireContext())) {
+                Toast.makeText(getContext(), "Speech recognition is not available", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            final SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
+
+            Log.d("TasksFragment", "Speech Recognition Started");
+
+            // Capture original text to append new words correctly during partial updates
+            final String originalText = textInput.getText().toString();
+
+            // set up the listener for the listening device
+            speechRecognizer.setRecognitionListener(new RecognitionListener() {
+                @Override public void onReadyForSpeech(Bundle bundle) {}
+                @Override public void onBeginningOfSpeech() {}
+                @Override public void onRmsChanged(float v) {}
+                @Override public void onBufferReceived(byte[] bytes) {}
+                @Override public void onEndOfSpeech() {}
+                @Override public void onEvent(int i, Bundle bundle) {}
+
+                @Override public void onError(int i) {
+                    speechRecognizer.destroy();
+                }
+
+                @Override public void onResults(Bundle bundle) {
+                    ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    if (data != null && !data.isEmpty())
+                        textInput.setText(originalText + data.get(0));
+
+                    textInput.append(". \n");
+
+                    Log.d("TasksFragment", "The Speech to Text: " + textInput.getText().toString());
+                    speechRecognizer.destroy();
+                }
+
+                @Override public void onPartialResults(Bundle bundle) {
+                    ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    if (data != null && !data.isEmpty()) {
+                        textInput.setText(originalText + data.get(0));
+
+                        Log.d("TasksFragment", "onPartialResults: " + data.get(0));
+                    }
+                }
+            });
+
+            var recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+
+            // Wait longer after the user stops speaking (approx 2-3 seconds of silence)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000L);
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000L);
+
+            speechRecognizer.startListening(recognizerIntent);
+        });
     }
 
     /**
