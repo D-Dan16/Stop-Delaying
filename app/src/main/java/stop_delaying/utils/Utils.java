@@ -56,7 +56,10 @@ public final class Utils {
         if (textToSpeech == null || text == null)
             return;
 
-        boolean isHebrew = containsHebrew(text);
+        // Remove emojis and special symbols to prevent TTS from reading them
+        String cleanedText = text.replaceAll("[\\p{So}\\p{Cn}]", "");
+
+        boolean isHebrew = containsHebrew(cleanedText);
 
         Locale lang = isHebrew ? new Locale("he", "IL") : Locale.US;
 
@@ -80,7 +83,7 @@ public final class Utils {
             return;
         }
 
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "TaskTTS");
+        textToSpeech.speak(cleanedText, TextToSpeech.QUEUE_FLUSH, null, "TaskTTS");
     }
 
     public static boolean containsHebrew(String text) {

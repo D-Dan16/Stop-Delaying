@@ -363,10 +363,12 @@ public class TasksFragment extends Fragment {
                                         tvAnalysisResult.setText(summary);
 
                                     View ivTts = dialogView.findViewById(R.id.iv_ai_analysis_tts);
-                                    if (ivTts != null)
-                                        ivTts.setOnClickListener(v1 -> {
-                                            Utils.speak(requireContext(), summary);
-                                        });
+                                    if (ivTts == null)
+                                        return;
+
+                                    ivTts.setOnClickListener(v1 -> {
+                                        Utils.speak(requireContext(), summary);
+                                    });
                                 }
                         );
                 }
