@@ -1,5 +1,7 @@
 package stop_delaying.ui.fragments.home;
 
+import static stop_delaying.utils.Utils.speak;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -45,6 +47,8 @@ public class HomeFragment extends Fragment {
     private TextView tvTasksStreak;
     private TextView tvDaysStreak;
 
+    private Task currentUrgentTask;
+
     private static final String TAG = "HomeFragment";
 
     @SuppressLint("SetTextI18n")
@@ -81,11 +85,26 @@ public class HomeFragment extends Fragment {
 
     private void initComponents(@NonNull View view) {
         // Initialize UI elements
-        tvImportantTaskTitle = view.findViewById(R.id.tvImportantTaskTitle);
-        tvImportantTaskDescription = view.findViewById(R.id.tvImportantTaskDescription);
-        tvImportantTaskDueDate = view.findViewById(R.id.tvImportantTaskDueDate);
-        tvImportantTaskDueTime = view.findViewById(R.id.tvImportantTaskDueTime);
+        tvImportantTaskTitle = view.findViewById(R.id.tv_task_title);
+        tvImportantTaskDescription = view.findViewById(R.id.tv_task_description);
+        tvImportantTaskDueDate = view.findViewById(R.id.tv_task_due_date);
+        tvImportantTaskDueTime = view.findViewById(R.id.tv_task_due_time);
         importantTaskCardView = view.findViewById(R.id.cvImportantTask);
+
+        // Hide the notification icon for the important task card on the home screen
+        View ivTaskNotification = view.findViewById(R.id.iv_task_notification);
+        if (ivTaskNotification != null)
+            ivTaskNotification.setVisibility(View.INVISIBLE);
+
+        // Attach TTS listener for the important task card on Home
+        View ivTaskTts = view.findViewById(R.id.iv_task_tts);
+        if (ivTaskTts != null)
+            ivTaskTts.setOnClickListener(v -> {
+                if (currentUrgentTask == null)
+                    return;
+                String textToSpeak = currentUrgentTask.getTitle() + ". " + currentUrgentTask.getDescription();
+                speak(getContext(), textToSpeak);
+            });
 
         tvTasksStreak = view.findViewById(R.id.tvTasksStreak);
         tvDaysStreak = view.findViewById(R.id.tvDaysStreak);
@@ -239,6 +258,7 @@ public class HomeFragment extends Fragment {
      */
     @SuppressLint("DefaultLocale")
     private void displayTask(Task task) {
+        this.currentUrgentTask = task;
         tvImportantTaskTitle.setText(task.getTitle());
         tvImportantTaskDescription.setText(task.getDescription());
 
@@ -269,15 +289,16 @@ public class HomeFragment extends Fragment {
 
 
     private void displayNoTaskMessage() {
+        this.currentUrgentTask = null;
         tvImportantTaskTitle.setText("No Important Task");
         tvImportantTaskDescription.setText("You have no pending tasks. Great job!");
         tvImportantTaskDueDate.setText("--");
         tvImportantTaskDueTime.setText("--");
 
-        // Reset card background color
+        // Reset card background color to bg_card (specific to Home)
         if (importantTaskCardView != null) {
             androidx.cardview.widget.CardView cardView = (androidx.cardview.widget.CardView) importantTaskCardView;
-            int baseColor = getResources().getColor(R.color.bg_task_card, getContext().getTheme());
+            int baseColor = getResources().getColor(R.color.bg_card, getContext().getTheme());
             cardView.setCardBackgroundColor(baseColor);
         }
     }
@@ -291,8 +312,9 @@ public class HomeFragment extends Fragment {
             return;
 
         int colorRes = task.hasReachedDeadline() ? R.color.bg_task_card_post_deadline :
-                task.isDeadlineNear() ? R.color.bg_task_card_near_deadline :
-                        R.color.bg_task_card;
+                task.isDeadlineNear() 
+                        ? R.color.bg_task_card_near_deadline 
+                        : R.color.bg_card; 
 
         int baseColor = getResources().getColor(colorRes, getContext().getTheme());
         androidx.cardview.widget.CardView cardView = (androidx.cardview.widget.CardView) importantTaskCardView;

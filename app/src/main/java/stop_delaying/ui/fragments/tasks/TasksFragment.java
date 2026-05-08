@@ -1,14 +1,8 @@
 package stop_delaying.ui.fragments.tasks;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,6 +37,7 @@ import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.Utils;
 import stop_delaying.utils.ai_recommendations.AnalysisResult;
 import stop_delaying.utils.ai_recommendations.AnalysisResultHandler;
 import stop_delaying.utils.ai_recommendations.TaskAnalyzer;
@@ -364,9 +358,15 @@ public class TasksFragment extends Fragment {
                                 view, getParentFragmentManager(), R.layout.cv_search_ai_analyze,
                                 (dialogView) -> {
                                     TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
+                                    String summary = AnalysisResultHandler.getSummary(result);
                                     if (tvAnalysisResult != null)
-                                        tvAnalysisResult.setText(AnalysisResultHandler.getSummary(
-                                                result));
+                                        tvAnalysisResult.setText(summary);
+
+                                    View ivTts = dialogView.findViewById(R.id.iv_ai_analysis_tts);
+                                    if (ivTts != null)
+                                        ivTts.setOnClickListener(v1 -> {
+                                            Utils.speak(requireContext(), summary);
+                                        });
                                 }
                         );
                 }
@@ -402,6 +402,9 @@ public class TasksFragment extends Fragment {
                     EditText etSearch = dialogView.findViewById(R.id.et_search_task_by_name_search);
                     TextInputLayout tilSearch = dialogView.findViewById(R.id.til_task_search_name_search);
                     Button bSearch = dialogView.findViewById(R.id.b_confirm_search_task);
+
+                    View ivSearchSTT = dialogView.findViewById(R.id.ivSearchForTaskSTT);
+                    Utils.configSTTButton(this, ivSearchSTT, etSearch);
 
                     //<editor-fold desc="On Filter Tasks logic ">
                     bSearch.setOnClickListener(v1 -> {
@@ -461,8 +464,8 @@ public class TasksFragment extends Fragment {
             //</editor-fold>
 
             //<editor-fold desc="Config Speech To Text buttons">
-            configSTTButton(ivSpeechToTextTitle,etTitle);
-            configSTTButton(ivSpeechToTextDescription,etDescription);
+            Utils.configSTTButton(this, ivSpeechToTextTitle, etTitle);
+            Utils.configSTTButton(this, ivSpeechToTextDescription, etDescription);
             //</editor-fold>
 
             //<editor-fold desc="config timer pickers">
@@ -515,73 +518,6 @@ public class TasksFragment extends Fragment {
             });
             //</editor-fold>
         }));
-    }
-
-    private void configSTTButton(View speechToTextComponent, EditText textInput) {
-        speechToTextComponent.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                //noinspection deprecation
-                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 101);
-                return;
-            }
-
-            if (!SpeechRecognizer.isRecognitionAvailable(requireContext())) {
-                Toast.makeText(getContext(), "Speech recognition is not available", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            final SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
-
-            Log.d("TasksFragment", "Speech Recognition Started");
-
-            // Capture original text to append new words correctly during partial updates
-            final String originalText = textInput.getText().toString();
-
-            // set up the listener for the listening device
-            speechRecognizer.setRecognitionListener(new RecognitionListener() {
-                @Override public void onReadyForSpeech(Bundle bundle) {}
-                @Override public void onBeginningOfSpeech() {}
-                @Override public void onRmsChanged(float v) {}
-                @Override public void onBufferReceived(byte[] bytes) {}
-                @Override public void onEndOfSpeech() {}
-                @Override public void onEvent(int i, Bundle bundle) {}
-
-                @Override public void onError(int i) {
-                    speechRecognizer.destroy();
-                }
-
-                @Override public void onResults(Bundle bundle) {
-                    ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    if (data != null && !data.isEmpty())
-                        textInput.setText(originalText + data.get(0));
-
-                    textInput.append(". \n");
-
-                    Log.d("TasksFragment", "The Speech to Text: " + textInput.getText().toString());
-                    speechRecognizer.destroy();
-                }
-
-                @Override public void onPartialResults(Bundle bundle) {
-                    ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    if (data != null && !data.isEmpty()) {
-                        textInput.setText(originalText + data.get(0));
-
-                        Log.d("TasksFragment", "onPartialResults: " + data.get(0));
-                    }
-                }
-            });
-
-            var recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-
-            // Wait longer after the user stops speaking (approx 2-3 seconds of silence)
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000L);
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000L);
-
-            speechRecognizer.startListening(recognizerIntent);
-        });
     }
 
     /**

@@ -7,7 +7,7 @@ import stop_delaying.models.Task;
 
 /**
  * Represents a collection of tasks, divided into visible and hidden tasks.
- * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (i.e. To Do, Completed, Canceled).
+ * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (i.e., To Do, Completed, Canceled).
  */
 @SuppressWarnings("ClassCanBeRecord")
 public final class Tasks {
@@ -63,11 +63,18 @@ public final class Tasks {
         if (query == null || query.isEmpty())
             return;
 
+        // Sanitize the query: remove non-English alphanumeric characters and spaces that could hinder the search
+        String q = query.replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().trim();
+        if (q.isEmpty()) return;
+
         hiddenTasks.clear();
 
         for (Task t : visibleTasks) {
-            String q = query.toLowerCase().trim();
-            if (!t.getTitle().toLowerCase().contains(q) && !t.getDescription().toLowerCase().contains(q))
+            // Also, sanitize title and description to ensure symbols or accents don't hinder the match
+            String title = (t.getTitle() != null) ? t.getTitle().replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase() : "";
+            String description = (t.getDescription() != null) ? t.getDescription().replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase() : "";
+
+            if (!title.contains(q) && !description.contains(q))
                 hiddenTasks.add(t);
         }
 

@@ -21,104 +21,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp" />
 
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/cvImportantTask"
+                layout="@layout/task_card_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:cardCornerRadius="8dp">
+                android:layout_margin="8dp" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:id="@+id/iv_important_task_status"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="0dp"
-                        android:contentDescription="TODO"
-                        android:src="@drawable/ic_tasks"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/task_card_icon" />
-
-                    <TextView
-                        android:id="@+id/tvImportantTaskTitle"
-                        style="@style/HeaderText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:gravity="left"
-                        android:paddingBottom="0dp"
-                        android:text="Task Title"
-                        android:textSize="22sp"
-                        app:layout_constraintEnd_toStartOf="@id/iv_important_task_status"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvImportantTaskDescription"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Task Description"
-                        android:textColor="@color/text_primary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvImportantTaskTitle" />
-
-                    <ImageView
-                        android:id="@+id/ivImportantTaskTts"
-                        android:layout_width="28dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="12dp"
-                        android:contentDescription="TODO"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvImportantTaskDescription"
-                        app:srcCompat="@drawable/ic_tts" />
-
-                    <ImageView
-                        android:id="@+id/ivImportantTaskClock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="104dp"
-                        android:contentDescription="TODO"
-                        app:layout_constraintBottom_toBottomOf="@+id/ivImportantTaskTts"
-                        app:layout_constraintStart_toEndOf="@+id/ivImportantTaskTts"
-                        app:layout_constraintTop_toTopOf="@+id/ivImportantTaskTts"
-                        app:srcCompat="@drawable/ic_due_date" />
-
-                    <TextView
-                        android:id="@+id/tvImportantTaskDueDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="DD-MM-YY"
-                        android:textColor="@color/text_primary"
-                        app:layout_constraintBottom_toBottomOf="@+id/ivImportantTaskClock"
-                        app:layout_constraintStart_toEndOf="@+id/ivImportantTaskClock"
-                        app:layout_constraintTop_toTopOf="@+id/ivImportantTaskClock" />
-
-                    <TextView
-                        android:id="@+id/tvImportantTaskDueTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="HH:MM"
-                        android:textColor="@color/text_primary"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvImportantTaskDueDate"
-                        app:layout_constraintStart_toEndOf="@+id/tvImportantTaskDueDate"
-                        app:layout_constraintTop_toTopOf="@+id/tvImportantTaskDueDate" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
 
             <HorizontalScrollView
                     android:layout_width="match_parent"
