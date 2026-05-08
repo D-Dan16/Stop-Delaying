@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 
-public class NotificationWorker extends Worker {
+class NotificationWorker extends Worker {
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }

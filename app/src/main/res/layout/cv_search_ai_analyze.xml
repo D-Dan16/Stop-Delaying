@@ -21,22 +21,39 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                    android:text="AI's Suggestions"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                style="@style/HeaderText"
-                     />
-
-            <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp" />
-
-            <TextView
-                android:id="@+id/tv_ai_analysis_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Do The Following:"
-                android:textColor="@color/text_primary" />
+                android:text="AI's Suggestions"
+                style="@style/HeaderText" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_ai_analysis_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/iv_ai_analysis_tts"
+                    android:layout_marginEnd="7dp"
+                    android:text="Do The Following:"
+                    android:textColor="@color/text_primary" />
+
+                <ImageView
+                    android:id="@+id/iv_ai_analysis_tts"
+                    android:layout_width="28dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:contentDescription="TODO"
+                    app:srcCompat="@drawable/ic_tts" />
+            </RelativeLayout>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,9 +61,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         //Add listeners for the card upon creation
         InsertCardResponsiveness.configureCardInteractions(
-                view,
-                holder,
-                this
+                view, holder, this
         );
 
         return holder;

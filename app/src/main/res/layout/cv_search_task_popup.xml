@@ -34,11 +34,12 @@
                     android:gravity="center">
 
                 <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    android:id="@+id/ivSearchForTaskSTT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="7dp"
                     android:contentDescription="TODO"
-                    app:srcCompat="@drawable/ic_stt"
-                    android:layout_marginEnd="7dp" />
+                    app:srcCompat="@drawable/ic_stt" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_task_search_name_search"

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-public class GenericActionWorker extends Worker {
+class GenericActionWorker extends Worker {
     public static final String EXTRA_SCHEDULED_INTENT_URI = "scheduled_intent_uri";
 
     public GenericActionWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {

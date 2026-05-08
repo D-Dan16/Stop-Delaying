@@ -20,10 +20,11 @@ import java.util.List;
 import stop_delaying.models.Date;
 import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
-import stop_delaying.ui.activities.MainApp; // Import MainApp
+import stop_delaying.ui.activities.MainApp;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
-import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
+import stop_delaying.utils.Utils;
 import stop_delaying.utils.notifications_and_scheduling.NotificationCreator;
+import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 
 
 /**
@@ -34,6 +35,7 @@ public final class InsertCardResponsiveness {
     public static final String EXTRA_FRAGMENT_TO_LOAD = "stop_delaying.EXTRA_FRAGMENT_TO_LOAD";
     static private TasksViewModel _tasksViewModel;
 
+
     /**
      * Attaches all listeners to the provided task card view.
      */
@@ -41,7 +43,10 @@ public final class InsertCardResponsiveness {
         holdCardForStartSelectionProcess(view, holder, adapter);
         toggleCardSelection(view, holder, adapter);
         toggleNotificationOfTask(view, holder, adapter);
+        toggleTtsOfTask(view, holder, adapter);
     }
+
+
 
     /** Long press to select and start CAB. */
     private static void holdCardForStartSelectionProcess(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
@@ -52,7 +57,7 @@ public final class InsertCardResponsiveness {
 
             Task task = adapter.getVisibleTasks().get(position);
 
-            // For cases where u are trying to select smth that already been selected
+            // For cases where you're trying to select smth that already been selected
             if (task.isTaskSelected())
                 return false;
 
@@ -101,7 +106,7 @@ public final class InsertCardResponsiveness {
 
             Task task = adapter.getVisibleTasks().get(position);
 
-            // If there isn't permission to use the notification manager, ask for it, then return.
+            // If there is no permission to use the notification manager, ask for it, then return.
             if (ActivityCompat.checkSelfPermission(bellNotifButton.getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 // Fallback if the context isn't an activity for some reason
                 if (bellNotifButton.getContext() instanceof android.app.Activity)
@@ -115,7 +120,7 @@ public final class InsertCardResponsiveness {
             if (!task.isTaskNotifying()) {
                 // Create an Intent to open MainApp and specify TasksFragment
                 Intent tapActionIntent = new Intent(bellNotifButton.getContext(), MainApp.class);
-                // this line makes it so that if i already have an instance of the MainApp activity, don't create it from scratch again. FLAG_ACTIVITY_SINGLE_TOP will call the onNewIntent() method of the activity.
+                // this line makes it so that if I already have an instance of the MainApp activity, don't create it from scratch again. FLAG_ACTIVITY_SINGLE_TOP will call the onNewIntent() method of the activity.
                 tapActionIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 tapActionIntent.putExtra(EXTRA_FRAGMENT_TO_LOAD, TasksFragment.NAME);
 
@@ -150,6 +155,19 @@ public final class InsertCardResponsiveness {
 
             _tasksViewModel.updateTask(task);
             //</editor-fold>
+        });
+    }
+
+    /** Make the TTS button read the task title and description. */
+    private static void toggleTtsOfTask(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
+        view.findViewById(R.id.iv_task_tts).setOnClickListener(ttsButton -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position == NO_POSITION)
+                return;
+
+            Task task = adapter.getVisibleTasks().get(position);
+            String textToSpeak = task.getTitle() + ". " + task.getDescription();
+            Utils.speak(ttsButton.getContext(), textToSpeak);
         });
     }
 

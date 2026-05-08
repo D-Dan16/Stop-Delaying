@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 import stop_delaying.utils.ConfigurableDialogFragment;
+import stop_delaying.utils.Utils;
 import stop_delaying.utils.ai_recommendations.AnalysisResult;
 import stop_delaying.utils.ai_recommendations.AnalysisResultHandler;
 import stop_delaying.utils.ai_recommendations.TaskAnalyzer;
@@ -60,6 +62,7 @@ import android.os.Looper; // Added import for Looper
  * - Exposes an inline selection toolbar (inline CAB) shown under the tabs when tasks are selected
  * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
  */
+@SuppressLint("SetTextI18n")
 public class TasksFragment extends Fragment {
     //<editor-fold desc="String Names">
     public static final String NAME = "tasks_fragment_for_debugging";
@@ -87,7 +90,7 @@ public class TasksFragment extends Fragment {
     // Handler and Runnable for periodic UI updates
     private final Handler handler = new Handler(Looper.getMainLooper()); // Explicitly associated with the main looper
 
-    // Update every 1 minute the UI
+    // Update the UI every 1 minute
     private final Runnable cardBackgroundUpdater = new Runnable() {
         @SuppressLint("NotifyDataSetChanged")
         @Override public void run() {
@@ -181,7 +184,7 @@ public class TasksFragment extends Fragment {
             // Inflate icon-only menu for move/delete actions
             cardSelectionToolbar.inflateMenu(R.menu.menu_tasks_selection_bar);
 
-            // Left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
+            // The left navigation icon (X) cancels selection: clear selection in the active tab (via handler)
             // and then hide the selection bar.
             cardSelectionToolbar.setNavigationIcon(R.drawable.ic_canceled);
             cardSelectionToolbar.setNavigationOnClickListener(v -> {
@@ -349,15 +352,23 @@ public class TasksFragment extends Fragment {
                 @Override public void onSuccess(AnalysisResult result) {
                     tasksViewModel.getAiAnalysisInProgress().setValue(false);
                     View view = getView();
-                    // Show results in dialog
+                    // Show results in the dialog
                     if (view != null)
                         ConfigurableDialogFragment.showDialog(
                                 view, getParentFragmentManager(), R.layout.cv_search_ai_analyze,
                                 (dialogView) -> {
                                     TextView tvAnalysisResult = dialogView.findViewById(R.id.tv_ai_analysis_result);
+                                    String summary = AnalysisResultHandler.getSummary(result);
                                     if (tvAnalysisResult != null)
-                                        tvAnalysisResult.setText(AnalysisResultHandler.getSummary(
-                                                result));
+                                        tvAnalysisResult.setText(summary);
+
+                                    View ivTts = dialogView.findViewById(R.id.iv_ai_analysis_tts);
+                                    if (ivTts == null)
+                                        return;
+
+                                    ivTts.setOnClickListener(v1 -> {
+                                        Utils.speak(requireContext(), summary);
+                                    });
                                 }
                         );
                 }
@@ -377,7 +388,7 @@ public class TasksFragment extends Fragment {
     private void searchForTask() {
         fabSearchTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup,
                 (dialogView) -> {
-                    // If there are selected tasks, unselect them so there won't be menu over-dumping and to keep logic simpler, without wierd edge-cases.
+                    // If there are selected tasks, unselect them, so there won't be menu over-dumping and to keep logic simpler, without weird edge-cases.
                     switch (viewPager.getCurrentItem()) {
                         case TaskTabIndices.TO_DO ->
                                 TasksToDoFragment.getAdapter().clearSelection();
@@ -393,6 +404,9 @@ public class TasksFragment extends Fragment {
                     EditText etSearch = dialogView.findViewById(R.id.et_search_task_by_name_search);
                     TextInputLayout tilSearch = dialogView.findViewById(R.id.til_task_search_name_search);
                     Button bSearch = dialogView.findViewById(R.id.b_confirm_search_task);
+
+                    View ivSearchSTT = dialogView.findViewById(R.id.ivSearchForTaskSTT);
+                    Utils.configSTTButton(this, ivSearchSTT, etSearch);
 
                     //<editor-fold desc="On Filter Tasks logic ">
                     bSearch.setOnClickListener(v1 -> {
@@ -411,7 +425,7 @@ public class TasksFragment extends Fragment {
                             return;
                         }
 
-                        // Obtain all task lists and filter based on search query
+                        // Get all task lists and filter based on a search query
                         TasksToDoFragment.getAdapter().filterTasks(taskName);
                         TasksCompletedFragment.getAdapter().filterTasks(taskName);
                         TasksCanceledFragment.getAdapter().filterTasks(taskName);
@@ -441,13 +455,22 @@ public class TasksFragment extends Fragment {
             TextInputLayout tilTaskTitle = dialog.findViewById(R.id.til_task_title);
             TextInputLayout tilTaskDescription = dialog.findViewById(R.id.til_task_description);
 
+            ImageView ivSpeechToTextTitle = dialog.findViewById(R.id.ivSpeechToTextTitle);
+            ImageView ivSpeechToTextDescription = dialog.findViewById(R.id.ivSpeechToTextDescription);
+
             Button bDate = dialog.findViewById(R.id.bSetTime);
             Button bTimeOfDay = dialog.findViewById(R.id.bSetDate);
-            //</editor-fold>
 
             TimePickerFragment timePickerFragment = new TimePickerFragment(dialog.findViewById(R.id.tvSelectedTime));
             DatePickerFragment datePickerFragment = new DatePickerFragment(dialog.findViewById(R.id.tvSelectedDate));
+            //</editor-fold>
 
+            //<editor-fold desc="Config Speech To Text buttons">
+            Utils.configSTTButton(this, ivSpeechToTextTitle, etTitle);
+            Utils.configSTTButton(this, ivSpeechToTextDescription, etDescription);
+            //</editor-fold>
+
+            //<editor-fold desc="config timer pickers">
             bDate.setOnClickListener(v1 -> {
                 timePickerFragment.show(getParentFragmentManager(), "dueTimeOfDayPicker");
             });
@@ -455,6 +478,7 @@ public class TasksFragment extends Fragment {
             bTimeOfDay.setOnClickListener(v1 -> {
                 datePickerFragment.show(getParentFragmentManager(), "dueDayOfDayPicker");
             });
+            //</editor-fold>
 
             //<editor-fold desc="Confirm add task logic">
             dialog.findViewById(R.id.bConfirmAddTask).setOnClickListener(v1 -> {
@@ -495,7 +519,6 @@ public class TasksFragment extends Fragment {
                 //</editor-fold>
             });
             //</editor-fold>
-
         }));
     }
 

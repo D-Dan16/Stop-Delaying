@@ -40,8 +40,8 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         setContentView(R.layout.activity_main_app);
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
-        homeFragment = new HomeFragment();
         tasksFragment = new TasksFragment();
+        homeFragment = new HomeFragment();
         leaderboardFragment = new LeaderboardFragment();
         settingsFragment = new SettingsFragment();
         procrastinationFragment = new ProcrastinationFragment();

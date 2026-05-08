@@ -35,7 +35,6 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private Button bRegisterSignUp;
-    private TextView tvToLogin;
     private EditText etEmailRegister;
     private EditText etUsernameRegister;
     private TextInputEditText etPasswordRegister;
@@ -60,7 +59,7 @@ public class Register extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         bRegisterSignUp = findViewById(R.id.bRegisterSignUp);
-        tvToLogin = findViewById(R.id.tvToLogin);
+        TextView tvToLogin = findViewById(R.id.tvToLogin);
         etEmailRegister = findViewById(R.id.etEmailRegister);
         etUsernameRegister = findViewById(R.id.etUsernameRegister);
         etPasswordRegister = findViewById(R.id.etPasswordRegister);
