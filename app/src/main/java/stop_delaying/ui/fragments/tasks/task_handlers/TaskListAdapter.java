@@ -1,7 +1,5 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
-import static java.text.MessageFormat.format;
-
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +15,7 @@ import com.example.procrastination.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
@@ -78,8 +77,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         var date = task.getDueDate();
         var timeOfDay = task.getDueTimeOfDay();
-        holder.tvTaskDueDate.setText(format("{0}/{1}/{2}", date.getDay(), date.getMonth(), date.getYear()));
-        holder.tvTaskDueTime.setText(format("{0}:{1}", timeOfDay.getHour(), timeOfDay.getMinute()));
+        holder.tvTaskDueDate.setText(String.format(Locale.getDefault(), "%02d-%02d-%02d", date.getDay(), date.getMonth(), date.getYear() % 100));
+        holder.tvTaskDueTime.setText(String.format(Locale.getDefault(), "%02d:%02d", timeOfDay.getHour(), timeOfDay.getMinute()));
 
         holder.ivTaskStatus.setImageResource(switch (task.getStatus()) {
             case TODO -> R.drawable.ic_assignment;

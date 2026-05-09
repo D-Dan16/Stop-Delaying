@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.Locale;
+
 import lombok.Getter;
 
 public class DatePickerFragment extends DialogFragment
@@ -47,7 +49,7 @@ public class DatePickerFragment extends DialogFragment
         monthChosen = month+1;
         yearChosen = year;
 
-        textViewToDisplayInfo.setText(dayChosen+"/"+monthChosen+"/"+yearChosen);
+        textViewToDisplayInfo.setText(String.format(Locale.getDefault(), "%02d-%02d-%02d", dayChosen, monthChosen, yearChosen % 100));
     }
 
 }

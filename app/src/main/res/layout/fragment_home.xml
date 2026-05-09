@@ -1,217 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layoutDirection="ltr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_primary">
+    android:background="@color/bg_primary"
+    android:layoutDirection="ltr">
 
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-                style="@style/BgLinearLayout"
+            style="@style/BgLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Welcome Header -->
+            <!-- Important Task Section -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
+            <TextView
+                style="@style/LabelText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-            <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Top Priority Task" />
 
             <include
                 android:id="@+id/cvImportantTask"
                 layout="@layout/task_card_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" />
+                android:layout_height="wrap_content" />
 
+            <!-- Explore Section -->
+            <TextView
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Explore Resources" />
 
             <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
-                    android:visibility="visible"
-                    android:scrollbarAlwaysDrawHorizontalTrack="false"
-                    android:scrollbarFadeDuration="0"
-                    android:layout_margin="0dp"
-                    android:scrollbarAlwaysDrawVerticalTrack="false"
-                    android:fadeScrollbars="false"
-                    android:scrollbars="none">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="8dp"
+                android:scrollbars="none">
 
                 <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWhatIsProcrastination"
+                        style="@style/PrimaryButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
+                        android:layout_marginEnd="12dp"
+                        android:text="What is procrastination?"
+                        android:textSize="18sp" />
 
                     <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnWhatIsProcrastination"
-                            style="@style/PrimaryButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:layout_marginEnd="6dp"
-                            android:text="What is procrastination?"
-                            android:textSize="23sp" />
+                        android:id="@+id/btnLinksAndVideos"
+                        style="@style/PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:text="Links and Videos"
+                        android:textSize="18sp" />
 
                     <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnLinksAndVideos"
-                            style="@style/PrimaryButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:layout_marginEnd="6dp"
-                            android:text="Links and Videos"
-                            android:layout_weight="1"
-                            android:textSize="24sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTipsAndTricks"
-                            style="@style/PrimaryButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:layout_marginEnd="6dp"
-                            android:text="Tips &amp; Tricks for\n procrastination"
-                            android:textSize="24sp" />
+                        android:id="@+id/btnTipsAndTricks"
+                        style="@style/PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tips &amp; Tricks"
+                        android:textSize="18sp" />
                 </LinearLayout>
             </HorizontalScrollView>
 
+            <!-- Streaks Section -->
+            <TextView
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="Your Streaks" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="16dp"
-                    app:cardBackgroundColor="@color/bg_card"
-                    app:cardCornerRadius="8dp"
-                    android:layout_margin="0dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <TextView
-                        style="@style/HeaderText"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvDaysStreak"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Your Streaks" />
+                        android:layout_weight="1"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:text="5 days"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:drawableTint="@color/neon_orange"
+                        app:drawableTopCompat="@drawable/ic_days_streak" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:layout_marginBottom="8dp"
+                        android:alpha="0.2"
+                        android:background="@color/text_secondary" />
 
-                        <TextView
-                            android:id="@+id/tvDaysStreak"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="8dp"
-                            android:gravity="center_vertical"
-                            android:text="5 days"
-                            android:textColor="@color/text_primary"
-                            app:drawableStartCompat="@drawable/ic_days_streak"
-                            app:drawableTint="@color/neon_orange" />
-
-                        <TextView
-                            android:id="@+id/tvTasksStreak"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:drawablePadding="8dp"
-                            android:gravity="center_vertical"
-                            android:text="12 tasks"
-                            android:textColor="@color/text_primary"
-                            app:drawableStartCompat="@drawable/ic_tasks_streak" app:drawableTint="@color/neon_orange" />
-                    </LinearLayout>
-
+                    <TextView
+                        android:id="@+id/tvTasksStreak"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:text="12 tasks"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:drawableTint="@color/neon_orange"
+                        app:drawableTopCompat="@drawable/ic_tasks_streak" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Motivation Section -->
+
             <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp" />
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
 
             <ViewFlipper
+                android:id="@+id/vfMotivation"
                 android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_gravity="bottom"
-                    android:autoStart="true"
-                    android:flipInterval="3000"
-                    android:inAnimation="@android:anim/fade_in"
-                    android:outAnimation="@android:anim/fade_out"
-                    android:layout_margin="0dp">
+                android:layout_height="220dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:autoStart="true"
+                android:flipInterval="4000"
+                android:inAnimation="@android:anim/fade_in"
+                android:outAnimation="@android:anim/fade_out">
 
                 <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:cardCornerRadius="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                     <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="TODO"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Motivation Image 1"
                         android:scaleType="centerCrop"
-                            android:src="@drawable/procrastination_1" />
+                        android:src="@drawable/procrastination_1" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:cardCornerRadius="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                     <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="TODO"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Motivation Image 2"
                         android:scaleType="centerCrop"
-                            android:src="@drawable/procrastination_2" />
+                        android:src="@drawable/procrastination_2" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:cardCornerRadius="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                     <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="TODO"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Motivation Image 3"
                         android:scaleType="centerCrop"
-                            android:src="@drawable/procrastination_3" />
+                        android:src="@drawable/procrastination_3" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:cardCornerRadius="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                     <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="TODO"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Motivation Image 4"
                         android:scaleType="centerCrop"
-                            android:src="@drawable/procrastination_4" />
+                        android:src="@drawable/procrastination_4" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:cardCornerRadius="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
 
                     <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="TODO"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Motivation Image 5"
                         android:scaleType="centerCrop"
-                            android:src="@drawable/procrastination_5" />
+                        android:src="@drawable/procrastination_5" />
                 </androidx.cardview.widget.CardView>
 
             </ViewFlipper>

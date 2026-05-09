@@ -33,8 +33,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Fragment for displaying and managing user settings.
  * Allows users to update their profile, change password, delete account, and log out.
@@ -77,7 +75,6 @@ public class SettingsFragment extends Fragment {
 
         // Initialize UI elements
         // UI elements
-        CircleImageView profileImage = view.findViewById(R.id.profileImage);
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
         MaterialCardView cardToggleNotifications = view.findViewById(R.id.cardToggleNotifications);

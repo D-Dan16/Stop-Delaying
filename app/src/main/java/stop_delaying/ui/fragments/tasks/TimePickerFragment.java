@@ -11,6 +11,8 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.Locale;
+
 import lombok.Getter;
 
 public class TimePickerFragment extends DialogFragment
@@ -43,7 +45,7 @@ public class TimePickerFragment extends DialogFragment
         hourChosen = hourOfDay;
         minuteChosen = minute;
 
-        textViewToDisplayInfo.setText(hourOfDay+":"+minute);
+        textViewToDisplayInfo.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
     }
 
 }

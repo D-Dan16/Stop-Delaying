@@ -110,8 +110,8 @@ public class HomeFragment extends Fragment {
         tvDaysStreak = view.findViewById(R.id.tvDaysStreak);
 
         // Initialize streaks display
-        tvTasksStreak.setText("0");
-        tvDaysStreak.setText("0");
+        tvTasksStreak.setText("0 tasks");
+        tvDaysStreak.setText("0 days");
 
 
         // Initialize ViewModel
@@ -153,8 +153,8 @@ public class HomeFragment extends Fragment {
     private void displayStreaks(String UID) {
         UsersRepository.fetchUserById(UID, new UsersRepository.UserFetchCallback() {
             @Override public void onUserFetched(User user) {
-                tvDaysStreak.setText(String.valueOf(user.getDayStreak()));
-                tvTasksStreak.setText(String.valueOf(user.getTaskStreak()));
+                tvDaysStreak.setText(user.getDayStreak() +" days");
+                tvTasksStreak.setText(user.getTaskStreak() +" tasks");
             }
 
             @Override public void onFetchFailed(String errorMessage) {}

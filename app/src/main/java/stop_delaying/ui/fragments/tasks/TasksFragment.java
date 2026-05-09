@@ -79,7 +79,8 @@ public class TasksFragment extends Fragment {
     private FloatingActionButton fabAddTask;
     private FloatingActionButton fabSearchTask;
     private FloatingActionButton fabAiAnalyze;
-    private FloatingActionButton fabOrderBy;
+    /// Removed the orderBy button as of now due to time constraints and lack of motivation. It will be very consuming to implement.
+//    private FloatingActionButton fabOrderBy;
     private ProgressBar aiAnalysisProgress;
     //</editor-fold>
 
@@ -131,7 +132,7 @@ public class TasksFragment extends Fragment {
         fabAddTask = view.findViewById(R.id.fab_add_task);
         fabSearchTask = view.findViewById(R.id.fab_search_task);
         fabAiAnalyze = view.findViewById(R.id.fab_ai_analyze);
-        fabOrderBy = view.findViewById(R.id.fab_order_by);
+//        fabOrderBy = view.findViewById(R.id.fab_order_by);
         aiAnalysisProgress = view.findViewById(R.id.ai_analysis_progress);
 
         selectionToolBarLogic();
@@ -309,18 +310,18 @@ public class TasksFragment extends Fragment {
                 fabAddTask.show();
                 fabSearchTask.show();
                 fabAiAnalyze.show();
-                fabOrderBy.show();
+//                fabOrderBy.show();
             } else {
                 fabAddTask.hide();
                 fabSearchTask.hide();
                 fabAiAnalyze.hide();
-                fabOrderBy.hide();
+//                fabOrderBy.hide();
             }
         });
     }
 
     private void orderTasks() {
-        fabOrderBy.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
+//        fabOrderBy.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
     }
 
     private void aiAnalyzeTasks() {

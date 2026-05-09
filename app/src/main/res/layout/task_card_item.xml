@@ -63,8 +63,7 @@
                 app:layout_constraintTop_toTopOf="@+id/iv_task_tts"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_task_tts"
                 app:layout_constraintStart_toEndOf="@+id/iv_task_tts"
-                android:layout_marginStart="16dp"
-                app:layout_constraintVertical_bias="0.0" />
+                android:layout_marginStart="16dp" />
 
         <ImageView
                 android:layout_width="28dp"
@@ -81,38 +80,36 @@
 
         <ImageView
             android:id="@+id/iv_clock"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="TODO"
+            app:srcCompat="@drawable/ic_due_date"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_task_tts"
+            app:layout_constraintEnd_toStartOf="@+id/tv_task_due_date"
+            app:layout_constraintTop_toTopOf="@+id/iv_task_tts"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/tv_task_due_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="104dp"
-            android:contentDescription="TODO"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_task_notification"
-            app:layout_constraintStart_toEndOf="@+id/iv_task_notification"
-            app:layout_constraintTop_toTopOf="@+id/iv_task_notification"
-            app:srcCompat="@drawable/ic_due_date" />
+            android:layout_marginEnd="8dp"
+            android:text="DD-MM-YY"
+            android:textColor="@color/text_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_task_tts"
+            app:layout_constraintEnd_toStartOf="@+id/tv_task_due_time"
+            app:layout_constraintTop_toTopOf="@+id/iv_task_tts" />
 
         <TextView
-                android:text="DD-MM-YY"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_task_due_date"
-                app:layout_constraintTop_toTopOf="@+id/iv_clock"
-                android:layout_marginStart="12dp"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
-                app:layout_constraintStart_toEndOf="@+id/iv_clock"
-                android:textColor="@color/text_primary"
-                app:layout_constraintVertical_bias="0.6" />
-
-        <TextView
-                android:text="HH:MM"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_task_due_time"
-                app:layout_constraintTop_toTopOf="@+id/iv_clock"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
-                android:textColor="@color/text_primary"
-                app:layout_constraintVertical_bias="0.6"
-                app:layout_constraintStart_toEndOf="@+id/tv_task_due_date"
-                android:layout_marginStart="8dp" />
+            android:id="@+id/tv_task_due_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HH:MM"
+            android:textColor="@color/text_primary"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_task_tts"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_task_tts"
+            android:layout_marginEnd="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
