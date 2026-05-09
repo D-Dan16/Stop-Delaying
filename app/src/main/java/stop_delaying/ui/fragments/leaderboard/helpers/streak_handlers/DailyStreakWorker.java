@@ -15,7 +15,11 @@ import java.util.concurrent.TimeUnit;
 import stop_delaying.models.User;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
 
-class DailyStreakWorker extends Worker {
+/**
+ * A background worker that runs daily to update the user's activity streak. 
+ * Increments the streak if a task was completed, otherwise resets it to zero.
+ */
+public class DailyStreakWorker extends Worker {
 
     public DailyStreakWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -32,11 +36,8 @@ class DailyStreakWorker extends Worker {
         String userId;
 
         if (currentUser != null) {
-            // User is logged in, use their ID
             userId = currentUser.getUid();
         } else {
-            // No user logged in - skip this run
-            // (Could store lastKnownUserId in SharedPreferences if you want to handle logout edge case)
             return Result.success();
         }
         
@@ -52,7 +53,7 @@ class DailyStreakWorker extends Worker {
                     
                     int newDayStreak = hasCompletedTodayATask ? currentDayStreak + 1 : 0;
                     
-                    // Update user's streak and reset the daily flag
+                    // Update the user's streak and reset the daily flag
                     UsersRepository.updateUserDayStreak(userId, newDayStreak);
                     UsersRepository.updateUserHasCompletedTodayATask(userId, false);
                     

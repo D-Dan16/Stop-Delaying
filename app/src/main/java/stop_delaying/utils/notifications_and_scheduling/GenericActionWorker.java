@@ -8,7 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-class GenericActionWorker extends Worker {
+/**
+ * A background worker that executes scheduled intent. It resolves the intent
+ *  of an activity, service, or broadcast receiver and triggers it accordingly.
+ */
+public class GenericActionWorker extends Worker {
+    /** Key for retrieving the intent URI from input data. */
     public static final String EXTRA_SCHEDULED_INTENT_URI = "scheduled_intent_uri";
 
     public GenericActionWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {

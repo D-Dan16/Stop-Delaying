@@ -36,8 +36,14 @@ import java.util.Objects;
 import stop_delaying.utils.FBBranches;
 import stop_delaying.models.User;
 
+/**
+ * Handles user authentication through a login interface. Validates user credentials 
+ * via Firebase and navigates to the main application upon successful sign-in.
+ */
 public class Login extends AppCompatActivity {
+    /** Firebase Authentication instance for managing sign-in requests. */
     private FirebaseAuth mAuth;
+    /** Database reference for retrieving user-specific data from Firebase. */
     private DatabaseReference usersDBRef;
 
     private EditText etEmailLogin;
@@ -72,6 +78,10 @@ public class Login extends AppCompatActivity {
         tvToRegister.setOnClickListener(v -> startActivity(new Intent(this, Register.class)));
     }
 
+    /**
+     * Initializes the click listener for the sign-in button and performs field validation 
+     * before attempting authentication.
+     */
     private void signInButtonLogic() {
         bToSignIn.setOnClickListener(v -> {
             String email = etEmailLogin.getText().toString().trim();
@@ -103,6 +113,9 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    /**
+     * Finalizes the sign-in process by retrieving user data and navigating to the MainApp.
+     */
     private void executeSignIn() {
         FirebaseUser fbUser = mAuth.getCurrentUser();
         if (fbUser == null)
@@ -130,6 +143,9 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    /**
+     * Identifies and displays the error reason for a failed authentication attempt.
+     */
     private void logReasonForUnsuccessfulSignIn(Task<AuthResult> task) {
         Exception exception = task.getException();
 

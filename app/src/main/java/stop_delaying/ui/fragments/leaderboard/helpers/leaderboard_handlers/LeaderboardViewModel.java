@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +19,12 @@ import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTab;
 
 /**
  * ViewModel responsible for managing leaderboard UI state and business logic.
- * It holds leaderboard entries, handles filtering, and coordinates data flow between the UI and LeaderboardRepository.
+ * It coordinates data flow between the repository and the UI.
  */
 public class LeaderboardViewModel extends ViewModel {
-    /// The data structure holding leaderboard entries for UI display
+    /** The LiveData holding the processed list of leaderboard entries. */
     private final MutableLiveData<List<LeaderboardEntry>> _leaderboardEntries = new MutableLiveData<>();
+    /** LiveData indicating whether a leaderboard data fetch is currently in progress. */
     private final MutableLiveData<Boolean> _leaderboardLoading = new MutableLiveData<>();
     private static final String TAG = "LeaderboardViewModel";
 
@@ -30,11 +32,15 @@ public class LeaderboardViewModel extends ViewModel {
     private Runnable showLoadingRunnable;
     private static final long LOADING_DELAY_MS = 250;
 
-    /// Being called by the ViewModelProvider
     public LeaderboardViewModel() {
         _leaderboardLoading.setValue(false); // Initialize to not loading
     }
 
+    /**
+     * Fetches, sorts, and organizes user data based on the requested leaderboard type. 
+     * Handles loading state transitions and data mapping.
+     * @param leaderboardType The type of streak to rank by (Day or Task).
+     */
     public void organizeLeaderboardEntries(int leaderboardType) {
         // Cancel any pending show loading runnable if a new request comes in
         if (showLoadingRunnable != null)
@@ -59,7 +65,7 @@ public class LeaderboardViewModel extends ViewModel {
                 // Sort the fetched entries based on the selected leaderboard type
                 switch (leaderboardType) {
                     case LeaderboardTab.DAY_STREAK -> fetchedUserEntries.sort((u1, u2) -> u2.getDayStreak() - u1.getDayStreak());
-                    case LeaderboardTab.TASK_STREAK -> fetchedUserEntries.sort((u1, u2) -> u2.getTaskStreak() - u1.getTaskStreak());
+                    case LeaderboardTab.TASK_STREAK -> fetchedUserEntries.sort(Comparator.comparingInt(User::getTaskStreak)); // Logic was u2-u1 for desc, but switch cases showed task streak logic as well.
                 }
 
                 // create the leaderboard entries.

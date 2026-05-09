@@ -12,6 +12,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.procrastination.R;
 
+/**
+ * Fragment that provides educational content explaining what procrastination is, 
+ * its causes, and its psychological impact on productivity.
+ */
 public class ProcrastinationFragment extends Fragment {
 
     @Nullable

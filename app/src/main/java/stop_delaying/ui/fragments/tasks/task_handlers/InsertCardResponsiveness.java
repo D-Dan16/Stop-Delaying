@@ -28,16 +28,19 @@ import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 
 
 /**
- * Helper utility for attaching interaction behavior to a task card (inserted card)
- * such as long-press selection, tap-to-toggle selection, and notification toggle.
+ * Utility class for attaching interaction logic to task card views. 
+ * Manages selection, notification scheduling, and TTS functionality.
  */
 public final class InsertCardResponsiveness {
+    /** Intent extra key used to specify which fragment to load when navigating. */
     public static final String EXTRA_FRAGMENT_TO_LOAD = "stop_delaying.EXTRA_FRAGMENT_TO_LOAD";
+    /** Shared ViewModel reference for updating task states. */
     static private TasksViewModel _tasksViewModel;
 
 
     /**
-     * Attaches all listeners to the provided task card view.
+     * Configures all interactive listeners (long-press, click, notification toggle, TTS) 
+     * for a specific task card.
      */
     static void configureCardInteractions(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         holdCardForStartSelectionProcess(view, holder, adapter);
@@ -48,7 +51,7 @@ public final class InsertCardResponsiveness {
 
 
 
-    /** Long press to select and start CAB. */
+    /** Initializes the long-press gesture to start a bulk selection process. */
     private static void holdCardForStartSelectionProcess(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.setOnLongClickListener(v -> {
             int position = holder.getBindingAdapterPosition();
@@ -74,7 +77,7 @@ public final class InsertCardResponsiveness {
         });
     }
 
-    /** Tap to toggle selection off (or on if selection is active). */
+    /** Manages the toggling of individual card selections during an active selection session. */
     private static void toggleCardSelection(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.setOnClickListener(v -> {
             int position = holder.getBindingAdapterPosition();
@@ -97,7 +100,7 @@ public final class InsertCardResponsiveness {
         });
     }
 
-    /** Make the notification button toggle if the task should notify you or not. */
+    /** Configures the notification bell icon to schedule or cancel task alerts. */
     private static void toggleNotificationOfTask(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.findViewById(R.id.iv_task_notification).setOnClickListener(bellNotifButton -> {
             int position = holder.getBindingAdapterPosition();
@@ -163,7 +166,7 @@ public final class InsertCardResponsiveness {
         });
     }
 
-    /** Make the TTS button read the task title and description. */
+    /** Attaches a listener to the TTS icon to vocalize task details. */
     private static void toggleTtsOfTask(View view, TaskListAdapter.TaskViewHolder holder, TaskListAdapter adapter) {
         view.findViewById(R.id.iv_task_tts).setOnClickListener(ttsButton -> {
             int position = holder.getBindingAdapterPosition();
@@ -176,6 +179,7 @@ public final class InsertCardResponsiveness {
         });
     }
 
+    /** Calculates the necessary delay before a notification should be triggered. */
     private static long calculateScheduleDelay(long timeLeftUntilDeadline, TimeOfDay dueTimeOfDay, Date dueDate) {
         return dueTimeOfDay.calcTimeUntil() + dueDate.calcTimeUntil() - timeLeftUntilDeadline;
     }

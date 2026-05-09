@@ -6,12 +6,14 @@ import java.util.List;
 import stop_delaying.models.Task;
 
 /**
- * Represents a collection of tasks, divided into visible and hidden tasks.
- * Each instance of this class holds a separate list, and the separation is because of the status of the tasks (i.e., To Do, Completed, Canceled).
+ * Manages a collection of tasks, separating them into visible and hidden lists 
+ * to support filtering and UI presentation within task tabs.
  */
 @SuppressWarnings("ClassCanBeRecord")
 public final class Tasks {
+    /** Tasks currently visible in the UI list. */
     private final ArrayList<Task> visibleTasks;
+    /** Tasks temporarily hidden from view due to active filtering. */
     private final ArrayList<Task> hiddenTasks;
 
     public Tasks(ArrayList<Task> visibleTasks, ArrayList<Task> hiddenTasks) {
@@ -27,12 +29,18 @@ public final class Tasks {
         return hiddenTasks;
     }
 
+    /**
+     * Resets the entire task collection with a new list of tasks.
+     */
     public void setAllTasks(List<Task> tasks) {
         visibleTasks.clear();
         visibleTasks.addAll(tasks);
         hiddenTasks.clear();
     }
 
+    /**
+     * Calculates the total number of visible tasks that are currently selected.
+     */
     public int getSelectedCount() {
         int count = 0;
         for (Task t : visibleTasks)
@@ -41,6 +49,9 @@ public final class Tasks {
         return count;
     }
 
+    /**
+     * Returns a list of all visible tasks that are currently selected.
+     */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
         for (Task t : visibleTasks)
@@ -49,16 +60,26 @@ public final class Tasks {
         return selected;
     }
 
+    /**
+     * Resets the selection status for all visible tasks.
+     */
     public void clearSelection() {
         for (Task t : visibleTasks)
             t.setTaskSelected(false);
     }
 
+    /**
+     * Removes all selected tasks from both visible and hidden collections.
+     */
     public void removeSelectedTasks() {
         visibleTasks.removeIf(Task::isTaskSelected);
         hiddenTasks.removeIf(Task::isTaskSelected);
     }
 
+    /**
+     * Filters visible tasks based on a text query, moving non-matching tasks to the hidden list.
+     * @param query The search string used for filtering.
+     */
     public void filterTasks(String query) {
         unfilterTasks(); // Reset visibility before applying a new filter
 
@@ -81,15 +102,22 @@ public final class Tasks {
         visibleTasks.removeAll(hiddenTasks);
     }
 
+    /**
+     * Restores all hidden tasks back to the visible collection.
+     */
     public void unfilterTasks() {
         visibleTasks.addAll(hiddenTasks);
         hiddenTasks.clear();
     }
 
+    /** Adds a single task to the visible collection. */
     public void add(Task task) {
         visibleTasks.add(task);
     }
 
+    /**
+     * Updates the status of specific tasks within the visible collection.
+     */
     public ArrayList<Integer> updateTasks(List<Task> selected) {
         ArrayList<Integer> listOfIndices = new ArrayList<>();
 

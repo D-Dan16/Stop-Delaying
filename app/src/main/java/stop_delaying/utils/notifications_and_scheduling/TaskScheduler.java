@@ -10,12 +10,26 @@ import androidx.work.WorkManager;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Handles the scheduling and cancellation of background tasks and notifications using WorkManager. 
+ * Supports both generic intents and specific notification alerts with custom delays.
+ */
 public class TaskScheduler {
     private static final String TAG = TaskScheduler.class.getName();
+
+    /** Checks if a delay is negative, which would prevent scheduling. */
     private static boolean cannotSchedule(long delay) {
         return delay < 0;
     }
 
+    /**
+     * Schedules a generic Intent to be executed after a specified delay.
+     * @param context Application context.
+     * @param intent The intent to execute.
+     * @param scheduleDelay Delay in seconds.
+     * @param requestCode Unique ID used as a work tag.
+     * @return true if the work was successfully enqueued.
+     */
     public static boolean schedule(
             Context context,
             Intent intent,
@@ -40,6 +54,10 @@ public class TaskScheduler {
     }
 
 
+    /**
+     * Schedules multiple notification alarms with varying delays and titles.
+     * @return true if all alarms were processed for scheduling.
+     */
     public static boolean scheduleNotificationAlarms(
             Context context,
             Intent tapActionIntent,
@@ -73,6 +91,9 @@ public class TaskScheduler {
         return true;
     }
 
+    /**
+     * Schedules a single notification alarm using WorkManager.
+     */
     private static void scheduleNotificationAlarm(
             Context context,
             Intent tapActionIntent,
@@ -106,6 +127,9 @@ public class TaskScheduler {
 
     }
 
+    /**
+     * Cancels all scheduled notification alarms associated with a specific request code.
+     */
     public static void cancelNotificationAlarm(Context context, int requestCode) {
         WorkManager.getInstance(context).cancelAllWorkByTag(String.valueOf(requestCode));
     }

@@ -34,8 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
- * Fragment for displaying and managing user settings.
- * Allows users to update their profile, change password, delete account, and log out.
+ * Fragment for managing user preferences and account settings. Allows users 
+ * to update profiles, toggle notifications, and manage their account status.
  */
 public class SettingsFragment extends Fragment {
     private TextView username;
@@ -48,13 +48,9 @@ public class SettingsFragment extends Fragment {
     private MaterialButton btnLogout;
     private MaterialButton btnDeleteUserPopup;
 
-    /**
-     * Called to have the fragment instantiate its user interface view.
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
-     * @return The View for the fragment's UI, or null.
-     */
+    /** Static flag indicating if notifications are globally enabled within the app. */
+    private static boolean isNotificationsEnabled = true;
+
     @Override
     public View onCreateView(
         LayoutInflater inflater,
@@ -64,11 +60,6 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
-    /**
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has returned, but before any saved state has been restored in to the view.
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
-     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -96,11 +87,14 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    private static boolean isNotificationsEnabled = true;
+    /**
+     * Checks if notifications are currently disabled based on the user's toggle state.
+     */
     public static boolean isNotificationsDisabled() {
         return !isNotificationsEnabled;
     }
 
+    /** Configures the listener for the notification toggle switch. */
     private void setupToggleNotificationsListener() {
         switchAllowNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isNotificationsEnabled = isChecked;
@@ -115,6 +109,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    /** Retrieves and displays the current user's username and email from Firebase. */
     private void updateUserInfoAtTop() {
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         if (fbUser != null) {
@@ -132,8 +127,8 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Sets up a click listener for the 'Edit Profile' card, which displays a dialog
-     * for updating the user's email and username in Firebase.
+     * Sets up the listener for the 'Edit Profile' action, opening a dialog to update 
+     * user-specific information in the database.
      */
     private void setupEditProfileListener() {
         cardEditProfilePopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_edit_profile, dialogFragment -> {
@@ -203,8 +198,8 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Sets up a click listener for the 'Change Password' card, which displays a dialog
-     * for updating the user's password in Firebase.
+     * Configures the listener for changing the user's password, managing validation 
+     * and Firebase Authentication updates.
      */
     private void setupChangePasswordListener() {
         cardChangePasswordPopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_update_user_password, dialogFragment -> {
@@ -233,7 +228,7 @@ public class SettingsFragment extends Fragment {
                     return;
                 }
 
-                // Check if new password and confirmation match
+                // Check if the new password and confirmation match
                 if (!newPassword.equals(newPasswordConfirm)) {
                     newPasswordConfirmTIL.setError("Passwords do not match.");
                     return;
@@ -254,8 +249,8 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Sets up a click listener for the 'Delete User' button, which displays a confirmation dialog
-     * and, upon confirmation, deletes the user's account and associated data from Firebase.
+     * Configures the account deletion listener, ensuring cascading deletion 
+     * of authentication credentials and associated data.
      */
     private void setupDeleteUserListener() {
         btnDeleteUserPopup.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_confirm_delete_user, dialogFragment -> {
@@ -293,10 +288,7 @@ public class SettingsFragment extends Fragment {
         }));
     }
 
-    /**
-     * Sets up a click listener for the 'Log Out' button, which signs out the current Firebase user
-     * and navigates to the {@link OpeningScreen}.
-     */
+    /** Configures the logout listener to terminate the current session and return to the start screen. */
     private void loggingOutListener() {
         btnLogout.setOnClickListener(v -> {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();

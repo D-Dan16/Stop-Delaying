@@ -55,12 +55,8 @@ import android.os.Handler;
 import android.os.Looper; // Added import for Looper
 
 /**
- * Parent controller fragment for the Tasks screen.
- * <p>
- * Responsibilities:
- * - Hosts the tabs (To Do / Completed / Canceled)
- * - Exposes an inline selection toolbar (inline CAB) shown under the tabs when tasks are selected
- * - Routes selection actions (move/delete) to the currently active tab via `SelectionActionHandler`
+ * Parent controller fragment for the Tasks screen. Manages tab navigation, 
+ * task creation, AI analysis, search, and bulk selection actions.
  */
 @SuppressLint("SetTextI18n")
 public class TasksFragment extends Fragment {
@@ -84,14 +80,19 @@ public class TasksFragment extends Fragment {
     private ProgressBar aiAnalysisProgress;
     //</editor-fold>
 
+    /** ViewModel containing all task data and business logic. Shared across activities. */
     private TasksViewModel tasksViewModel;
 
+    /** Handler for managing task selection events in the current tab. */
     private SelectionActionHandler curCardSelectionHandler;
 
     // Handler and Runnable for periodic UI updates
     private final Handler handler = new Handler(Looper.getMainLooper()); // Explicitly associated with the main looper
 
-    // Update the UI every 1 minute
+    /** 
+     * Periodically notifies adapters to refresh their display, ensuring background colors 
+     * update as deadlines approach or pass.
+     */
     private final Runnable cardBackgroundUpdater = new Runnable() {
         @SuppressLint("NotifyDataSetChanged")
         @Override public void run() {
@@ -216,6 +217,9 @@ public class TasksFragment extends Fragment {
         }
     }
 
+    /**
+     * Initializes the TabLayout with its associated ViewPager and fragments.
+     */
     private void createTabLayoutLogic() {
         viewPager.setAdapter(new FragmentStateAdapter(this) {
             @Override public int getItemCount() {
@@ -252,6 +256,7 @@ public class TasksFragment extends Fragment {
         });
     }
 
+    /** Sets up listeners and default visibility for all floating action buttons. */
     private void registerActionButtons() {
         toggleActionButtonsVisibility();
 
@@ -304,6 +309,7 @@ public class TasksFragment extends Fragment {
         curCardSelectionHandler = null;
     }
 
+    /** Handles the expansion and contraction of the FAB menu. */
     private void toggleActionButtonsVisibility() {
         fabMainToggle.setOnClickListener(v -> {
             if (!fabAddTask.isShown()) {
@@ -324,6 +330,7 @@ public class TasksFragment extends Fragment {
 //        fabOrderBy.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
     }
 
+    /** Configures AI task analysis, including data collection and result display. */
     private void aiAnalyzeTasks() {
         fabAiAnalyze.setOnClickListener(v -> {
             // forbid a second analysis while the first one is still running
@@ -386,6 +393,7 @@ public class TasksFragment extends Fragment {
         });
     }
 
+    /** Opens a search dialog to filter tasks by title. */
     private void searchForTask() {
         fabSearchTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_search_task_popup,
                 (dialogView) -> {
@@ -448,6 +456,7 @@ public class TasksFragment extends Fragment {
         ));
     }
 
+    /** Opens a dialog for creating and adding a new task to the user's list. */
     private void addNewTask() {
         fabAddTask.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_add_task_popup, dialog -> {
             //<editor-fold desc="Get Components">
@@ -524,8 +533,7 @@ public class TasksFragment extends Fragment {
     }
 
     /**
-     * creates an observer for the TaskViewModel that updates the different task adapters.
-     * This basically is responsible for all UI updates because it updates the adapters [the components that actually display the tasks].
+     * Sets up a LiveData observer for task data, updating all tab adapters whenever the data changes.
      */
     private void setupTaskObservers() {
         tasksViewModel.getLiveData().observe(getViewLifecycleOwner(), taskListsMap -> {

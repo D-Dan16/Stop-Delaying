@@ -14,15 +14,23 @@ import java.util.Locale;
 
 import lombok.Getter;
 
+/**
+ * A DialogFragment that displays a system date picker. Captures the user's selected 
+ * date and updates a target TextView with the formatted result.
+ */
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
+    /** The day of the month chosen by the user. */
     @Getter
     private int dayChosen = 0;
+    /** The month chosen by the user (1-indexed). */
     @Getter
     private int monthChosen = 0;
+    /** The year chosen by the user. */
     @Getter
     private int yearChosen = 0;
 
+    /** Target TextView to display the formatted date selection. */
     private final TextView textViewToDisplayInfo;
 
     public <TV extends TextView> DatePickerFragment(TV textViewToDisplayInfo) {
@@ -44,6 +52,9 @@ public class DatePickerFragment extends DialogFragment
 
 
 
+    /**
+     * Callback for when the user selects a date from the picker.
+     */
     public void onDateSet(DatePicker view, int year, int month, int day) {
         dayChosen = day;
         monthChosen = month+1;

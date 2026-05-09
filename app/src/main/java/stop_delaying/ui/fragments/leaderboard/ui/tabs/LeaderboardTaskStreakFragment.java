@@ -19,7 +19,15 @@ import java.util.ArrayList;
 import lombok.Getter;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardAdapter;
 
+/**
+ * Tab fragment that displays the leaderboard ranked by users' task streaks. 
+ * Shares an adapter instance for consistent data rendering across tabs.
+ */
 public class LeaderboardTaskStreakFragment extends Fragment {
+    /** 
+     * Shared adapter instance for managing and displaying leaderboard entries. 
+     * Initialized with an empty list.
+     */
     @Getter
     private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());
 

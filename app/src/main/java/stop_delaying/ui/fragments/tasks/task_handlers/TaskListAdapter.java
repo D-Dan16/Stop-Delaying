@@ -21,12 +21,19 @@ import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 
 
-/// A new card will be created from {@link #setTasks}, which is being called from TasksFragment.setupTaskObservers() - this method triggers the task observer setup inside the fragment.
+/**
+ * RecyclerView adapter for displaying task items. Manages task rendering, selection 
+ * state, filtering, and event callbacks for bulk selection and UI updates.
+ */
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
+    /** The collection of tasks managed by this adapter, including filtering logic. */
     private final Tasks tasks;
+    /** Callback for notifying when the total number of selected tasks changes. */
     private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
+    /** Callback for notifying when a bulk selection session is initiated. */
     private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
+    /** The current search query used to filter tasks, or null if unfiltered. */
     private String currentFilter;
 
     public TaskListAdapter(Tasks taskLists) {
@@ -41,19 +48,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         this.startSelectionListener = listener;
     }
 
+    /** Triggers the selection change listener with the current count. */
     public void notifySelectionChanged() {
         if (selectionChangeListener != null)
             selectionChangeListener.onSelectionChanged(getSelectedCount());
     }
 
+    /** Triggers the selection start listener. */
     public void notifyStartSelection() {
         if (startSelectionListener != null)
             startSelectionListener.onStartSelection();
     }
 
 
-    /// Called when a new card task is being made.
-    /// A new card will be created from {@link #setTasks}, which is being called from TasksFragment.setupTaskObservers() - this method triggers the task observer setup inside the fragment.
     @NonNull @Override public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                                   .inflate(R.layout.task_card_item, parent, false);
@@ -68,7 +75,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     @Override
-    /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         // When you ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
         Task task = tasks.visibleTasks().get(position);
@@ -99,6 +105,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         // Set background based on the task's state
         TasksViewModel.updateTaskCardBackgroundColor(holder, task);
     }
+
+    /**
+     * ViewHolder for task items, containing references to all card UI components.
+     */
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
         final TextView tvTaskTitle;
@@ -120,7 +130,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     }
 
-    /// Being called from the TasksFragment, in setupTaskObservers()
+    /**
+     * Updates the underlying task collection and applies any active filters.
+     */
     public void setTasks(@Nullable List<Task> newTasks) {
         if (newTasks == null) return;
 
@@ -136,7 +148,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     /**
-     * @return number of items currently marked as selected.
+     * @return the total number of tasks currently marked as selected.
      */
     public int getSelectedCount() {
         int count = 0;
@@ -146,12 +158,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         return count;
     }
 
+    /**
+     * @return the list of tasks currently visible in the RecyclerView.
+     */
     public List<Task> getVisibleTasks() {
         return tasks.visibleTasks();
     }
 
     /**
-     * @return a new list containing all currently selected tasks (snapshot).
+     * @return a list containing all tasks currently marked as selected.
      */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
@@ -165,7 +180,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
 
     /**
-     * Clears the selection flag on all tasks and refreshes the list UI.
+     * Resets the selection flag on all tasks and refreshes the display.
      */
     public void clearSelection() {
         tasks.clearSelection();
@@ -173,7 +188,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     /**
-     * Removes all currently selected tasks from the adapter data and refreshes the list UI.
+     * Removes all selected tasks from the collection and updates the RecyclerView.
      */
     public void removeSelectedTasks() {
         List<Integer> selectedIndices = new ArrayList<>();
@@ -188,18 +203,27 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             notifyItemRemoved(selectedIndices.get(i));
     }
 
+    /**
+     * Filters the task list based on a provided query string.
+     */
     public void filterTasks(String query) {
         this.currentFilter = query;
         tasks.filterTasks(query);
         notifyDataSetChanged();
     }
 
+    /**
+     * Removes the active filter and displays all tasks in the collection.
+     */
     public void unfilterTasks() {
         this.currentFilter = null;
         tasks.unfilterTasks();
         notifyDataSetChanged();
     }
 
+    /**
+     * Adds a single task to the collection and refreshes the display.
+     */
     public void addTask(Task task) {
         tasks.add(task);
         if (currentFilter != null)

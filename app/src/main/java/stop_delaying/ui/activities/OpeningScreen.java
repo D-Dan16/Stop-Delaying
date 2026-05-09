@@ -13,6 +13,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.procrastination.R;
 
+/**
+ * The initial landing screen of the application. Provides options for the user 
+ * to either sign in or register a new account.
+ */
 public class OpeningScreen extends AppCompatActivity {
 
 

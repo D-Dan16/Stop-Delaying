@@ -30,8 +30,13 @@ import stop_delaying.utils.FBBranches;
 import stop_delaying.models.User;
 import stop_delaying.utils.Utils;
 
+/**
+ * Manages the user registration process. Validates input fields, creates a new 
+ * authentication account, and initializes a user profile in the database.
+ */
 public class Register extends AppCompatActivity {
 
+    /** Firebase Authentication instance for account creation. */
     private FirebaseAuth mAuth;
 
     private Button bRegisterSignUp;
@@ -75,6 +80,10 @@ public class Register extends AppCompatActivity {
         tvToLogin.setOnClickListener(v -> startActivity(new Intent(this, Login.class)));
     }
 
+    /**
+     * Initializes the sign-up button logic, performing validation and initiating 
+     * the Firebase account creation process.
+     */
     private void SignupButtonLogic() {
         bRegisterSignUp.setOnClickListener(view -> {
             String email = Objects.requireNonNull(etEmailRegister.getText()).toString().trim();
@@ -104,6 +113,10 @@ public class Register extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates all registration input fields for correctness and security compliance.
+     * @return true if all inputs are valid.
+     */
     private boolean validateInput(String email, String password, String confirmPassword, String userName) {
         boolean isValid = true;
 
@@ -141,6 +154,9 @@ public class Register extends AppCompatActivity {
         return isValid;
     }
 
+    /**
+     * Creates a new user entry in the Firebase Database and navigates to the main app screen.
+     */
     private void createUserAndNextActivity(String uid, String userName) {
         User currentUser = new User(userName,0,0,false);
         DatabaseReference userNode = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);

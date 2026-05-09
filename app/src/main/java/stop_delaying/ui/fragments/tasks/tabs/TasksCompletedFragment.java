@@ -23,14 +23,13 @@ import stop_delaying.ui.fragments.tasks.TasksFragment;
 import java.util.ArrayList;
 
 /**
- * Tab fragment that shows tasks with status `Completed`.
- * <p>
- * Works with the parent `TasksFragment` inline selection toolbar:
- * - Starts selection on long-press via adapter callback
- * - Updates selection count in the toolbar while selecting
- * - Executes move/delete, then clears selection and hides the bar
+ * Tab fragment that displays tasks with the 'Completed' status. Integrates with 
+ * the parent fragment's selection toolbar for bulk actions.
  */
 public class TasksCompletedFragment extends Fragment {
+    /** 
+     * Shared adapter for the completed tasks list. Initialized with an empty task collection.
+     */
     @Getter
     private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
 

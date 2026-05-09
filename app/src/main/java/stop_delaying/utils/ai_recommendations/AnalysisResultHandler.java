@@ -1,8 +1,15 @@
 package stop_delaying.utils.ai_recommendations;
 
+/**
+ * Provides formatting logic for AnalysisResult objects. Converts raw analysis data into 
+ * user-friendly summaries for display in the UI.
+ */
 public class AnalysisResultHandler {
     /**
-     * Generates a human-readable summary of the analysis.
+     * Generates a formatted human-readable summary of the task analysis results, 
+     * including counts for overdue and near-deadline tasks.
+     * @param result The analysis data to summarize.
+     * @return A string containing the formatted summary.
      */
     public static String getSummary(AnalysisResult result) {
         StringBuilder summary = new StringBuilder();

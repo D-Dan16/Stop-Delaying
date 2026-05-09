@@ -18,7 +18,22 @@ import androidx.core.content.ContextCompat;
 
 import org.jspecify.annotations.NonNull;
 
+/**
+ * Utility class for managing system notifications, including permission handling, 
+ * channel creation, and triggering individual notifications.
+ */
 public class NotificationCreator {
+    /**
+     * Builds and displays a system notification with the specified details.
+     * @param intent The intent to trigger when the notification is tapped.
+     * @param context Application context.
+     * @param notifId Unique identifier for the notification.
+     * @param channelId The notification channel ID.
+     * @param title Title text for the notification.
+     * @param message Main body text for the notification.
+     * @param icon Resource ID for the small icon.
+     * @param priority Priority level (e.g., NotificationCompat.PRIORITY_HIGH).
+     */
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     static public void createNotification(
             Intent intent,
@@ -53,8 +68,8 @@ public class NotificationCreator {
     }
 
     /**
-     * Checks if the app has permission to post notifications.
-     * On Android 13+ (API 33), it explicitly checks for POST_NOTIFICATIONS.
+     * Checks if the app has permission to post notifications. 
+     * Handles differences between Android versions (API 33+ requirements).
      */
     static public boolean hasNotificationPermission(Context context) {
         // Permissions are granted by default on older versions
@@ -65,8 +80,8 @@ public class NotificationCreator {
     }
 
     /**
-     * Requests the notification permission.
-     * Note: The context passed must be an Activity.
+     * Requests notification permission from the user. 
+     * @param activity The activity context used to request permissions.
      */
     static public void requestNotificationPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -77,6 +92,9 @@ public class NotificationCreator {
             );
     }
 
+    /**
+     * Creates a notification channel for Android O and above.
+     */
     static public void createNotificationChannel(@NonNull Context context, String channelId, String channelName, int notifPriority, String channelDescription) {
         NotificationChannel channel = new NotificationChannel(
             channelId,

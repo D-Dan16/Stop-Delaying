@@ -12,6 +12,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.procrastination.R;
 
+/**
+ * Fragment containing a list of practical tips and actionable advice for 
+ * managing tasks and overcoming procrastination habits.
+ */
 public class TipsFragment extends Fragment {
 
     @Nullable

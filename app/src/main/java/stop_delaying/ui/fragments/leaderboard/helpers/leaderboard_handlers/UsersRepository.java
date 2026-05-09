@@ -19,11 +19,16 @@ import java.util.Map;
 import stop_delaying.models.User;
 import stop_delaying.utils.FBBranches;
 
+/**
+ * Manages user-related data operations in Firebase, including fetching user details, 
+ * updating streaks, and handling real-time leaderboard updates.
+ */
 public class UsersRepository {
     private static ValueEventListener activeListener = null;
     private static DatabaseReference activeListenerRef = null;
     private static UsersFetchCallback currentUsersFetchCallback; //field to hold the current callback
 
+    /** Interface for receiving a single user's data from a fetch request. */
     public interface UserFetchCallback {
 
         void onUserFetched(User user);
@@ -31,12 +36,13 @@ public class UsersRepository {
         void onFetchFailed(String errorMessage);
     }
     
+    /** Interface for receiving a list of users from a fetch request. */
     public interface UsersFetchCallback {
         void onUsersFetched(List<UserWithId> users);
         void onFetchFailed(String errorMessage);
     }
     
-    // Helper class to hold both user data and their ID
+    /** Wrapper class associating a User model with its unique database ID. */
     public static class UserWithId {
         final String userId;
         public final User user;
@@ -46,6 +52,10 @@ public class UsersRepository {
             this.user = user;
         }
     }
+
+    /**
+     * Fetches a specific user's details by their ID and returns them via a callback.
+     */
     public static void fetchUserById(String userId, @NonNull UserFetchCallback callback) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(userId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -68,6 +78,11 @@ public class UsersRepository {
             }
         });
     }
+
+    /**
+     * Fetches all users from the database. Attaches a persistent listener if one 
+     * doesn't exist, otherwise performs a single fetch.
+     */
     public static void fetchUsers(@NonNull UsersFetchCallback callback) {
         currentUsersFetchCallback = callback; // Always update to the latest callback
 
@@ -107,6 +122,9 @@ public class UsersRepository {
             });
     }
 
+    /**
+     * Updates the day streak count for a specific user in the database.
+     */
     public static void updateUserDayStreak(String userId, int newDayStreak) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(userId);
         Map<String, Object> updates = new HashMap<>();
@@ -116,6 +134,9 @@ public class UsersRepository {
                 .addOnFailureListener(e -> Log.e("UsersRepository", "Failed to update day streak for user " + userId, e));
     }
 
+    /**
+     * Updates the task streak count for a specific user in the database.
+     */
     public static void updateUserTaskStreak(String uid, int newTaskStreak) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(uid);
         Map<String, Object> updates = new HashMap<>();
@@ -125,6 +146,9 @@ public class UsersRepository {
                 .addOnFailureListener(e -> Log.e("UsersRepository", "Failed to update task streak for user " + newTaskStreak, e));
     }
 
+    /**
+     * Atomically increments the user's task streak on the server.
+     */
     public static void incrementUserTaskStreak(String userId) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference(FBBranches.USERS)
@@ -134,6 +158,9 @@ public class UsersRepository {
         reference.setValue(ServerValue.increment(1));
     }
 
+    /**
+     * Updates whether a user has completed a task today.
+     */
     public static void updateUserHasCompletedTodayATask(String userId, boolean hasCompletedTodayATask) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(FBBranches.USERS).child(userId);
         Map<String, Object> updates = new HashMap<>();
@@ -143,6 +170,9 @@ public class UsersRepository {
                 .addOnFailureListener(e -> Log.e("UsersRepository", "Failed to update hasCompletedTodayATask for user " + userId, e));
     }
 
+    /**
+     * Increments the user's task streak by a specific amount.
+     */
     public static void incrementUserTaskStreakBy(String userId, int amount) {
         if (amount == 0) return;
         DatabaseReference reference = FirebaseDatabase.getInstance()
@@ -152,6 +182,9 @@ public class UsersRepository {
         reference.setValue(ServerValue.increment(amount));
     }
 
+    /**
+     * Removes any active real-time listeners for user data.
+     */
     public static void removeUsersListener() {
         if (activeListenerRef == null || activeListener == null)
             return;
@@ -163,6 +196,9 @@ public class UsersRepository {
         Log.d("UsersRepository", "Removed real-time users listener");
     }
 
+    /**
+     * Helper method to parse a DataSnapshot into a list of UserWithId objects.
+     */
     private static List<UserWithId> extractUsersFromSnapshot(@NonNull DataSnapshot snapshot) {
         List<UserWithId> entries = new ArrayList<>();
         for (DataSnapshot entrySnapshot : snapshot.getChildren()) {
