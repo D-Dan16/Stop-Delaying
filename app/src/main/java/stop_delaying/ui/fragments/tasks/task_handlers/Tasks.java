@@ -60,14 +60,14 @@ public final class Tasks {
     }
 
     public void filterTasks(String query) {
+        unfilterTasks(); // Reset visibility before applying a new filter
+
         if (query == null || query.isEmpty())
             return;
 
         // Sanitize the query: remove non-English alphanumeric characters and spaces that could hinder the search
         String q = query.replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().trim();
         if (q.isEmpty()) return;
-
-        hiddenTasks.clear();
 
         for (Task t : visibleTasks) {
             // Also, sanitize title and description to ensure symbols or accents don't hinder the match

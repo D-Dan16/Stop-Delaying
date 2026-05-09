@@ -27,6 +27,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     private final Tasks tasks;
     private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
     private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
+    private String currentFilter;
 
     public TaskListAdapter(Tasks taskLists) {
         this.tasks = taskLists;
@@ -69,7 +70,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     @Override
     /// called to display the data at the specified position.
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        // When u ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
+        // When you ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
         Task task = tasks.visibleTasks().get(position);
 
         holder.tvTaskTitle.setText(task.getTitle());
@@ -86,11 +87,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             case CANCELED -> R.drawable.ic_canceled_task;
         });
 
-        // Set the notif button color based on if the the user has enabled (in-app) notifications or not.
+        // Set the notif button color based on if the user has enabled (in-app) notifications or not, or if a task reached deadline.
+        boolean isNotifEnabled = !SettingsFragment.isNotificationsDisabled() && !task.hasReachedDeadline();
         holder.ivTaskNotification.setColorFilter(
-                SettingsFragment.isNotificationsDisabled()
-                        ? holder.itemView.getResources().getColor(R.color.task_card_icon_disabled, null)
-                        : holder.itemView.getResources().getColor(R.color.task_card_icon, null)
+                isNotifEnabled
+                        ? holder.itemView.getResources().getColor(R.color.task_card_icon, null)
+                        : holder.itemView.getResources().getColor(R.color.task_card_icon_disabled, null)
         );
 
 
@@ -123,6 +125,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         if (newTasks == null) return;
 
         tasks.setAllTasks(newTasks);
+        if (currentFilter != null)
+            tasks.filterTasks(currentFilter);
+
         notifyDataSetChanged();
     }
 
@@ -184,20 +189,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     public void filterTasks(String query) {
-        if (query == null || query.isEmpty())
-            return;
-
+        this.currentFilter = query;
         tasks.filterTasks(query);
         notifyDataSetChanged();
     }
 
     public void unfilterTasks() {
+        this.currentFilter = null;
         tasks.unfilterTasks();
         notifyDataSetChanged();
     }
 
     public void addTask(Task task) {
         tasks.add(task);
-        notifyItemInserted(tasks.visibleTasks().size() - 1);
+        if (currentFilter != null)
+            tasks.filterTasks(currentFilter);
+        notifyDataSetChanged();
     }
 }

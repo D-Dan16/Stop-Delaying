@@ -1,5 +1,6 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
+import android.app.Application;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -7,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.procrastination.R;
 
@@ -19,11 +20,12 @@ import java.util.Map;
 
 import lombok.Getter;
 import stop_delaying.models.Task;
+import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 /**
  * ViewModel responsible for managing task-related UI state and business logic.
  * It holds task lists, handles filtering, selection, and coordinates data flow between the UI and TaskRepository.
  */
-public class TasksViewModel extends ViewModel {
+public class TasksViewModel extends AndroidViewModel {
     /// The data structure holding tasks categorized by their status for UI display
     private final MutableLiveData<Map<Task.TaskStatus, Tasks>> _uiTaskLists = new MutableLiveData<>();
     private final String TAG = "TasksViewModel";
@@ -33,7 +35,8 @@ public class TasksViewModel extends ViewModel {
     private final MutableLiveData<Boolean> aiAnalysisInProgress = new MutableLiveData<>(false);
 
     /// Being called by the ViewModelProvider
-    public TasksViewModel() {
+    public TasksViewModel(@NonNull Application application) {
+        super(application);
         TaskRepository.observeUserTasks(new TaskRepository.TaskFetchCallback() {
             @Override 
             public void onTasksFetched(Map<Task.TaskStatus, List<Task>> fetchedCategorizedTasks) {
@@ -132,6 +135,9 @@ public class TasksViewModel extends ViewModel {
             currentUiTaskLists.get(task.getStatus()).visibleTasks().remove(task);
             _uiTaskLists.setValue(currentUiTaskLists);
         }
+
+        // Cancel scheduled notifications
+        TaskScheduler.cancelNotificationAlarm(getApplication(), task.getTaskId().hashCode());
 
         // Delete from Firebase - real-time listener will sync any conflicts
         TaskRepository.removeTaskFromFirebase(task, new TaskRepository.TaskOperationCallback() {

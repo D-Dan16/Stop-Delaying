@@ -15,6 +15,7 @@ import stop_delaying.ui.fragments.tasks.TasksFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
+import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 
 /**
  * Callback interface used by child task list fragments to delegate selection actions
@@ -40,7 +41,7 @@ public interface SelectionActionHandler {
 
 
     /**
-     * Default move implementation: removes from current adapter, updates Firebase,
+     * Default move implementation: removes from the current adapter, updates Firebase,
      * and manually adds to target adapter (since each has its own TaskLists instance).
      */
     default void onMoveTo(Task.TaskStatus status) {
@@ -54,7 +55,7 @@ public interface SelectionActionHandler {
             return;
         }
 
-        // Remove from current adapter
+        // Remove from the current adapter
         adapter.removeSelectedTasks();
         adapter.clearSelection();
         parent.hideSelectionBar();
@@ -63,6 +64,12 @@ public interface SelectionActionHandler {
         for (Task task : selected) {
             task.setTaskSelected(false);
             task.setStatus(status);
+
+            // If moving away from 'TO-DO', cancel notifications
+            if (status != Task.TaskStatus.TODO) {
+                TaskScheduler.cancelNotificationAlarm(parent.requireContext(), task.getTaskId().hashCode());
+                task.setTaskNotifying(false);
+            }
         }
 
         // Add to target adapter
@@ -76,13 +83,13 @@ public interface SelectionActionHandler {
             targetAdapter.addTask(task);
 
         // Save to Firebase
-        var viewModel = new ViewModelProvider(parent).get(TasksViewModel.class);
+        var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
         for (Task task : selected)
             viewModel.updateTask(task);
 
         /// Update streaks
         if (status == Task.TaskStatus.COMPLETED) {
-            // If tasks are sent to be "completed" , Figure out if streaks should be incremented or reset
+            // If tasks are sent to be "completed", Figure out if streaks should be incremented or reset
             TaskStreakHandler.inspectTasks(selected);
 
             // Tick the "Has done a task today" tracker for Day streak maintainment.
@@ -94,7 +101,7 @@ public interface SelectionActionHandler {
     }
 
     /**
-     * Default delete implementation: removes selected from local list, deletes from Firebase,
+     * Default delete implementation: removes selected from the local list, deletes from Firebase,
      * clears selection, and hides the selection bar.
      */
     default void onDelete() {
@@ -114,7 +121,7 @@ public interface SelectionActionHandler {
         parent.hideSelectionBar();
 
         // Delete from Firebase
-        var viewModel = new ViewModelProvider(parent).get(TasksViewModel.class);
+        var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
         for (Task task : selected)
             viewModel.removeTask(task);
     }

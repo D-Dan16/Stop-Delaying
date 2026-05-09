@@ -5,6 +5,8 @@ import static stop_delaying.utils.Utils.speak;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +51,16 @@ public class HomeFragment extends Fragment {
 
     private Task currentUrgentTask;
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable urgentTaskRefreshRunnable = new Runnable() {
+        @Override public void run() {
+            if (tasksViewModel != null && tasksViewModel.getTasks() != null)
+                displayUrgentTask(tasksViewModel.getTasks());
+
+            handler.postDelayed(this, 60000); // refresh every minute for deadline updates
+        }
+    };
+
     private static final String TAG = "HomeFragment";
 
     @SuppressLint("SetTextI18n")
@@ -81,6 +93,15 @@ public class HomeFragment extends Fragment {
         observeAndDisplayTasksStreaks();
 
         setOnClickListeners(view);
+
+        // Start periodic refresh for urgent task (to update color if deadline passes)
+        handler.post(urgentTaskRefreshRunnable);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacks(urgentTaskRefreshRunnable);
     }
 
     private void initComponents(@NonNull View view) {
@@ -115,8 +136,8 @@ public class HomeFragment extends Fragment {
 
 
         // Initialize ViewModel
-        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-        leaderboardViewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+        tasksViewModel = new ViewModelProvider(requireActivity()).get(TasksViewModel.class);
+        leaderboardViewModel = new ViewModelProvider(requireActivity()).get(LeaderboardViewModel.class);
     }
 
     private void setOnClickListeners(View view) {

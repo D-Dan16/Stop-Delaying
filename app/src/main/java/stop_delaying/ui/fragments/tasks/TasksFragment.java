@@ -110,8 +110,8 @@ public class TasksFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the ViewModel instance
-        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
+        // Get the ViewModel instance from Activity scope to share data and listeners across fragments
+        tasksViewModel = new ViewModelProvider(requireActivity()).get(TasksViewModel.class);
         InsertCardResponsiveness.setTasksViewModel(tasksViewModel);
     }
 

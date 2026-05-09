@@ -32,8 +32,8 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the ViewModel instance
-        leaderboardViewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+        // Get the ViewModel instance from Activity scope to share data and listeners across fragments
+        leaderboardViewModel = new ViewModelProvider(requireActivity()).get(LeaderboardViewModel.class);
     }
 
     @Override

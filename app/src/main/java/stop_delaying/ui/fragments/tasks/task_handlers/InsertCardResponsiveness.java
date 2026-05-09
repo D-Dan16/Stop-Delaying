@@ -106,6 +106,11 @@ public final class InsertCardResponsiveness {
 
             Task task = adapter.getVisibleTasks().get(position);
 
+            if (task.hasReachedDeadline()) {
+                Toast.makeText(bellNotifButton.getContext(), "Cannot toggle notifications for tasks past their deadline", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // If there is no permission to use the notification manager, ask for it, then return.
             if (ActivityCompat.checkSelfPermission(bellNotifButton.getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 // Fallback if the context isn't an activity for some reason
@@ -132,7 +137,7 @@ public final class InsertCardResponsiveness {
                                 calculateScheduleDelay(5 * 3600, task.getDueTimeOfDay(), task.getDueDate()),
                                 calculateScheduleDelay(1 * 3600, task.getDueTimeOfDay(), task.getDueDate())
                         ),
-                        task.hashCode(),
+                        task.getTaskId().hashCode(),
                         List.of(
                                 format("24 hours left for - {0}", task.getTitle()),
                                 format("5 hours left for - {0}", task.getTitle()),
@@ -146,7 +151,7 @@ public final class InsertCardResponsiveness {
                 Toast.makeText(bellNotifButton.getContext(), "Notification alarm scheduled", Toast.LENGTH_SHORT).show();
                 ((ImageView) bellNotifButton).setImageResource(R.drawable.ic_turn_notifs_on);
             } else {
-                TaskScheduler.cancelNotificationAlarm(bellNotifButton.getContext(), task.hashCode());
+                TaskScheduler.cancelNotificationAlarm(bellNotifButton.getContext(), task.getTaskId().hashCode());
                 task.setTaskNotifying(false);
                 ((ImageView) bellNotifButton).setImageResource(R.drawable.ic_turn_notifs_off);
 
