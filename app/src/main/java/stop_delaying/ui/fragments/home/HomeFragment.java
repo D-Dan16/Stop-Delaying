@@ -5,6 +5,8 @@ import static stop_delaying.utils.Utils.speak;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,10 @@ import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.Users
 import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.TasksViewModel;
 
+/**
+ * The landing fragment of the application. Displays the user's most urgent task, 
+ * current streaks, and provides navigation to educational resources.
+ */
 @SuppressLint("SetTextI18n")
 public class HomeFragment extends Fragment {
 
@@ -47,12 +53,30 @@ public class HomeFragment extends Fragment {
     private TextView tvTasksStreak;
     private TextView tvDaysStreak;
 
+    /** The task currently identified as the most urgent for display. */
     private Task currentUrgentTask;
+
+    /** Handler for managing periodic UI updates, such as urgent task refreshing. */
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    
+    /** 
+     * Runnable that periodically refreshes the urgent task display to ensure 
+     * deadlines and visual indicators remain accurate.
+     */
+    private final Runnable urgentTaskRefreshRunnable = new Runnable() {
+        @Override public void run() {
+            if (tasksViewModel != null && tasksViewModel.getTasks() != null)
+                displayUrgentTask(tasksViewModel.getTasks());
+
+            handler.postDelayed(this, 60000); // refresh every minute for deadline updates
+        }
+    };
 
     private static final String TAG = "HomeFragment";
 
-    @SuppressLint("SetTextI18n")
-
+    /**
+     * Interface to handle navigation events from the home screen to other fragments.
+     */
     public interface OnHomeFragmentInteractionListener {
         void onWhatIsProcrastinationClicked();
 
@@ -81,8 +105,18 @@ public class HomeFragment extends Fragment {
         observeAndDisplayTasksStreaks();
 
         setOnClickListeners(view);
+
+        // Start periodic refresh for urgent task (to update color if deadline passes)
+        handler.post(urgentTaskRefreshRunnable);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        handler.removeCallbacks(urgentTaskRefreshRunnable);
+    }
+
+    /** Initializes UI components, view models, and default display states. */
     private void initComponents(@NonNull View view) {
         // Initialize UI elements
         tvImportantTaskTitle = view.findViewById(R.id.tv_task_title);
@@ -110,15 +144,16 @@ public class HomeFragment extends Fragment {
         tvDaysStreak = view.findViewById(R.id.tvDaysStreak);
 
         // Initialize streaks display
-        tvTasksStreak.setText("0");
-        tvDaysStreak.setText("0");
+        tvTasksStreak.setText("0 tasks");
+        tvDaysStreak.setText("0 days");
 
 
         // Initialize ViewModel
-        tasksViewModel = new ViewModelProvider(this).get(TasksViewModel.class);
-        leaderboardViewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+        tasksViewModel = new ViewModelProvider(requireActivity()).get(TasksViewModel.class);
+        leaderboardViewModel = new ViewModelProvider(requireActivity()).get(LeaderboardViewModel.class);
     }
 
+    /** Sets up click listeners for the informational buttons on the home screen. */
     private void setOnClickListeners(View view) {
         MaterialButton btnWhatIsProcrastination = view.findViewById(R.id.btnWhatIsProcrastination);
         MaterialButton btnLinksAndVideos = view.findViewById(R.id.btnLinksAndVideos);
@@ -140,6 +175,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    /**
+     * Sets up observers for user streak data to ensure the UI stays updated.
+     */
     private void observeAndDisplayTasksStreaks() {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -150,11 +188,12 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    /** Fetches and displays the user's current task and day streaks. */
     private void displayStreaks(String UID) {
         UsersRepository.fetchUserById(UID, new UsersRepository.UserFetchCallback() {
             @Override public void onUserFetched(User user) {
-                tvDaysStreak.setText(String.valueOf(user.getDayStreak()));
-                tvTasksStreak.setText(String.valueOf(user.getTaskStreak()));
+                tvDaysStreak.setText(user.getDayStreak() +" days");
+                tvTasksStreak.setText(user.getTaskStreak() +" tasks");
             }
 
             @Override public void onFetchFailed(String errorMessage) {}
@@ -195,6 +234,9 @@ public class HomeFragment extends Fragment {
         );
     }
 
+    /**
+     * Filters and finds the most urgent task to display from the provided task map.
+     */
     private void displayUrgentTask(Map<Task.TaskStatus, Tasks> taskListsMap) {
         // Get the "To Do" tasks
         var todoTasks = taskListsMap.get(Task.TaskStatus.TODO);
@@ -228,7 +270,8 @@ public class HomeFragment extends Fragment {
 
     /**
      * Finds the task with the soonest deadline from a list of tasks.
-     * Uses the Task API methods isDeadlineNear() and hasReachedDeadline() to determine urgency.
+     * @param tasks The list of tasks to search.
+     * @return The most urgent task, or null if the list is empty.
      */
     private Task findMostUrgentTask(java.util.List<Task> tasks) {
         if (tasks.isEmpty())
@@ -254,7 +297,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Displays the given task in the important task card.
+     * Populates the UI elements with details from the specified task.
      */
     @SuppressLint("DefaultLocale")
     private void displayTask(Task task) {
@@ -283,11 +326,8 @@ public class HomeFragment extends Fragment {
         updateTaskCardBackgroundColor(task);
     }
 
-    /**
-     * Displays a message when there are no "To Do" tasks.
-     */
 
-
+    /** Updates UI to indicate that no tasks are currently pending. */
     private void displayNoTaskMessage() {
         this.currentUrgentTask = null;
         tvImportantTaskTitle.setText("No Important Task");
@@ -304,8 +344,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Updates the card background color based on deadline status.
-     * Matches the behavior of TasksViewModel.updateTaskCardBackgroundColor().
+     * Updates the task card's background color based on proximity to the deadline.
      */
     private void updateTaskCardBackgroundColor(Task task) {
         if (importantTaskCardView == null)

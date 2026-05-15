@@ -23,17 +23,25 @@ import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardDayStreakFragme
 import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTaskStreakFragment;
 import stop_delaying.ui.fragments.leaderboard.ui.tabs.LeaderboardTab;
 
+/**
+ * Host fragment for the leaderboard feature. Manages a ViewPager with tabs for 
+ * displaying users ranked by day streaks or task streaks.
+ */
 public class LeaderboardFragment extends Fragment {
+    /** ViewPager for horizontal navigation between different leaderboard tabs. */
     private ViewPager2 viewPager;
+    /** TabLayout for selecting between day-streak and task-streak leaderboards. */
     private TabLayout tabLayout;
+    /** ProgressBar shown while leaderboard data is being fetched and processed. */
     private ProgressBar leaderboardProgressBar; // Declare ProgressBar
+    /** ViewModel for managing and observing leaderboard state and data. */
     private LeaderboardViewModel leaderboardViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the ViewModel instance
-        leaderboardViewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+        // Get the ViewModel instance from Activity scope to share data and listeners across fragments
+        leaderboardViewModel = new ViewModelProvider(requireActivity()).get(LeaderboardViewModel.class);
     }
 
     @Override
@@ -63,6 +71,9 @@ public class LeaderboardFragment extends Fragment {
         leaderboardViewModel.organizeLeaderboardEntries(LeaderboardTab.DAY_STREAK);
     }
 
+    /**
+     * Configures LiveData observers for leaderboard entries and loading status.
+     */
     private void setupLeaderboardObservers() {
         leaderboardViewModel.getLiveData().observe(getViewLifecycleOwner(), leaderboardEntries -> {
             if (leaderboardEntries == null)
@@ -85,6 +96,10 @@ public class LeaderboardFragment extends Fragment {
         });
     }
 
+    /**
+     * Sets up the ViewPager and TabLayout integration, defining tab titles and 
+     * selection behavior.
+     */
     private void createTabLayoutLogic() {
         viewPager.setAdapter(new FragmentStateAdapter(this) {
             @Override public int getItemCount() {

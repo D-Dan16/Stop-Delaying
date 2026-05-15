@@ -23,10 +23,19 @@ import java.util.concurrent.Executors;
 
 import stop_delaying.models.Task;
 
+/**
+ * Orchestrates task analysis using AI to provide personalized recommendations. 
+ * This class coordinates between local task data and remote AI services to 
+ * help users optimize their productivity.
+ */
 public class TaskAnalyzer {
+    /** Private constructor to prevent instantiation. */
     private TaskAnalyzer() {}
+
+    /** Single-thread executor for background AI processing. */
     private static final Executor executor = Executors.newSingleThreadExecutor();
 
+    /** Configured Gemini AI model instance for processing task data. */
     private static final GenerativeModelFutures model = GenerativeModelFutures.from(FirebaseAI.getInstance(GenerativeBackend.googleAI()).generativeModel(
             "gemini-2.5-flash",
             new GenerationConfig.Builder()
@@ -34,6 +43,7 @@ public class TaskAnalyzer {
                     .build()
     ));
 
+    /** The system prompt defining the AI's behavior and response format. */
     private static final Content systemInstruction = new Content.Builder()
             .addText("""
                     You are a helpful assistant that helps a user with their tasks. The user has a list of tasks in their To Do list in an app for helping with their procrastination problems.\s
@@ -54,6 +64,11 @@ public class TaskAnalyzer {
             .build();
 
 
+    /**
+     * Analyzes a list of tasks using AI and returns prioritized recommendations via a callback.
+     * @param tasks The list of user tasks to analyze.
+     * @param callback The interface to handle success or failure results.
+     */
     public static void analyzeTasks(List<Task> tasks, AnalysisCallback callback) {
         Content userContent = new Content.Builder()
                 .addText(buildPrompt(tasks))
@@ -86,6 +101,9 @@ public class TaskAnalyzer {
         }, executor);
     }
 
+    /**
+     * Transforms a list of Task objects into a formatted text prompt for the AI model.
+     */
     private static String buildPrompt(List<Task> tasks) {
         StringBuilder sb = new StringBuilder();
         for (Task task : tasks)
@@ -101,6 +119,9 @@ public class TaskAnalyzer {
         return sb.toString();
     }
 
+    /**
+     * Interface for receiving task analysis results or error messages asynchronously.
+     */
     public interface AnalysisCallback {
         void onSuccess(AnalysisResult result);
         void onError(String errorMessage);

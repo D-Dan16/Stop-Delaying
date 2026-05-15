@@ -19,7 +19,15 @@ import java.util.ArrayList;
 import lombok.Getter;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.LeaderboardAdapter;
 
+/**
+ * Tab fragment that displays the leaderboard ranked by users' daily streaks. 
+ * Uses a RecyclerView and a shared adapter to list ranked users.
+ */
 public class LeaderboardDayStreakFragment extends Fragment {
+    /** 
+     * Shared adapter instance for managing and displaying leaderboard entries. 
+     * Initialized with an empty list.
+     */
     @Getter
     private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());
 

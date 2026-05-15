@@ -15,6 +15,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.procrastination.R;
 
+/**
+ * Fragment that displays a list of curated links and resources to help users 
+ * understand and combat procrastination.
+ */
 public class LinksFragment extends Fragment {
 
     @Nullable
@@ -48,6 +52,9 @@ public class LinksFragment extends Fragment {
         linkCard5.setOnClickListener(v -> openLink("https://todoist.com/productivity-methods/pomodoro-technique"));
     }
 
+    /**
+     * Opens a specific URL in an external browser using an Intent.
+     */
     private void openLink(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));

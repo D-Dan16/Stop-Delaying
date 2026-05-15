@@ -22,7 +22,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
+/**
+ * The primary activity and host for the application's fragments. Manages bottom navigation 
+ * and fragment transactions to provide a seamless user experience across core features.
+ */
 public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener {
+    /** Navigation bar for switching between main sections of the app. */
     private BottomNavigationView bottomNavigationView;
 
     private HomeFragment homeFragment;
@@ -75,6 +80,10 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         selectWantedFragment(intent);
     }
 
+    /**
+     * Determines which fragment to display based on intent extras. Useful for deep-linking 
+     * or navigation triggered by notifications.
+     */
     private void selectWantedFragment(@NonNull Intent intent) {
         // Check for intent extras to determine which fragment to load
         // Cur use: for tapping on notifications, load the tasks fragment that is hold as a reference in the intent
@@ -94,6 +103,10 @@ public class MainApp extends AppCompatActivity implements HomeFragment.OnHomeFra
         }
     }
 
+    /**
+     * Replaces the current fragment in the container with a new one and adds the 
+     * transaction to the back stack.
+     */
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);

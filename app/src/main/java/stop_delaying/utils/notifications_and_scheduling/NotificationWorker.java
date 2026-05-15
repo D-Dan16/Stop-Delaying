@@ -16,7 +16,11 @@ import java.net.URISyntaxException;
 
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 
-class NotificationWorker extends Worker {
+/**
+ * A WorkManager Worker that triggers a notification. It checks for permissions 
+ * and app settings before calling NotificationCreator to display the alert.
+ */
+public class NotificationWorker extends Worker {
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }

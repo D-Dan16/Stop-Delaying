@@ -24,14 +24,13 @@ import stop_delaying.ui.fragments.tasks.TasksFragment;
 
 
 /**
- * Tab fragment that shows tasks with status `To Do`.
- * <p>
- * Integrates with the parent `TasksFragment` inline selection toolbar (inline CAB):
- * - Long-press on a card starts selection via `TaskListAdapter.OnStartSelectionListener`.
- * - While selecting, updates the toolbar subtitle with the current selection count.
- * - On action (move/delete), updates local list and delegates cross-tab moves, then clears selection and hides the bar.
+ * Tab fragment that displays tasks with the 'To Do' status. Integrates with 
+ * the parent fragment's selection toolbar for bulk actions.
  */
 public class TasksToDoFragment extends Fragment {
+    /** 
+     * Shared adapter for the 'To Do' tasks list. Initialized with an empty task collection.
+     */
     @Getter
     private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
 

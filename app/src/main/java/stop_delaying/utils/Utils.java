@@ -23,20 +23,33 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * A utility class containing static helper methods for UI effects, validation, 
+ * Text-to-Speech (TTS), and Speech-to-Text (STT) functionality.
+ */
 public final class Utils {
+    /** Global TextToSpeech instance used for verbalizing application text. */
     private static TextToSpeech textToSpeech;
+
+    /**
+     * Applies a visual dimming effect to all child views of a given root by adjusting their alpha levels.
+     */
     public static void applyDimmingEffect(View rootViewToDimFrom, boolean shouldBeDimmed) {
         if (rootViewToDimFrom instanceof ViewGroup viewGroup)
             for (int i = 0; i < viewGroup.getChildCount(); i++)
                 viewGroup.getChildAt(i).setAlpha(shouldBeDimmed ? 0.3f : 1.0f);
     }
 
+    /**
+     * Validates a password string against complexity requirements (length, letters, and numbers).
+     * @return true if the password does not meet the required security standards.
+     */
     public static boolean isPasswordNotValid(String password) {
         return !password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*") || password.length() < 8;
     }
 
     /**
-     * Utility method to speak a string.
+     * Utility method to speak a string. Initializes the TTS engine if necessary and handles basic error cases.
      */
     public static void speak(android.content.Context context, String text) {
         if (textToSpeech == null)
@@ -52,6 +65,10 @@ public final class Utils {
             performSpeech(context, text);
     }
 
+    /**
+     * Executes the actual speech operation. Handles language selection, emoji filtering, 
+     * and Hebrew language detection.
+     */
     private static void performSpeech(android.content.Context context, String text) {
         if (textToSpeech == null || text == null)
             return;
@@ -86,6 +103,9 @@ public final class Utils {
         textToSpeech.speak(cleanedText, TextToSpeech.QUEUE_FLUSH, null, "TaskTTS");
     }
 
+    /**
+     * Checks if a given string contains any Hebrew characters.
+     */
     public static boolean containsHebrew(String text) {
         if (text == null) return false;
         for (char c : text.toCharArray())
@@ -94,6 +114,10 @@ public final class Utils {
         return false;
     }
 
+    /**
+     * Configures a view to act as a Speech-to-Text trigger, managing permissions 
+     * and updating an EditText with recognized results.
+     */
     public static void configSTTButton(Fragment fragment, View speechToTextComponent, EditText textInput) {
         speechToTextComponent.setOnClickListener(view -> {
             Context context = fragment.requireContext();

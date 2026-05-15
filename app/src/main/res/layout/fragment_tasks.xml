@@ -129,20 +129,20 @@
             tools:ignore="RtlHardcoded">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_order_by"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Order tasks"
-                android:src="@drawable/order_by"
-                app:backgroundTint="@color/neon_orange"
-                app:fabCustomSize="65dp"
-                app:maxImageSize="45dp"
-                app:tint="@android:color/white"
-                app:layout_constraintBottom_toTopOf="@+id/fab_ai_analyze"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+            android:id="@+id/fab_order_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Order tasks"
+            android:src="@drawable/order_by"
+            android:visibility="gone"
+            app:backgroundTint="@color/neon_orange"
+            app:fabCustomSize="65dp"
+            app:layout_constraintBottom_toTopOf="@+id/fab_ai_analyze"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:maxImageSize="45dp"
+            app:tint="@android:color/white"
+            tools:visibility="gone" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_ai_analyze"

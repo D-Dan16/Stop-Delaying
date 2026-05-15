@@ -15,33 +15,29 @@ import stop_delaying.ui.fragments.tasks.TasksFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
+import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 
 /**
- * Callback interface used by child task list fragments to delegate selection actions
- * (move/delete) to the parent `TasksFragment` selection toolbar (inline CAB).
- * <p>
- * To eliminate duplicate implementations across tabs, this interface provides default
- * implementations for the common actions. Implementors only need to supply references
- * to their adapter and parent fragment via {@link #adapter()} and {@link #parent()}.
+ * Interface defining actions for selected tasks, such as moving them between 
+ * categories or deleting them. Provides default logic to maintain consistency.
  */
 public interface SelectionActionHandler {
     /**
-     * USED FOR INNER IMPLEMENTATION
-     * @return the RecyclerView adapter of the current tab.
+     * Retrieves the RecyclerView adapter associated with the current selection context.
      */
     TaskListAdapter adapter();
 
     /**
-     * USED FOR INNER IMPLEMENTATION
-     * @return the parent TasksFragment controlling the inline selection toolbar.
+     * Retrieves the parent TasksFragment that hosts the selection UI.
      */
     TasksFragment parent();
 
 
 
     /**
-     * Default move implementation: removes from current adapter, updates Firebase,
-     * and manually adds to target adapter (since each has its own TaskLists instance).
+     * Moves selected tasks to a new status. Updates status, cancels notifications 
+     * if necessary, refreshes UI adapters, and saves changes to Firebase.
+     * @param status The target status for the selected tasks.
      */
     default void onMoveTo(Task.TaskStatus status) {
         TaskListAdapter adapter = adapter();
@@ -54,7 +50,7 @@ public interface SelectionActionHandler {
             return;
         }
 
-        // Remove from current adapter
+        // Remove from the current adapter
         adapter.removeSelectedTasks();
         adapter.clearSelection();
         parent.hideSelectionBar();
@@ -63,6 +59,12 @@ public interface SelectionActionHandler {
         for (Task task : selected) {
             task.setTaskSelected(false);
             task.setStatus(status);
+
+            // If moving away from 'TO-DO', cancel notifications
+            if (status != Task.TaskStatus.TODO) {
+                TaskScheduler.cancelNotificationAlarm(parent.requireContext(), task.getTaskId().hashCode());
+                task.setTaskNotifying(false);
+            }
         }
 
         // Add to target adapter
@@ -76,13 +78,13 @@ public interface SelectionActionHandler {
             targetAdapter.addTask(task);
 
         // Save to Firebase
-        var viewModel = new ViewModelProvider(parent).get(TasksViewModel.class);
+        var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
         for (Task task : selected)
             viewModel.updateTask(task);
 
         /// Update streaks
         if (status == Task.TaskStatus.COMPLETED) {
-            // If tasks are sent to be "completed" , Figure out if streaks should be incremented or reset
+            // If tasks are sent to be "completed", Figure out if streaks should be incremented or reset
             TaskStreakHandler.inspectTasks(selected);
 
             // Tick the "Has done a task today" tracker for Day streak maintainment.
@@ -94,8 +96,8 @@ public interface SelectionActionHandler {
     }
 
     /**
-     * Default delete implementation: removes selected from local list, deletes from Firebase,
-     * clears selection, and hides the selection bar.
+     * Deletes selected tasks from the application. Removes from local list, 
+     * clears Firebase entries, and resets UI state.
      */
     default void onDelete() {
         TaskListAdapter adapter = adapter();
@@ -114,13 +116,13 @@ public interface SelectionActionHandler {
         parent.hideSelectionBar();
 
         // Delete from Firebase
-        var viewModel = new ViewModelProvider(parent).get(TasksViewModel.class);
+        var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
         for (Task task : selected)
             viewModel.removeTask(task);
     }
 
     /**
-     * Default escape/cancel implementation: clear all selections in the current list.
+     * Cancels the current selection session and clears all highlight states.
      */
     default void onEscape() {
         TaskListAdapter adapter = adapter();
@@ -128,14 +130,14 @@ public interface SelectionActionHandler {
     }
 
     /**
-     * Fired on the very first long-press that begins selection mode.
+     * Listener interface for the event where a selection session begins.
      */
     interface OnStartSelectionListener {
         void onStartSelection();
     }
 
     /**
-     * Notifies listeners whenever the number of selected items changes.
+     * Listener interface for changes in the total number of selected items.
      */
     interface OnSelectionChangeListener {
         void onSelectionChanged(int selectedCount);

@@ -12,7 +12,10 @@ import lombok.experimental.UtilityClass;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-/** @noinspection deprecation*/
+/**
+ * Utility class to manage the scheduling and cancellation of the DailyStreakWorker. 
+ * Ensures the worker is configured to run at midnight every 24 hours.
+ */
 @UtilityClass
 public class DailyStreakWorkerCaller {
     private static final String WORK_TAG = "daily_streak_check";
@@ -20,10 +23,8 @@ public class DailyStreakWorkerCaller {
     private static final String DAILY_STREAK_WORKER_SCHEDULED = "daily_streak_worker_scheduled";
     
     /**
-     * Schedule the daily streak worker to run once per day at midnight.
-     * This checks the currently logged-in user on THIS device only.
-     * Uses SharedPreferences to ensure scheduling happens only ONCE per device installation.
-     * @noinspection deprecation
+     * Schedules the daily streak worker to run once per day at midnight. 
+     * Uses SharedPreferences to ensure scheduling happens only ONCE per device.
      */
     public static void scheduleDailyStreakWorker(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(APP_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -49,7 +50,7 @@ public class DailyStreakWorkerCaller {
                 .addTag(WORK_TAG)
                 .build();
 
-        // Use REPLACE to ensure proper setup on first launch
+        // Using REPLACE to ensure a proper setup on the first launch
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_TAG,
                 ExistingPeriodicWorkPolicy.REPLACE ,
@@ -61,7 +62,7 @@ public class DailyStreakWorkerCaller {
     }
     
     /**
-     * Cancel the daily streak worker (for testing or manual control).
+     * Cancels the currently scheduled daily streak worker.
      */
     public static void cancelDailyStreakWorker(Context context) {
         WorkManager.getInstance(context).cancelUniqueWork(WORK_TAG);
@@ -71,7 +72,7 @@ public class DailyStreakWorkerCaller {
     }
     
     /**
-     * Check if the worker is currently scheduled (for debugging).
+     * Checks if the daily streak worker is currently marked as scheduled.
      */
     public static boolean isWorkerScheduled(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(APP_SHARED_PREFS, Context.MODE_PRIVATE);

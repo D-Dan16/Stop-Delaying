@@ -1,5 +1,6 @@
 package stop_delaying.ui.fragments.tasks.task_handlers;
 
+import android.app.Application;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -7,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.procrastination.R;
 
@@ -19,21 +20,22 @@ import java.util.Map;
 
 import lombok.Getter;
 import stop_delaying.models.Task;
+import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 /**
- * ViewModel responsible for managing task-related UI state and business logic.
- * It holds task lists, handles filtering, selection, and coordinates data flow between the UI and TaskRepository.
+ * ViewModel responsible for managing task-related UI state and business logic. 
+ * Coordinates between the UI fragments and the Firebase repository.
  */
-public class TasksViewModel extends ViewModel {
-    /// The data structure holding tasks categorized by their status for UI display
+public class TasksViewModel extends AndroidViewModel {
+    /** LiveData holding tasks categorized by status for UI consumption. */
     private final MutableLiveData<Map<Task.TaskStatus, Tasks>> _uiTaskLists = new MutableLiveData<>();
     private final String TAG = "TasksViewModel";
 
-    /// LiveData to track if AI analysis is in progress
+    /** LiveData tracking the state of background AI task analysis. */
     @Getter
     private final MutableLiveData<Boolean> aiAnalysisInProgress = new MutableLiveData<>(false);
 
-    /// Being called by the ViewModelProvider
-    public TasksViewModel() {
+    public TasksViewModel(@NonNull Application application) {
+        super(application);
         TaskRepository.observeUserTasks(new TaskRepository.TaskFetchCallback() {
             @Override 
             public void onTasksFetched(Map<Task.TaskStatus, List<Task>> fetchedCategorizedTasks) {
@@ -64,8 +66,9 @@ public class TasksViewModel extends ViewModel {
     }
 
     /**
-     * Adds a task optimistically to the UI and saves it to Firebase.
-     * The real-time listener will handle the confirmation from Firebase.
+     * Adds a task to the collection. Updates the local UI state optimistically 
+     * before syncing with the Firebase database.
+     * @param task The task to be added.
      */
     public void addTask(Task task) {
         // Optimistic update - add to UI immediately
@@ -89,8 +92,7 @@ public class TasksViewModel extends ViewModel {
     }
 
     /**
-     * Adds multiple tasks optimistically to the UI and saves them to Firebase.
-     * The real-time listener will handle the confirmation from Firebase.
+     * Bulk-adds multiple tasks, updating the UI state immediately and syncing with Firebase.
      */
     public void addAllTasks(List<Task> tasks) {
         // Optimistic update - add to UI immediately
@@ -121,8 +123,8 @@ public class TasksViewModel extends ViewModel {
 
 
     /**
-     * Removes a task optimistically from the UI and deletes it from Firebase.
-     * The real-time listener will handle the confirmation from Firebase.
+     * Removes a task from the system. Updates UI, cancels scheduled alerts, 
+     * and deletes the entry from Firebase.
      */
     public void removeTask(Task task) {
         // Optimistic update - remove from UI immediately
@@ -132,6 +134,9 @@ public class TasksViewModel extends ViewModel {
             currentUiTaskLists.get(task.getStatus()).visibleTasks().remove(task);
             _uiTaskLists.setValue(currentUiTaskLists);
         }
+
+        // Cancel scheduled notifications
+        TaskScheduler.cancelNotificationAlarm(getApplication(), task.getTaskId().hashCode());
 
         // Delete from Firebase - real-time listener will sync any conflicts
         TaskRepository.removeTaskFromFirebase(task, new TaskRepository.TaskOperationCallback() {
@@ -146,8 +151,7 @@ public class TasksViewModel extends ViewModel {
     }
 
     /**
-     * Updates a task's status and syncs to Firebase. Used when moving tasks between lists.
-     * The real-time listener will handle updating the UI in all lists.
+     * Syncs updates for a specific task to the Firebase database.
      */
     public void updateTask(Task task) {
         if (task.getTaskId() == null) {
@@ -167,16 +171,21 @@ public class TasksViewModel extends ViewModel {
     }
 
     /**
-     * Returns the LiveData for all tasks.
+     * Returns the LiveData for the categorized task collection.
      */
     public MutableLiveData<Map<Task.TaskStatus, Tasks>> getLiveData() {
         return this._uiTaskLists;
     }
 
+    /** Retrieves the current snapshot of categorized tasks. */
     public Map<Task.TaskStatus, Tasks> getTasks() {
         return this._uiTaskLists.getValue();
     }
 
+    /**
+     * Static helper to update a task card's background color based on its urgency 
+     * and selection state.
+     */
     public static void updateTaskCardBackgroundColor(@NonNull TaskListAdapter.TaskViewHolder holder, Task task) {
         int colorRes = task.hasReachedDeadline() ? R.color.bg_task_card_post_deadline :
                 task.isDeadlineNear() ? R.color.bg_task_card_near_deadline :

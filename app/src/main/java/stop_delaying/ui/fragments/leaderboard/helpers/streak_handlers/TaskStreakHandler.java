@@ -9,8 +9,17 @@ import lombok.experimental.UtilityClass;
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
 
+/**
+ * Handles updates to the user's task streak based on the completion of selected tasks. 
+ * Resets the streak if any task is late, otherwise increments it.
+ */
 @UtilityClass
 public class TaskStreakHandler {
+    /**
+     * Inspects a list of completed tasks to determine the streak update logic. 
+     * Resets streak to 0 if any task was late; increments by task count if all on time.
+     * @param selected The list of tasks to evaluate for streak updates.
+     */
     public void inspectTasks(List<Task> selected) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null)
@@ -19,7 +28,7 @@ public class TaskStreakHandler {
         String uid = currentUser.getUid();
 
         // Determine aggregate effect: if ANY task missed deadline -> reset streak to 0.
-        // Otherwise, increment by the number of on-time tasks in a single atomic op.
+        // Otherwise, increment by the number of on-time tasks in a single atomic operation.
         boolean anyLate = false;
         int onTimeCount = 0;
         for (Task task : selected)

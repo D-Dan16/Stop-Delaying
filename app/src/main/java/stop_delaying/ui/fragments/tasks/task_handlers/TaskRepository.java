@@ -23,18 +23,21 @@ import stop_delaying.utils.FBBranches;
 
 
 /**
- * Data repository responsible for handling all task-related operations with Firebase.
- * Acts as the single source of truth for task data, providing abstraction over database calls.
+ * Data repository responsible for handling all task-related operations with Firebase. 
+ * Provides abstraction over database calls for the ViewModel.
  */
 public class TaskRepository {
     private static ValueEventListener activeListener = null;
     private static DatabaseReference activeListenerRef = null;
 
+    /** Callback interface for receiving categorized task data. */
     public interface TaskFetchCallback {
 
         void onTasksFetched(Map<Task.TaskStatus, List<Task>> categorizedTasks);
         void onFetchFailed(String error);
     }
+
+    /** Callback interface for generic task write operations. */
     public interface TaskOperationCallback {
         default void onSuccess() {}
         void onFailure(String error);
@@ -42,8 +45,8 @@ public class TaskRepository {
 
     // --- Real-time Fetching from Firebase ---
     /**
-     * Sets up a real-time listener for user tasks. The callback will be triggered whenever
-     * the tasks change in Firebase (add/update/delete), eliminating the need to manually refetch.
+     * Sets up a real-time listener for the current user's tasks in Firebase.
+     * Categorizes tasks by status upon retrieval.
      */
     public static void observeUserTasks(@NonNull TaskFetchCallback callback) {
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -72,7 +75,7 @@ public class TaskRepository {
                     Task task = taskSnapshot.getValue(Task.class);
                     if (task == null) continue;
 
-                    // Set taskId from Firebase key (since it's @Excluded from serialization)
+                    // Set taskId from the Firebase key (since it's @Excluded from serialization)
                     task.setTaskId(taskSnapshot.getKey());
 
                     Objects.requireNonNull(categorizedTasks.get(task.getStatus())).add(task);
@@ -91,9 +94,9 @@ public class TaskRepository {
 
         activeListenerRef.addValueEventListener(activeListener);
     }
+
     /**
-     * Removes the active real-time listener. Should be called when the ViewModel is cleared
-     * or when the user logs out to prevent memory leaks.
+     * Removes any active real-time listeners for task data to prevent leaks.
      */
     public static void removeTasksListener() {
         if (activeListenerRef != null && activeListener != null) {
@@ -104,6 +107,9 @@ public class TaskRepository {
         }
     }
 
+    /**
+     * Saves a new task to the user's task list in Firebase.
+     */
     public static void addTaskToFirebase(Task task, @NonNull TaskOperationCallback callback) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -124,6 +130,9 @@ public class TaskRepository {
         }
     }
 
+    /**
+     * Removes a specific task from the user's task list in Firebase.
+     */
     public static void removeTaskFromFirebase(Task task, @NonNull TaskOperationCallback callback) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -141,6 +150,9 @@ public class TaskRepository {
         }
     }
 
+    /**
+     * Updates an existing task's data in the Firebase database.
+     */
     public static void updateTaskInFirebase(Task task, @NonNull TaskOperationCallback callback) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -173,6 +185,9 @@ public class TaskRepository {
         }
     }
 
+    /**
+     * Deletes all tasks associated with a specific user ID from Firebase.
+     */
     public static void removeUserTasksFromFirebase(String userUID, TaskOperationCallback taskOperationCallback) {
         DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + userUID);
         tasksRef.removeValue()

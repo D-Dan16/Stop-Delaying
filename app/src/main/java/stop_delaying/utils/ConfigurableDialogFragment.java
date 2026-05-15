@@ -14,11 +14,18 @@ import com.example.procrastination.R;
 
 import java.util.function.Consumer;
 
+/**
+ * A highly flexible DialogFragment that can be instantiated with any layout resource. 
+ * Supports custom view initialization and dismissal callbacks for UI dimming effects.
+ */
 public class ConfigurableDialogFragment extends DialogFragment {
     private final int layoutResId;
     private final Runnable onDismissCallback;
     private final Consumer<View> onViewCreatedListener;
 
+    /**
+     * Private constructor to enforce the use of static showDialog factory methods.
+     */
     private ConfigurableDialogFragment(
             int layoutResId,
             Consumer<View> onViewCreatedListener,
@@ -29,6 +36,10 @@ public class ConfigurableDialogFragment extends DialogFragment {
         this.onViewCreatedListener = onViewCreatedListener;
     }
 
+    /**
+     * Displays a configurable dialog with specialized handling for dimming the container 
+     * view while the dialog is visible.
+     */
     private static void showDialog(
             View containerView,
             FragmentManager fragmentManager,
@@ -51,10 +62,17 @@ public class ConfigurableDialogFragment extends DialogFragment {
         dialog.show(fragmentManager, "custom_popup");
     }
 
+    /**
+     * Displays a dialog with a custom view initializer. Useful for popups requiring 
+     * data binding or dynamic UI updates.
+     */
     public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout, Consumer<View> viewInitializer) {
         showDialog(containerView, fragmentManager, popupLayout, viewInitializer, () -> {});
     }
 
+    /**
+     * Displays a basic dialog using only a layout resource ID.
+     */
     public static void showDialog(View containerView, FragmentManager fragmentManager, int popupLayout) {
         showDialog(containerView, fragmentManager, popupLayout, v -> {}, () -> {});
     }
