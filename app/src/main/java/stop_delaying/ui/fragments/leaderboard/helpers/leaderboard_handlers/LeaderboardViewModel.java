@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +64,7 @@ public class LeaderboardViewModel extends ViewModel {
                 // Sort the fetched entries based on the selected leaderboard type
                 switch (leaderboardType) {
                     case LeaderboardTab.DAY_STREAK -> fetchedUserEntries.sort((u1, u2) -> u2.getDayStreak() - u1.getDayStreak());
-                    case LeaderboardTab.TASK_STREAK -> fetchedUserEntries.sort(Comparator.comparingInt(User::getTaskStreak)); // Logic was u2-u1 for desc, but switch cases showed task streak logic as well.
+                    case LeaderboardTab.TASK_STREAK -> fetchedUserEntries.sort((u1, u2) -> u2.getTaskStreak() - u1.getTaskStreak());
                 }
 
                 // create the leaderboard entries.

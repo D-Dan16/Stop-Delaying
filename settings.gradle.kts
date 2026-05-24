@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Procrastination"
+rootProject.name = "StopDelaying"
 include(":app")
