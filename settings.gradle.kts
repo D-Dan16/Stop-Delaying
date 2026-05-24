@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "StopDelaying"
+rootProject.name = "Stop-Delaying"
 include(":app")
