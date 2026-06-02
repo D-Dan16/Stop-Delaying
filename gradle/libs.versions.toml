@@ -1,5 +1,5 @@
 [versions]
-agp = "9.2.1"
+agp = "9.0.0"
 circleimageview = "3.1.0"
 firebaseBom = "34.13.0"
 guava = "33.6.0-android"

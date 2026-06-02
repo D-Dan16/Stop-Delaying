@@ -37,7 +37,7 @@ public class TaskAnalyzer {
 
     /** Configured Gemini AI model instance for processing task data. */
     private static final GenerativeModelFutures model = GenerativeModelFutures.from(FirebaseAI.getInstance(GenerativeBackend.googleAI()).generativeModel(
-            "gemini-2.5-flash",
+            "gemini-flash-latest",
             new GenerationConfig.Builder()
                     .setTemperature(0.7f)
                     .build()
