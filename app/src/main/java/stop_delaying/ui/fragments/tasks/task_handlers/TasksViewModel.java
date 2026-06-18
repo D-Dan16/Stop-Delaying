@@ -64,8 +64,8 @@ public class TasksViewModel extends AndroidViewModel {
                     List<Task> newTasksList = fetchedCategorizedTasks.getOrDefault(status, new ArrayList<>());
                     
                     // Preserve selection state from the old list
-                    if (oldUiTaskLists != null) {
-                        for (Task newTask : newTasksList) {
+                    if (oldUiTaskLists != null)
+                        for (Task newTask : newTasksList)
                             for (Tasks oldTasks : oldUiTaskLists.values()) {
                                 Task oldTask = findTaskById(oldTasks, newTask.getTaskId());
                                 if (oldTask != null) {
@@ -73,8 +73,6 @@ public class TasksViewModel extends AndroidViewModel {
                                     break;
                                 }
                             }
-                        }
-                    }
 
                     Tasks tasksObj = new Tasks(new ArrayList<>(newTasksList), new ArrayList<>());
                     if (currentFilter != null)
@@ -95,9 +93,8 @@ public class TasksViewModel extends AndroidViewModel {
     /** Initializes the UI task list map with empty collections. */
     private void initializeEmptyState() {
         Map<Task.TaskStatus, Tasks> initialState = new HashMap<>();
-        for (Task.TaskStatus status : Task.TaskStatus.values()) {
+        for (Task.TaskStatus status : Task.TaskStatus.values())
             initialState.put(status, new Tasks(new ArrayList<>(), new ArrayList<>()));
-        }
         _uiTaskLists.setValue(initialState);
     }
 
@@ -160,9 +157,8 @@ public class TasksViewModel extends AndroidViewModel {
 
         scheduleFallback(() -> {
             Map<Task.TaskStatus, Tasks> current = _uiTaskLists.getValue();
-            if (current != null && current.containsKey(task.getStatus())) {
+            if (current != null && current.containsKey(task.getStatus()))
                 current.get(task.getStatus()).remove(task);
-            }
         });
     }
 
@@ -173,10 +169,9 @@ public class TasksViewModel extends AndroidViewModel {
         for (Task t : tasks) {
             // We don't mutate the objects in the list yet to avoid "double update" redundancy.
             // We create a modified version for Firebase.
-            Task update = t; 
-            update.setStatus(newStatus);
-            update.setTaskSelected(false);
-            TaskRepository.updateTaskInFirebase(update);
+            t.setStatus(newStatus);
+            t.setTaskSelected(false);
+            TaskRepository.updateTaskInFirebase(t);
         }
 
         scheduleFallback(() -> {

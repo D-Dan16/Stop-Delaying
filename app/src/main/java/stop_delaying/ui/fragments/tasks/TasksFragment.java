@@ -31,7 +31,6 @@ import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tasks.task_handlers.InsertCardResponsiveness;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
-import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
