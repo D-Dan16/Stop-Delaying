@@ -32,15 +32,8 @@ public class TaskRepository {
 
     /** Callback interface for receiving categorized task data. */
     public interface TaskFetchCallback {
-
         void onTasksFetched(Map<Task.TaskStatus, List<Task>> categorizedTasks);
         void onFetchFailed(String error);
-    }
-
-    /** Callback interface for generic task write operations. */
-    public interface TaskOperationCallback {
-        default void onSuccess() {}
-        void onFailure(String error);
     }
 
     // --- Real-time Fetching from Firebase ---
@@ -110,11 +103,11 @@ public class TaskRepository {
     /**
      * Saves a new task to the user's task list in Firebase.
      */
-    public static void addTaskToFirebase(Task task, @NonNull TaskOperationCallback callback) {
+    public static void addTaskToFirebase(Task task) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fbUser == null) {
-                callback.onFailure("User not logged in.");
+                Log.e("TaskRepository", "User not logged in.");
                 return;
             }
 
@@ -123,8 +116,8 @@ public class TaskRepository {
             tasksRef.child(fbUser.getUid())
                     .child(task.getTaskId())
                     .setValue(task)
-                    .addOnSuccessListener(aVoid -> callback.onSuccess())
-                    .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                    .addOnSuccessListener(aVoid -> Log.d("TaskRepository", "Task added successfully"))
+                    .addOnFailureListener(e -> Log.e("TaskRepository", "Failed to add task: " + e.getMessage()));
         } catch (Exception e) {
             Log.e("TaskRepository", "Failed to add task", e);
         }
@@ -133,18 +126,18 @@ public class TaskRepository {
     /**
      * Removes a specific task from the user's task list in Firebase.
      */
-    public static void removeTaskFromFirebase(Task task, @NonNull TaskOperationCallback callback) {
+    public static void removeTaskFromFirebase(Task task) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fbUser == null) {
-                callback.onFailure("User not logged in.");
+                Log.e("TaskRepository", "User not logged in.");
                 return;
             }
 
             DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
             tasksRef.child(task.getTaskId()).removeValue()
-                    .addOnSuccessListener(aVoid -> callback.onSuccess())
-                    .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                    .addOnSuccessListener(aVoid -> Log.d("TaskRepository", "Task removed successfully: " + task.getTaskId()))
+                    .addOnFailureListener(e -> Log.e("TaskRepository", "Failed to remove task: " + e.getMessage()));
         } catch (Exception e) {
             Log.e("TaskRepository", "Failed to remove task", e);
         }
@@ -153,16 +146,15 @@ public class TaskRepository {
     /**
      * Updates an existing task's data in the Firebase database.
      */
-    public static void updateTaskInFirebase(Task task, @NonNull TaskOperationCallback callback) {
+    public static void updateTaskInFirebase(Task task) {
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fbUser == null) {
-                callback.onFailure("User not logged in.");
+                Log.e("TaskRepository", "User not logged in.");
                 return;
             }
 
             if (task.getTaskId() == null || task.getTaskId().isEmpty()) {
-                callback.onFailure("Task ID is null or empty.");
                 Log.e("TaskRepository", "Attempted to update task with null/empty taskId");
                 return;
             }
@@ -171,27 +163,20 @@ public class TaskRepository {
 
             DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + fbUser.getUid());
             tasksRef.child(task.getTaskId()).setValue(task)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("TaskRepository", "Task updated successfully: " + task.getTaskId());
-                        callback.onSuccess();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("TaskRepository", "Failed to update task in Firebase: " + e.getMessage());
-                        callback.onFailure(e.getMessage());
-                    });
+                    .addOnSuccessListener(aVoid -> Log.d("TaskRepository", "Task updated successfully: " + task.getTaskId()))
+                    .addOnFailureListener(e -> Log.e("TaskRepository", "Failed to update task in Firebase: " + e.getMessage()));
         } catch (Exception e) {
             Log.e("TaskRepository", "Failed to update task", e);
-            callback.onFailure(e.getMessage());
         }
     }
 
     /**
      * Deletes all tasks associated with a specific user ID from Firebase.
      */
-    public static void removeUserTasksFromFirebase(String userUID, TaskOperationCallback taskOperationCallback) {
+    public static void removeUserTasksFromFirebase(String userUID) {
         DatabaseReference tasksRef = FirebaseDatabase.getInstance().getReference(FBBranches.TASKS + "/" + userUID);
         tasksRef.removeValue()
-                .addOnSuccessListener(aVoid -> taskOperationCallback.onSuccess())
-                .addOnFailureListener(e -> taskOperationCallback.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> Log.d("TaskRepository", "User tasks deleted successfully."))
+                .addOnFailureListener(e -> Log.e("TaskRepository", "Failed to delete user tasks: " + e.getMessage()));
     }
 }

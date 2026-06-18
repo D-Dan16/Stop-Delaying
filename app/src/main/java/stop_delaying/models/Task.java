@@ -4,11 +4,14 @@ import com.google.firebase.database.Exclude;
 
 import java.util.UUID;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
+    @EqualsAndHashCode.Include
     @Exclude private String taskId;
     private String title;
     private String description;

@@ -65,8 +65,7 @@ public final class InsertCardResponsiveness {
                 return false;
 
             task.setTaskSelected(true);
-            _tasksViewModel.updateTask(task);
-
+            
             // Set background based on the task's state
             TasksViewModel.updateTaskCardBackgroundColor(holder, task);
 
@@ -91,7 +90,6 @@ public final class InsertCardResponsiveness {
 
             // Toggle selection state
             task.setTaskSelected(!task.isTaskSelected());
-            _tasksViewModel.updateTask(task);
 
             // Set background based on the task's state
             TasksViewModel.updateTaskCardBackgroundColor(holder, task);

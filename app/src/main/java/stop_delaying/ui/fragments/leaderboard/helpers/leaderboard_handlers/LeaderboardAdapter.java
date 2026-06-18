@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import stop_delaying.models.LeaderboardEntry;
@@ -23,10 +24,9 @@ import stop_delaying.models.LeaderboardEntry;
 @SuppressLint("NotifyDataSetChanged")
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.LeaderboardEntryViewHolder> {
     /** The list of leaderboard entries to be displayed. */
-    private final List<LeaderboardEntry> leaderboardEntries;
+    private final List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 
-    public LeaderboardAdapter(List<LeaderboardEntry> leaderboardEntries) {
-        this.leaderboardEntries = leaderboardEntries;
+    public LeaderboardAdapter() {
     }
 
     @NonNull @Override public LeaderboardEntryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,10 +34,10 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         return new LeaderboardEntryViewHolder(view);
     }
 
-    @Override public void onBindViewHolder(@NonNull LeaderboardEntryViewHolder holder, int position) {
+    @SuppressLint("SetTextI18n") @Override public void onBindViewHolder(@NonNull LeaderboardEntryViewHolder holder, int position) {
         LeaderboardEntry entry = leaderboardEntries.get(position);
 
-        holder.tvRank.setText(position + 1 + ".");
+        holder.tvRank.setText(entry.getRank() + ".");
         holder.tvUserName.setText(entry.getUserName());
         holder.tvDayStreak.setText(String.valueOf(entry.getDayStreak()));
         holder.tvTaskStreak.setText(String.valueOf(entry.getTaskStreak()));
@@ -68,10 +68,9 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
      * @param newEntries The new list of entries to display.
      */
     public void setLeaderboardEntries(@Nullable List<LeaderboardEntry> newEntries) {
-        if (newEntries == null) return;
-
         this.leaderboardEntries.clear();
-        this.leaderboardEntries.addAll(newEntries);
+        if (newEntries != null)
+            this.leaderboardEntries.addAll(newEntries);
         notifyDataSetChanged();
     }
 

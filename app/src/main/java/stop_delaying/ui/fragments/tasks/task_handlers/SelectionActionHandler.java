@@ -12,9 +12,6 @@ import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.leaderboard.helpers.leaderboard_handlers.UsersRepository;
 import stop_delaying.ui.fragments.leaderboard.helpers.streak_handlers.TaskStreakHandler;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
-import stop_delaying.ui.fragments.tasks.tabs.TasksToDoFragment;
-import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
-import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.utils.notifications_and_scheduling.TaskScheduler;
 
 /**
@@ -32,11 +29,9 @@ public interface SelectionActionHandler {
      */
     TasksFragment parent();
 
-
-
     /**
      * Moves selected tasks to a new status. Updates status, cancels notifications 
-     * if necessary, refreshes UI adapters, and saves changes to Firebase.
+     * if necessary, refreshes UI adapters via ViewModel, and saves changes to Firebase.
      * @param status The target status for the selected tasks.
      */
     default void onMoveTo(Task.TaskStatus status) {
@@ -50,37 +45,18 @@ public interface SelectionActionHandler {
             return;
         }
 
-        // Remove from the current adapter
-        adapter.removeSelectedTasks();
-        adapter.clearSelection();
         parent.hideSelectionBar();
 
-        // Update task status
-        for (Task task : selected) {
-            task.setTaskSelected(false);
-            task.setStatus(status);
-
-            // If moving away from 'TO-DO', cancel notifications
-            if (status != Task.TaskStatus.TODO) {
+        // If moving away from 'TO-DO', cancel notifications
+        if (status != Task.TaskStatus.TODO)
+            for (Task task : selected) {
                 TaskScheduler.cancelNotificationAlarm(parent.requireContext(), task.getTaskId().hashCode());
                 task.setTaskNotifying(false);
             }
-        }
 
-        // Add to target adapter
-        TaskListAdapter targetAdapter = switch (status) {
-            case TODO -> TasksToDoFragment.getAdapter();
-            case COMPLETED -> TasksCompletedFragment.getAdapter();
-            case CANCELED -> TasksCanceledFragment.getAdapter();
-        };
-        
-        for (Task task : selected)
-            targetAdapter.addTask(task);
-
-        // Save to Firebase
+        // Perform bulk update through ViewModel
         var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
-        for (Task task : selected)
-            viewModel.updateTask(task);
+        viewModel.moveTasks(selected, status);
 
         /// Update streaks
         if (status == Task.TaskStatus.COMPLETED) {
@@ -91,13 +67,12 @@ public interface SelectionActionHandler {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
             if (fbUser != null)
                 UsersRepository.updateUserHasCompletedTodayATask(fbUser.getUid(), true);
-
         }
     }
 
     /**
      * Deletes selected tasks from the application. Removes from local list, 
-     * clears Firebase entries, and resets UI state.
+     * clears Firebase entries, and resets UI state via ViewModel.
      */
     default void onDelete() {
         TaskListAdapter adapter = adapter();
@@ -110,15 +85,11 @@ public interface SelectionActionHandler {
             return;
         }
 
-        // Remove from UI
-        adapter.removeSelectedTasks();
-        adapter.clearSelection();
         parent.hideSelectionBar();
 
-        // Delete from Firebase
+        // Perform bulk deletion through ViewModel
         var viewModel = new ViewModelProvider(parent.requireActivity()).get(TasksViewModel.class);
-        for (Task task : selected)
-            viewModel.removeTask(task);
+        viewModel.removeTasks(selected);
     }
 
     /**

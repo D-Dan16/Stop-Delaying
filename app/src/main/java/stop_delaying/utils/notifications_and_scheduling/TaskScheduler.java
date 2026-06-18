@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Handles the scheduling and cancellation of background tasks and notifications using WorkManager. 
  * Supports both generic intents and specific notification alerts with custom delays.
  */
+// This file was made with the aid of AI
 public class TaskScheduler {
     private static final String TAG = TaskScheduler.class.getName();
 

@@ -31,6 +31,7 @@ import stop_delaying.models.Task;
 import stop_delaying.models.TimeOfDay;
 import stop_delaying.ui.fragments.tasks.task_handlers.InsertCardResponsiveness;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
+import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.ui.fragments.tasks.tabs.TaskTabIndices;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCanceledFragment;
 import stop_delaying.ui.fragments.tasks.tabs.TasksCompletedFragment;
@@ -260,8 +261,6 @@ public class TasksFragment extends Fragment {
     private void registerActionButtons() {
         toggleActionButtonsVisibility();
 
-        orderTasks();
-
         aiAnalyzeTasks();
 
         searchForTask();
@@ -316,18 +315,12 @@ public class TasksFragment extends Fragment {
                 fabAddTask.show();
                 fabSearchTask.show();
                 fabAiAnalyze.show();
-//                fabOrderBy.show();
             } else {
                 fabAddTask.hide();
                 fabSearchTask.hide();
                 fabAiAnalyze.hide();
-//                fabOrderBy.hide();
             }
         });
-    }
-
-    private void orderTasks() {
-//        fabOrderBy.setOnClickListener(v -> ConfigurableDialogFragment.showDialog(requireView(), getParentFragmentManager(), R.layout.cv_order_tasks_popup));
     }
 
     /** Configures AI task analysis, including data collection and result display. */
@@ -419,12 +412,6 @@ public class TasksFragment extends Fragment {
 
                     //<editor-fold desc="On Filter Tasks logic ">
                     bSearch.setOnClickListener(v1 -> {
-                        // reset prev search of this dialog if there was a previous search
-                        TasksToDoFragment.getAdapter().unfilterTasks();
-                        TasksCompletedFragment.getAdapter().unfilterTasks();
-                        TasksCanceledFragment.getAdapter().unfilterTasks();
-                        //----------------------------------------------------------------
-
                         tilSearch.setError(null);
 
                         String taskName = etSearch.getText().toString();
@@ -434,19 +421,14 @@ public class TasksFragment extends Fragment {
                             return;
                         }
 
-                        // Get all task lists and filter based on a search query
-                        TasksToDoFragment.getAdapter().filterTasks(taskName);
-                        TasksCompletedFragment.getAdapter().filterTasks(taskName);
-                        TasksCanceledFragment.getAdapter().filterTasks(taskName);
+                        // Use ViewModel for filtering
+                        tasksViewModel.filterTasks(taskName);
 
                         //<editor-fold desc="Unfilter button logic">
                         View mcvFilterClearBar = requireView().findViewById(R.id.mcv_filter_clear_bar);
                         mcvFilterClearBar.setVisibility(View.VISIBLE);
                         mcvFilterClearBar.setOnClickListener(v2 -> {
-                            TasksToDoFragment.getAdapter().unfilterTasks();
-                            TasksCompletedFragment.getAdapter().unfilterTasks();
-                            TasksCanceledFragment.getAdapter().unfilterTasks();
-
+                            tasksViewModel.unfilterTasks();
                             mcvFilterClearBar.setVisibility(View.GONE);
                         });
                         //</editor-fold>

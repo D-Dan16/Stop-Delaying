@@ -12,6 +12,7 @@ import androidx.work.WorkerParameters;
  * A background worker that executes scheduled intent. It resolves the intent
  *  of an activity, service, or broadcast receiver and triggers it accordingly.
  */
+// This file was made with the aid of AI
 public class GenericActionWorker extends Worker {
     /** Key for retrieving the intent URI from input data. */
     public static final String EXTRA_SCHEDULED_INTENT_URI = "scheduled_intent_uri";

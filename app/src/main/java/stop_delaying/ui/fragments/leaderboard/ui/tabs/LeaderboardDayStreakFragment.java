@@ -29,7 +29,7 @@ public class LeaderboardDayStreakFragment extends Fragment {
      * Initialized with an empty list.
      */
     @Getter
-    private static final LeaderboardAdapter adapter = new LeaderboardAdapter(new ArrayList<>());
+    private static final LeaderboardAdapter adapter = new LeaderboardAdapter();
 
     @Override
     public View onCreateView(
