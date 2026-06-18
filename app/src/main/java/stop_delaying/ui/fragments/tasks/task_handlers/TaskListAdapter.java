@@ -201,28 +201,4 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             t.setTaskSelected(false);
         notifyDataSetChanged();
     }
-
-    /**
-     * Removes all selected tasks from the collection and updates the RecyclerView.
-     */
-    public void removeSelectedTasks() {
-        List<Integer> selectedIndices = new ArrayList<>();
-        for (int i = 0; i < visibleTasks.size(); i++)
-            if (visibleTasks.get(i).isTaskSelected())
-                selectedIndices.add(i);
-
-        visibleTasks.removeIf(Task::isTaskSelected);
-
-        // Notify items removed in reverse order to avoid index shifting issues
-        for (int i = selectedIndices.size() - 1; i >= 0; i--)
-            notifyItemRemoved(selectedIndices.get(i));
-    }
-
-    /**
-     * Adds a single task to the collection and refreshes the display.
-     */
-    public void addTask(Task task) {
-        visibleTasks.add(task);
-        notifyItemInserted(visibleTasks.size() - 1);
-    }
 }
