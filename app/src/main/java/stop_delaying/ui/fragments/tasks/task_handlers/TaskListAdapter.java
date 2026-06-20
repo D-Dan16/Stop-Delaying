@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.procrastination.R;
@@ -17,27 +18,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.Getter;
 import stop_delaying.models.Task;
 import stop_delaying.ui.fragments.settings.SettingsFragment;
 
 
 /**
  * RecyclerView adapter for displaying task items. Manages task rendering, selection 
- * state, filtering, and event callbacks for bulk selection and UI updates.
+ * state, and event callbacks for bulk selection and UI updates.
  */
+// This file was made with the aid of AI
 @SuppressLint("NotifyDataSetChanged")
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
-    /** The collection of tasks managed by this adapter, including filtering logic. */
-    private final Tasks tasks;
+    /**
+     * The collection of tasks currently displayed by this adapter.
+     */
+    @Getter private final List<Task> visibleTasks = new ArrayList<>();
     /** Callback for notifying when the total number of selected tasks changes. */
     private SelectionActionHandler.OnSelectionChangeListener selectionChangeListener;
     /** Callback for notifying when a bulk selection session is initiated. */
     private SelectionActionHandler.OnStartSelectionListener startSelectionListener;
-    /** The current search query used to filter tasks, or null if unfiltered. */
-    private String currentFilter;
 
-    public TaskListAdapter(Tasks taskLists) {
-        this.tasks = taskLists;
+    public TaskListAdapter() {
     }
 
     public void setOnSelectionChangeListener(SelectionActionHandler.OnSelectionChangeListener listener) {
@@ -76,8 +78,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        // When you ask for the position of visible tasks, u don't need to worry about the existence of hidden tasks.
-        Task task = tasks.visibleTasks().get(position);
+        Task task = visibleTasks.get(position);
 
         holder.tvTaskTitle.setText(task.getTitle());
         holder.tvTaskDescription.setText(task.getDescription());
@@ -131,20 +132,42 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     /**
-     * Updates the underlying task collection and applies any active filters.
+     * Updates the underlying task collection using DiffUtil for efficient UI refreshes.
      */
     public void setTasks(@Nullable List<Task> newTasks) {
-        if (newTasks == null) return;
+        List<Task> safeNewTasks = (newTasks == null) ? new ArrayList<>() : new ArrayList<>(newTasks);
 
-        tasks.setAllTasks(newTasks);
-        if (currentFilter != null)
-            tasks.filterTasks(currentFilter);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override public int getOldListSize() {
+                return visibleTasks.size();
+            }
 
-        notifyDataSetChanged();
+            @Override public int getNewListSize() {
+                return safeNewTasks.size();
+            }
+
+            @Override public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return visibleTasks.get(oldItemPosition).getTaskId().equals(safeNewTasks.get(newItemPosition).getTaskId());
+            }
+
+            @Override public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                Task oldTask = visibleTasks.get(oldItemPosition);
+                Task newTask = safeNewTasks.get(newItemPosition);
+                return oldTask.getStatus() == newTask.getStatus() &&
+                       oldTask.isTaskSelected() == newTask.isTaskSelected() &&
+                       oldTask.isTaskNotifying() == newTask.isTaskNotifying() &&
+                       oldTask.getTitle().equals(newTask.getTitle()) &&
+                       oldTask.getDescription().equals(newTask.getDescription());
+            }
+        });
+
+        this.visibleTasks.clear();
+        this.visibleTasks.addAll(safeNewTasks);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override public int getItemCount() {
-        return tasks.visibleTasks().size();
+        return visibleTasks.size();
     }
 
     /**
@@ -152,17 +175,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public int getSelectedCount() {
         int count = 0;
-        for (Task t : tasks.visibleTasks())
+        for (Task t : visibleTasks)
             if (t.isTaskSelected())
                 count++;
         return count;
-    }
-
-    /**
-     * @return the list of tasks currently visible in the RecyclerView.
-     */
-    public List<Task> getVisibleTasks() {
-        return tasks.visibleTasks();
     }
 
     /**
@@ -170,64 +186,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
      */
     public List<Task> getSelectedTasks() {
         List<Task> selected = new ArrayList<>();
-        for (Task t : tasks.visibleTasks())
+        for (Task t : visibleTasks)
             if (t.isTaskSelected())
                 selected.add(t);
 
         return selected;
     }
 
-
-
     /**
      * Resets the selection flag on all tasks and refreshes the display.
      */
     public void clearSelection() {
-        tasks.clearSelection();
-        notifyDataSetChanged();
-    }
-
-    /**
-     * Removes all selected tasks from the collection and updates the RecyclerView.
-     */
-    public void removeSelectedTasks() {
-        List<Integer> selectedIndices = new ArrayList<>();
-        for (int i = 0; i < tasks.visibleTasks().size(); i++)
-            if (tasks.visibleTasks().get(i).isTaskSelected())
-                selectedIndices.add(i);
-
-        tasks.removeSelectedTasks(); // This modifies the underlying list
-
-        // Notify items removed in reverse order to avoid index shifting issues
-        for (int i = selectedIndices.size() - 1; i >= 0; i--)
-            notifyItemRemoved(selectedIndices.get(i));
-    }
-
-    /**
-     * Filters the task list based on a provided query string.
-     */
-    public void filterTasks(String query) {
-        this.currentFilter = query;
-        tasks.filterTasks(query);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * Removes the active filter and displays all tasks in the collection.
-     */
-    public void unfilterTasks() {
-        this.currentFilter = null;
-        tasks.unfilterTasks();
-        notifyDataSetChanged();
-    }
-
-    /**
-     * Adds a single task to the collection and refreshes the display.
-     */
-    public void addTask(Task task) {
-        tasks.add(task);
-        if (currentFilter != null)
-            tasks.filterTasks(currentFilter);
+        for (Task t : visibleTasks)
+            t.setTaskSelected(false);
         notifyDataSetChanged();
     }
 }

@@ -66,21 +66,18 @@ public class LeaderboardFragment extends Fragment {
 
         // Observe Leaderboard data from ViewModel and update fragments
         setupLeaderboardObservers();
-
-        // init leaderboard data
-        leaderboardViewModel.organizeLeaderboardEntries(LeaderboardTab.DAY_STREAK);
     }
 
     /**
      * Configures LiveData observers for leaderboard entries and loading status.
      */
     private void setupLeaderboardObservers() {
-        leaderboardViewModel.getLiveData().observe(getViewLifecycleOwner(), leaderboardEntries -> {
-            if (leaderboardEntries == null)
+        leaderboardViewModel.getLiveData().observe(getViewLifecycleOwner(), leaderboardListsMap -> {
+            if (leaderboardListsMap == null)
                 return;
 
-            LeaderboardDayStreakFragment.getAdapter().setLeaderboardEntries(leaderboardEntries);
-            LeaderboardTaskStreakFragment.getAdapter().setLeaderboardEntries(leaderboardEntries);
+            LeaderboardDayStreakFragment.getAdapter().setLeaderboardEntries(leaderboardListsMap.get(LeaderboardTab.DAY_STREAK));
+            LeaderboardTaskStreakFragment.getAdapter().setLeaderboardEntries(leaderboardListsMap.get(LeaderboardTab.TASK_STREAK));
         });
 
         // Observe leaderboard loading progress from ViewModel
@@ -122,18 +119,5 @@ public class LeaderboardFragment extends Fragment {
                 case LeaderboardTab.TASK_STREAK -> tab.setText("Task Streak");
             }
         }).attach();
-
-        /// Add a listener for tab selection changes
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override public void onTabSelected(TabLayout.Tab tab) {
-                // When a tab is selected, organize the leaderboard entries accordingly
-                switch (tab.getPosition()) {
-                    case LeaderboardTab.DAY_STREAK -> leaderboardViewModel.organizeLeaderboardEntries(LeaderboardTab.DAY_STREAK);
-                    case LeaderboardTab.TASK_STREAK -> leaderboardViewModel.organizeLeaderboardEntries(LeaderboardTab.TASK_STREAK);
-                }
-            }
-            @Override public void onTabUnselected(TabLayout.Tab tab) {}
-            @Override public void onTabReselected(TabLayout.Tab tab) {}
-        });
     }
 }

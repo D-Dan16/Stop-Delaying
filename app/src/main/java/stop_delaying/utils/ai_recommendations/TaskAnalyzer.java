@@ -28,6 +28,7 @@ import stop_delaying.models.Task;
  * This class coordinates between local task data and remote AI services to 
  * help users optimize their productivity.
  */
+// This file was made with the aid of AI
 public class TaskAnalyzer {
     /** Private constructor to prevent instantiation. */
     private TaskAnalyzer() {}

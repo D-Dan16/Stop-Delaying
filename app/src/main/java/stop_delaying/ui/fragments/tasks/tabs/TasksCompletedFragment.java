@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.procrastination.R;
 
 import lombok.Getter;
-import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
@@ -31,7 +30,7 @@ public class TasksCompletedFragment extends Fragment {
      * Shared adapter for the completed tasks list. Initialized with an empty task collection.
      */
     @Getter
-    private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
+    private static final TaskListAdapter adapter = new TaskListAdapter();
 
     @Override
     public View onCreateView(
@@ -48,7 +47,6 @@ public class TasksCompletedFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_completed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
 
         adapter.setOnStartSelectionListener(() -> {
             TasksFragment parent = (TasksFragment) getParentFragment();

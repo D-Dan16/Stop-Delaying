@@ -17,7 +17,6 @@ import com.example.procrastination.R;
 import java.util.ArrayList;
 
 import lombok.Getter;
-import stop_delaying.ui.fragments.tasks.task_handlers.Tasks;
 import stop_delaying.ui.fragments.tasks.task_handlers.SelectionActionHandler;
 import stop_delaying.ui.fragments.tasks.task_handlers.TaskListAdapter;
 import stop_delaying.ui.fragments.tasks.TasksFragment;
@@ -32,7 +31,7 @@ public class TasksToDoFragment extends Fragment {
      * Shared adapter for the 'To Do' tasks list. Initialized with an empty task collection.
      */
     @Getter
-    private static final TaskListAdapter adapter = new TaskListAdapter(new Tasks(new ArrayList<>(), new ArrayList<>()));
+    private static final TaskListAdapter adapter = new TaskListAdapter();
 
     @Override
     public View onCreateView(

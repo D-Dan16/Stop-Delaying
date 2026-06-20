@@ -115,6 +115,12 @@ public final class Tasks {
         visibleTasks.add(task);
     }
 
+    /** Removes a single task from both collections. */
+    public void remove(Task task) {
+        visibleTasks.remove(task);
+        hiddenTasks.remove(task);
+    }
+
     /**
      * Updates the status of specific tasks within the visible collection.
      */

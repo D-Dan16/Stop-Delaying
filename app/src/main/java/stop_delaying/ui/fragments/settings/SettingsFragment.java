@@ -7,8 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -275,14 +273,7 @@ public class SettingsFragment extends Fragment {
                 });
 
                 // We need to delete the user's tasks stored in the Firebase as well
-                TaskRepository.removeUserTasksFromFirebase(fbUser.getUid(),new TaskRepository.TaskOperationCallback() {
-                    @Override public void onSuccess() {
-                        Log.d("TaskRepository", "User tasks deleted successfully.");
-                    }
-                    @Override public void onFailure(String error) {
-                        Log.e("TaskRepository", "Failed to delete user tasks: " + error);
-                    }
-                });
+                TaskRepository.removeUserTasksFromFirebase(fbUser.getUid());
 
             });
         }));
